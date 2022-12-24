@@ -23,7 +23,7 @@ func ValidateMapSlice(input []map[string]any, rules RulesMap) Result {
 		inputBag := bag.InputBag(m)
 		tmpResult := doValidation(inputBag, rules)
 		for key, messages := range tmpResult.Errors {
-			result.AddError(fmt.Sprintf("%d.%s", i, key), messages...)
+			result.addError(fmt.Sprintf("%d.%s", i, key), messages...)
 		}
 	}
 
@@ -46,7 +46,7 @@ func ValidateStructSlice(input []any, rules RulesMap) Result {
 	for i, strct := range input {
 		tmpResult := ValidateStruct(strct, rules)
 		for key, messages := range tmpResult.Errors {
-			result.AddError(fmt.Sprintf("%d.%s", i, key), messages...)
+			result.addError(fmt.Sprintf("%d.%s", i, key), messages...)
 		}
 	}
 
@@ -79,7 +79,7 @@ func doValidation(inputBag bag.InputBag, rules RulesMap, locale ...string) Resul
 			rule := ruleName.load(currentLocale)
 			valid := rule.Validate(selector, val, inputBag, exists)
 			if !valid {
-				result.AddError(selector, rule.Message())
+				result.addError(selector, rule.Message())
 				if stopOnFirstFailure {
 					break
 				}

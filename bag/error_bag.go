@@ -9,3 +9,18 @@ func (b ErrorBag) IsEmpty() bool {
 func (b ErrorBag) Add(selector string, msg ...string) {
 	b[selector] = append(b[selector], msg...)
 }
+
+func (b ErrorBag) FirstOf(name string) string {
+	msg, ok := b[name]
+	if !ok {
+		return ""
+	}
+
+	return msg[0]
+}
+
+func (b ErrorBag) Has(name string) bool {
+	_, ok := b[name]
+
+	return ok
+}

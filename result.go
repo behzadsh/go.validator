@@ -12,10 +12,10 @@ func NewResult() Result {
 	}
 }
 
-func (r Result) Fails() bool {
+func (r Result) Failed() bool {
 	return !r.Errors.IsEmpty()
 }
 
-func (r Result) AddError(selector string, errorMsg ...string) {
+func (r Result) addError(selector string, errorMsg ...string) {
 	r.Errors.Add(selector, errorMsg...)
 }
