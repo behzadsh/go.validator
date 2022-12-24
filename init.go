@@ -1,5 +1,7 @@
 package validation
 
+import "github.com/behzadsh/go.validator/rules"
+
 var defaultLocale string
 
 var stopOnFirstFailure bool
@@ -7,7 +9,9 @@ var stopOnFirstFailure bool
 func init() {
 	// initiate with default rules
 	registry = map[string]Rule{
-		//
+		"after":     &rules.After{},
+		"required":  &rules.Required{},
+		"not_empty": &rules.NotEmpty{},
 	}
 
 	defaultLocale = "en"
