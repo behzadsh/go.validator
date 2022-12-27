@@ -6,14 +6,15 @@ var defaultLocale string
 
 var stopOnFirstFailure bool
 
-var registry map[string]Rule
+var registry map[string]rules.Rule
 
 func init() {
 	// initiate with default rules
-	registry = map[string]Rule{
-		"after":     &rules.After{},
-		"required":  &rules.Required{},
-		"not_empty": &rules.NotEmpty{},
+	registry = map[string]rules.Rule{
+		"after":        &rules.After{},
+		"afterOrEqual": &rules.AfterOrEqual{},
+		// "required":  &rules.Required{},
+		// "not_empty": &rules.NotEmpty{},
 	}
 
 	defaultLocale = "en"
@@ -25,4 +26,8 @@ func SetDefaultLocale(locale string) {
 
 func StopOnFirstFailure() {
 	stopOnFirstFailure = true
+}
+
+func Register(ruleName string, rule rules.Rule) {
+	registry[ruleName] = rule
 }

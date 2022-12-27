@@ -7,19 +7,20 @@ import (
 	"github.com/spf13/cast"
 	"github.com/thoas/go-funk"
 
+	"github.com/behzadsh/go.validator/rules"
 	"github.com/behzadsh/go.validator/translation"
 )
 
 type ruleIndicator string
 
-func (r ruleIndicator) load(locale string) Rule {
+func (r ruleIndicator) load(locale string) rules.Rule {
 	name, params := r.parseRuleParams()
 	rule, ok := registry[name]
 	if !ok || rule == nil {
 		panic(fmt.Errorf("rule %s is not registered", name))
 	}
 
-	if ruleWithParams, ok := rule.(RuleWithParams); ok {
+	if ruleWithParams, ok := rule.(rules.RuleWithParams); ok {
 		paramNum := len(params)
 		minRequiredParams := ruleWithParams.MinRequiredParams()
 

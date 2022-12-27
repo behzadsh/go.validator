@@ -9,22 +9,23 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// After checks the field under validation be a value after the value of given
-// field. It will return validation error if one or both of the field are not
-// a valid datetime string. It also will return validation error if the other
-// field could not be found in input bag.
+// BeforeOrEqual checks the field under validation be a value before or equal to
+// the value of given field. It will return validation error if one or both of
+// the field are not a valid datetime string. It also will return validation
+// error if the other field could not be found in input bag.
 //
-// Usage: "after:otherField[,timeZoneString]
-// Example: "after:start,America/New_York"
-type After struct {
+// Usage: "beforeOrEqual:otherField[,timeZoneString]
+// Example: "beforeOrEqual:end,America/New_York"
+type BeforeOrEqual struct {
 	translation.BaseTranslatableRule
 	otherField string
 	timeZone   *time.Location
+	message    string
 }
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *After) Validate(selector string, value any, inputBag bag.InputBag, _ bool) Result {
+func (r *BeforeOrEqual) Validate(selector string, value any, inputBag bag.InputBag, _ bool) Result {
 	timeValue, err := cast.ToTimeInDefaultLocationE(value, r.timeZone)
 	if err != nil {
 		return NewFailedResult(r.Translate(r.Locale, "validation.date_time", map[string]string{
@@ -46,10 +47,10 @@ func (r *After) Validate(selector string, value any, inputBag bag.InputBag, _ bo
 		}))
 	}
 
-	result := timeValue.After(otherTimeValue)
+	result := timeValue.Before(otherTimeValue) || timeValue.Equal(otherTimeValue)
 
 	if !result {
-		return NewFailedResult(r.Translate(r.Locale, "validation.after", map[string]string{
+		return NewFailedResult(r.Translate(r.Locale, "validation.before_or_equal", map[string]string{
 			"field":      selector,
 			"otherField": r.otherField,
 		}))
@@ -59,7 +60,7 @@ func (r *After) Validate(selector string, value any, inputBag bag.InputBag, _ bo
 }
 
 // AddParams adds rules parameter values to the rule instance.
-func (r *After) AddParams(params []string) {
+func (r *BeforeOrEqual) AddParams(params []string) {
 	r.otherField = params[0]
 	r.timeZone = time.UTC
 
@@ -73,6 +74,6 @@ func (r *After) AddParams(params []string) {
 // MinRequiredParams returns minimum parameter requirement for this rule.
 // This rule accept 2 parameter, the first one, `otherField`, is mandatory
 // and the second one, `timeZoneString` is optional.
-func (r *After) MinRequiredParams() int {
+func (r *BeforeOrEqual) MinRequiredParams() int {
 	return 1
 }
