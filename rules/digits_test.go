@@ -9,12 +9,15 @@ import (
 	"github.com/behzadsh/go.validator/bag"
 )
 
-var alphaRuleTestData = map[string]any{
+var digitsRuleTestData = map[string]any{
 	"successful": map[string]any{
 		"input": map[string]any{
-			"selector": "name",
+			"selector": "code",
 			"inputBag": bag.InputBag{
-				"name": "John",
+				"code": "468432",
+			},
+			"params": []string{
+				"6",
 			},
 		},
 		"output": map[string]any{
@@ -22,24 +25,42 @@ var alphaRuleTestData = map[string]any{
 			"validationError":  "",
 		},
 	},
-	"notAlpha": map[string]any{
+	"failedUnequalDigits": map[string]any{
 		"input": map[string]any{
-			"selector": "name",
+			"selector": "code",
 			"inputBag": bag.InputBag{
-				"name": "John Doe",
+				"code": "46843",
+			},
+			"params": []string{
+				"6",
 			},
 		},
 		"output": map[string]any{
 			"validationFailed": true,
-			"validationError":  "The field name must only contain letters.",
+			"validationError":  "The field code must have exactly 6 digits.",
+		},
+	},
+	"failedNotDigits": map[string]any{
+		"input": map[string]any{
+			"selector": "code",
+			"inputBag": bag.InputBag{
+				"code": "SIONDV",
+			},
+			"params": []string{
+				"6",
+			},
+		},
+		"output": map[string]any{
+			"validationFailed": true,
+			"validationError":  "The field code must have exactly 6 digits.",
 		},
 	},
 }
 
-func TestAlphaRule(t *testing.T) {
-	rule := initAlphaRule()
+func TestDigitsRule(t *testing.T) {
+	rule := initDigitsRule()
 
-	for name, d := range alphaRuleTestData {
+	for name, d := range digitsRuleTestData {
 		t.Run(name, func(t *testing.T) {
 			data := d.(map[string]any)
 			input := data["input"].(map[string]any)
@@ -47,6 +68,8 @@ func TestAlphaRule(t *testing.T) {
 			inputBag := input["inputBag"].(bag.InputBag)
 
 			value, exists := inputBag.Get(input["selector"].(string))
+
+			rule.AddParams(input["params"].([]string))
 			res := rule.Validate(input["selector"].(string), value, inputBag, exists)
 
 			assert.Equal(t, output["validationFailed"].(bool), res.Failed())
@@ -55,17 +78,17 @@ func TestAlphaRule(t *testing.T) {
 	}
 }
 
-func initAlphaRule() *Alpha {
-	alphaRule := &Alpha{}
-	alphaRule.AddTranslationFunction(func(_, key string, params ...map[string]string) string {
+func initDigitsRule() *Digits {
+	digitsRule := &Digits{}
+	digitsRule.AddTranslationFunction(func(_, key string, params ...map[string]string) string {
 		var p map[string]string
 		if len(params) > 0 {
 			p = params[0]
 		}
 
 		switch key {
-		case "validation.alpha":
-			tr := "The field :field: must only contain letters."
+		case "validation.digits":
+			tr := "The field :field: must have exactly :digitCount: digits."
 			for k, v := range p {
 				tr = strings.Replace(tr, ":"+k+":", v, -1)
 			}
@@ -75,5 +98,5 @@ func initAlphaRule() *Alpha {
 			return key
 		}
 	})
-	return alphaRule
+	return digitsRule
 }

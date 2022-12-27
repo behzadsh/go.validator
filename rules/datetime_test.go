@@ -9,12 +9,12 @@ import (
 	"github.com/behzadsh/go.validator/bag"
 )
 
-var alphaRuleTestData = map[string]any{
+var dateTimeRuleTestData = map[string]any{
 	"successful": map[string]any{
 		"input": map[string]any{
-			"selector": "name",
+			"selector": "birthday",
 			"inputBag": bag.InputBag{
-				"name": "John",
+				"birthday": "1989-05-01",
 			},
 		},
 		"output": map[string]any{
@@ -22,24 +22,24 @@ var alphaRuleTestData = map[string]any{
 			"validationError":  "",
 		},
 	},
-	"notAlpha": map[string]any{
+	"failed": map[string]any{
 		"input": map[string]any{
-			"selector": "name",
+			"selector": "birthday",
 			"inputBag": bag.InputBag{
-				"name": "John Doe",
+				"birthday": "invalid datetime string",
 			},
 		},
 		"output": map[string]any{
 			"validationFailed": true,
-			"validationError":  "The field name must only contain letters.",
+			"validationError":  "The field birthday must be a valid date time string.",
 		},
 	},
 }
 
-func TestAlphaRule(t *testing.T) {
-	rule := initAlphaRule()
+func TestDateTimeRule(t *testing.T) {
+	rule := initDateTimeRule()
 
-	for name, d := range alphaRuleTestData {
+	for name, d := range dateTimeRuleTestData {
 		t.Run(name, func(t *testing.T) {
 			data := d.(map[string]any)
 			input := data["input"].(map[string]any)
@@ -55,17 +55,17 @@ func TestAlphaRule(t *testing.T) {
 	}
 }
 
-func initAlphaRule() *Alpha {
-	alphaRule := &Alpha{}
-	alphaRule.AddTranslationFunction(func(_, key string, params ...map[string]string) string {
+func initDateTimeRule() *DateTime {
+	datetimeRule := &DateTime{}
+	datetimeRule.AddTranslationFunction(func(_, key string, params ...map[string]string) string {
 		var p map[string]string
 		if len(params) > 0 {
 			p = params[0]
 		}
 
 		switch key {
-		case "validation.alpha":
-			tr := "The field :field: must only contain letters."
+		case "validation.datetime":
+			tr := "The field :field: must be a valid date time string."
 			for k, v := range p {
 				tr = strings.Replace(tr, ":"+k+":", v, -1)
 			}
@@ -75,5 +75,6 @@ func initAlphaRule() *Alpha {
 			return key
 		}
 	})
-	return alphaRule
+
+	return datetimeRule
 }

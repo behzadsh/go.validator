@@ -14,7 +14,7 @@ import (
 // a valid datetime string. It also will return validation error if the other
 // field could not be found in input bag.
 //
-// Usage: "after:otherField[,timeZoneString]
+// Usage: "after:otherField[,timeZoneString]"
 // Example: "after:start,America/New_York"
 type After struct {
 	translation.BaseTranslatableRule
@@ -27,7 +27,7 @@ type After struct {
 func (r *After) Validate(selector string, value any, inputBag bag.InputBag, _ bool) Result {
 	timeValue, err := cast.ToTimeInDefaultLocationE(value, r.timeZone)
 	if err != nil {
-		return NewFailedResult(r.Translate(r.Locale, "validation.date_time", map[string]string{
+		return NewFailedResult(r.Translate(r.Locale, "validation.datetime", map[string]string{
 			"field": selector,
 		}))
 	}
@@ -41,7 +41,7 @@ func (r *After) Validate(selector string, value any, inputBag bag.InputBag, _ bo
 
 	otherTimeValue, err := cast.ToTimeInDefaultLocationE(otherValue, r.timeZone)
 	if err != nil {
-		return NewFailedResult(r.Translate(r.Locale, "validation.date_time", map[string]string{
+		return NewFailedResult(r.Translate(r.Locale, "validation.datetime", map[string]string{
 			"field": r.otherField,
 		}))
 	}

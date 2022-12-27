@@ -128,7 +128,7 @@ func initBeforeRule() *Before {
 			}
 
 			return tr
-		case "validation.date_time":
+		case "validation.datetime":
 			tr := "The field :field: must be a valid date time string."
 			for k, v := range p {
 				tr = strings.Replace(tr, ":"+k+":", v, -1)

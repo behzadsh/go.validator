@@ -28,7 +28,7 @@ type AfterOrEqual struct {
 func (r *AfterOrEqual) Validate(selector string, value any, inputBag bag.InputBag, _ bool) Result {
 	timeValue, err := cast.ToTimeInDefaultLocationE(value, r.timeZone)
 	if err != nil {
-		return NewFailedResult(r.Translate(r.Locale, "validation.date_time", map[string]string{
+		return NewFailedResult(r.Translate(r.Locale, "validation.datetime", map[string]string{
 			"field": selector,
 		}))
 	}
@@ -42,7 +42,7 @@ func (r *AfterOrEqual) Validate(selector string, value any, inputBag bag.InputBa
 
 	otherTimeValue, err := cast.ToTimeInDefaultLocationE(otherValue, r.timeZone)
 	if err != nil {
-		return NewFailedResult(r.Translate(r.Locale, "validation.date_time", map[string]string{
+		return NewFailedResult(r.Translate(r.Locale, "validation.datetime", map[string]string{
 			"field": r.otherField,
 		}))
 	}
