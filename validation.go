@@ -12,16 +12,27 @@ import (
 
 type RulesMap map[string][]string
 
-func ValidateMap(input map[string]any, rules RulesMap) Result {
+func ValidateMap(input map[string]any, rules RulesMap, locale ...string) Result {
+	currentLocale := defaultLocale
+	if len(locale) > 0 {
+		currentLocale = locale[0]
+	}
+
 	inputBag := bag.InputBag(input)
-	return doValidation(inputBag, rules)
+
+	return doValidation(inputBag, rules, currentLocale)
 }
 
-func ValidateMapSlice(input []map[string]any, rules RulesMap) Result {
+func ValidateMapSlice(input []map[string]any, rules RulesMap, locale ...string) Result {
+	currentLocale := defaultLocale
+	if len(locale) > 0 {
+		currentLocale = locale[0]
+	}
+
 	result := NewResult()
 	for i, m := range input {
 		inputBag := bag.InputBag(m)
-		tmpResult := doValidation(inputBag, rules)
+		tmpResult := doValidation(inputBag, rules, currentLocale)
 		for key, messages := range tmpResult.Errors {
 			result.addError(fmt.Sprintf("%d.%s", i, key), messages...)
 		}
@@ -30,7 +41,12 @@ func ValidateMapSlice(input []map[string]any, rules RulesMap) Result {
 	return result
 }
 
-func ValidateStruct(input any, rules RulesMap) Result {
+func ValidateStruct(input any, rules RulesMap, locale ...string) Result {
+	currentLocale := defaultLocale
+	if len(locale) > 0 {
+		currentLocale = locale[0]
+	}
+
 	v := reflect.ValueOf(input)
 	if v.Kind() != reflect.Struct || (v.Kind() == reflect.Ptr && v.Elem().Kind() == reflect.Struct) {
 		panic("validation.ValidateStruct only support struct or a pointer to a struct as first parameter")
@@ -38,13 +54,18 @@ func ValidateStruct(input any, rules RulesMap) Result {
 
 	inputBag := bag.NewInputBagFromStruct(input)
 
-	return doValidation(inputBag, rules)
+	return doValidation(inputBag, rules, currentLocale)
 }
 
-func ValidateStructSlice(input []any, rules RulesMap) Result {
+func ValidateStructSlice(input []any, rules RulesMap, locale ...string) Result {
+	currentLocale := defaultLocale
+	if len(locale) > 0 {
+		currentLocale = locale[0]
+	}
+
 	result := NewResult()
 	for i, strct := range input {
-		tmpResult := ValidateStruct(strct, rules)
+		tmpResult := ValidateStruct(strct, rules, currentLocale)
 		for key, messages := range tmpResult.Errors {
 			result.addError(fmt.Sprintf("%d.%s", i, key), messages...)
 		}
@@ -53,16 +74,16 @@ func ValidateStructSlice(input []any, rules RulesMap) Result {
 	return result
 }
 
-func Validate(input any, rules []string) Result {
-	return doValidation(bag.InputBag{"variable": input}, RulesMap{"variable": rules})
-}
-
-func doValidation(inputBag bag.InputBag, rules RulesMap, locale ...string) Result {
+func Validate(input any, rules []string, locale ...string) Result {
 	currentLocale := defaultLocale
 	if len(locale) > 0 {
 		currentLocale = locale[0]
 	}
 
+	return doValidation(bag.InputBag{"variable": input}, RulesMap{"variable": rules}, currentLocale)
+}
+
+func doValidation(inputBag bag.InputBag, rules RulesMap, locale string) Result {
 	explicitRules := make(RulesMap)
 
 	for fieldSelector, fieldRules := range rules {
@@ -76,7 +97,7 @@ func doValidation(inputBag bag.InputBag, rules RulesMap, locale ...string) Resul
 		val, exists := inputBag.Get(selector)
 		for _, ruleStr := range selectorRules {
 			ruleName := ruleIndicator(ruleStr)
-			rule := ruleName.load(currentLocale)
+			rule := ruleName.load(locale)
 			valid := rule.Validate(selector, val, inputBag, exists)
 			if !valid {
 				result.addError(selector, rule.Message())

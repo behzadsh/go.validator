@@ -13,8 +13,6 @@ type RuleWithParams interface {
 	MinRequiredParams() int
 }
 
-var registry map[string]Rule
-
 func Register(ruleName string, rule Rule) {
 	registry[ruleName] = rule
 }

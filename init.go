@@ -6,6 +6,8 @@ var defaultLocale string
 
 var stopOnFirstFailure bool
 
+var registry map[string]Rule
+
 func init() {
 	// initiate with default rules
 	registry = map[string]Rule{
