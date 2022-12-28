@@ -5,11 +5,6 @@ The `go.validator` package provides a simple and convenient way to validate your
 # TODO
 
 - [ ] Add all default rules
-  - [ ] requiredIf
-  - [ ] requiredUnless
-  - [ ] requiredWith
-  - [ ] requiredWithout
-  - [ ] notIn
   - [ ] neq
   - [ ] gt
   - [ ] gte
