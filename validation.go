@@ -94,11 +94,11 @@ func doValidation(inputBag bag.InputBag, rules RulesMap, locale string) Result {
 
 	result := NewResult()
 	for selector, selectorRules := range explicitRules {
-		val, exists := inputBag.Get(selector)
+		val, _ := inputBag.Get(selector)
 		for _, ruleStr := range selectorRules {
 			ruleName := ruleIndicator(ruleStr)
 			rule := ruleName.load(locale)
-			ruleResult := rule.Validate(selector, val, inputBag, exists)
+			ruleResult := rule.Validate(selector, val, inputBag)
 			if ruleResult.Failed() {
 				result.addError(selector, ruleResult.Message())
 				if stopOnFirstFailure {

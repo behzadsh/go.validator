@@ -101,10 +101,10 @@ func TestAfterRule(t *testing.T) {
 			output := data["output"].(map[string]any)
 			inputBag := input["inputBag"].(bag.InputBag)
 
-			value, exists := inputBag.Get(input["selector"].(string))
+			value, _ := inputBag.Get(input["selector"].(string))
 
 			rule.AddParams(input["params"].([]string))
-			res := rule.Validate(input["selector"].(string), value, inputBag, exists)
+			res := rule.Validate(input["selector"].(string), value, inputBag)
 
 			assert.Equal(t, output["validationFailed"].(bool), res.Failed())
 			assert.Equal(t, output["validationError"].(string), res.Message())
@@ -136,7 +136,7 @@ func initAfterRule() *After {
 
 			return tr
 		case "Validation.required":
-			tr := "The field :otherField: is required."
+			tr := "The field :field: is required."
 			for k, v := range p {
 				tr = strings.Replace(tr, ":"+k+":", v, -1)
 			}

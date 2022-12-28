@@ -19,7 +19,7 @@ type Alpha struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *Alpha) Validate(selector string, value any, _ bag.InputBag, _ bool) Result {
+func (r *Alpha) Validate(selector string, value any, _ bag.InputBag) Result {
 	strValue, err := cast.ToStringE(value)
 	if err != nil {
 		return NewFailedResult(r.Translate(r.Locale, "validation.alpha", map[string]string{

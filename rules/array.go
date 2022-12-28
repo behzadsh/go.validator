@@ -17,7 +17,7 @@ type Array struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *Array) Validate(selector string, value any, _ bag.InputBag, _ bool) Result {
+func (r *Array) Validate(selector string, value any, _ bag.InputBag) Result {
 	if !funk.IsCollection(value) {
 		return NewFailedResult(r.Translate(r.Locale, "validation.array", map[string]string{
 			"field": selector,

@@ -92,8 +92,8 @@ func TestBooleanRule(t *testing.T) {
 			output := data["output"].(map[string]any)
 			inputBag := input["inputBag"].(bag.InputBag)
 
-			value, exists := inputBag.Get(input["selector"].(string))
-			res := rule.Validate(input["selector"].(string), value, inputBag, exists)
+			value, _ := inputBag.Get(input["selector"].(string))
+			res := rule.Validate(input["selector"].(string), value, inputBag)
 
 			assert.Equal(t, output["validationFailed"].(bool), res.Failed())
 			assert.Equal(t, output["validationError"].(string), res.Message())

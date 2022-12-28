@@ -20,7 +20,7 @@ type AlphaSpace struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *AlphaSpace) Validate(selector string, value any, _ bag.InputBag, _ bool) Result {
+func (r *AlphaSpace) Validate(selector string, value any, _ bag.InputBag) Result {
 	strValue, err := cast.ToStringE(value)
 	if err != nil {
 		return NewFailedResult(r.Translate(r.Locale, "validation.alpha_space", map[string]string{

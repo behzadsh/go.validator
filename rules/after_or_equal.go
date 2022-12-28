@@ -25,7 +25,7 @@ type AfterOrEqual struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *AfterOrEqual) Validate(selector string, value any, inputBag bag.InputBag, _ bool) Result {
+func (r *AfterOrEqual) Validate(selector string, value any, inputBag bag.InputBag) Result {
 	timeValue, err := cast.ToTimeInDefaultLocationE(value, r.timeZone)
 	if err != nil {
 		return NewFailedResult(r.Translate(r.Locale, "validation.datetime", map[string]string{

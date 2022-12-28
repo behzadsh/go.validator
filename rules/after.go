@@ -24,7 +24,7 @@ type After struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *After) Validate(selector string, value any, inputBag bag.InputBag, _ bool) Result {
+func (r *After) Validate(selector string, value any, inputBag bag.InputBag) Result {
 	timeValue, err := cast.ToTimeInDefaultLocationE(value, r.timeZone)
 	if err != nil {
 		return NewFailedResult(r.Translate(r.Locale, "validation.datetime", map[string]string{
@@ -35,7 +35,7 @@ func (r *After) Validate(selector string, value any, inputBag bag.InputBag, _ bo
 	otherValue, ok := inputBag.Get(r.otherField)
 	if !ok {
 		return NewFailedResult(r.Translate(r.Locale, "Validation.required", map[string]string{
-			"otherField": r.otherField,
+			"field": r.otherField,
 		}))
 	}
 

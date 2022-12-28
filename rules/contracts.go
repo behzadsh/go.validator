@@ -28,7 +28,7 @@ func (r Result) Failed() bool {
 }
 
 type Rule interface {
-	Validate(selector string, value any, inputBag bag.InputBag, exists bool) Result
+	Validate(selector string, value any, inputBag bag.InputBag) Result
 }
 
 type RuleWithParams interface {

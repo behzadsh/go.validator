@@ -21,7 +21,7 @@ type DateTimeFormat struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *DateTimeFormat) Validate(selector string, value any, _ bag.InputBag, _ bool) Result {
+func (r *DateTimeFormat) Validate(selector string, value any, _ bag.InputBag) Result {
 	_, err := time.Parse(r.layout, cast.ToString(value))
 	if err != nil {
 		return NewFailedResult(r.Translate(r.Locale, "validation.datetime_format", map[string]string{

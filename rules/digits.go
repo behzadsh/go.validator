@@ -20,7 +20,7 @@ type Digits struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *Digits) Validate(selector string, value any, inputBag bag.InputBag, exists bool) Result {
+func (r *Digits) Validate(selector string, value any, _ bag.InputBag) Result {
 	strVal := cast.ToString(value)
 
 	ok, err := regexp.MatchString(`^\pN{`+r.digitCount+`}$`, strVal)
