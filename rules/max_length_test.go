@@ -59,6 +59,19 @@ var maxLengthRuleTestData = map[string]any{
 			"validationError":  "",
 		},
 	},
+	"successfulNotExists": map[string]any{
+		"input": map[string]any{
+			"selector": "functionName",
+			"inputBag": bag.InputBag{},
+			"params": []string{
+				"3",
+			},
+		},
+		"output": map[string]any{
+			"validationFailed": false,
+			"validationError":  "",
+		},
+	},
 	"failedString": map[string]any{
 		"input": map[string]any{
 			"selector": "functionName",

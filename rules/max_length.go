@@ -21,7 +21,12 @@ type MaxLength struct {
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
 func (r *MaxLength) Validate(selector string, value any, inputBag bag.InputBag) Result {
-	kind := reflect.TypeOf(value).Kind()
+	typeOf := reflect.TypeOf(value)
+	if typeOf == nil {
+		return NewSuccessResult()
+	}
+
+	kind := typeOf.Kind()
 
 	var length int
 	switch kind {

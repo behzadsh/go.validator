@@ -89,6 +89,19 @@ var betweenRuleTestData = map[string]any{
 			"validationError":  "",
 		},
 	},
+	"successfulNotExist": map[string]any{
+		"input": map[string]any{
+			"selector": "age",
+			"inputBag": bag.InputBag{},
+			"params": []string{
+				"18", "30",
+			},
+		},
+		"output": map[string]any{
+			"validationFailed": false,
+			"validationError":  "",
+		},
+	},
 	"failedInteger": map[string]any{
 		"input": map[string]any{
 			"selector": "age",

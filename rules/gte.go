@@ -22,7 +22,12 @@ type GreaterThanEqual struct {
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
 func (r *GreaterThanEqual) Validate(selector string, value any, _ bag.InputBag) Result {
-	kind := reflect.TypeOf(value).Kind()
+	typeOf := reflect.TypeOf(value)
+	if typeOf == nil {
+		return NewSuccessResult()
+	}
+
+	kind := typeOf.Kind()
 
 	var floatValue float64
 	switch kind {

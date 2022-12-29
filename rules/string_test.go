@@ -9,15 +9,12 @@ import (
 	"github.com/behzadsh/go.validator/bag"
 )
 
-var minLengthRuleTestData = map[string]any{
+var stringRuleTestData = map[string]any{
 	"successfulString": map[string]any{
 		"input": map[string]any{
-			"selector": "functionName",
+			"selector": "name",
 			"inputBag": bag.InputBag{
-				"functionName": "doSomething",
-			},
-			"params": []string{
-				"3",
+				"name": "John Doe",
 			},
 		},
 		"output": map[string]any{
@@ -25,33 +22,11 @@ var minLengthRuleTestData = map[string]any{
 			"validationError":  "",
 		},
 	},
-	"successfulSlice": map[string]any{
+	"successfulEmptyString": map[string]any{
 		"input": map[string]any{
-			"selector": "skills",
+			"selector": "name",
 			"inputBag": bag.InputBag{
-				"skills": []string{"Go", "Software Engineering", "TDD", "Software Architecture"},
-			},
-			"params": []string{
-				"1",
-			},
-		},
-		"output": map[string]any{
-			"validationFailed": false,
-			"validationError":  "",
-		},
-	},
-	"successfulMap": map[string]any{
-		"input": map[string]any{
-			"selector": "user",
-			"inputBag": bag.InputBag{
-				"user": map[string]any{
-					"userName": "johnDoe",
-					"name":     "John Doe",
-					"age":      35,
-				},
-			},
-			"params": []string{
-				"3",
+				"name": "",
 			},
 		},
 		"output": map[string]any{
@@ -61,72 +36,71 @@ var minLengthRuleTestData = map[string]any{
 	},
 	"successfulNotExists": map[string]any{
 		"input": map[string]any{
-			"selector": "functionName",
+			"selector": "name",
 			"inputBag": bag.InputBag{},
-			"params": []string{
-				"3",
-			},
 		},
 		"output": map[string]any{
 			"validationFailed": false,
 			"validationError":  "",
 		},
 	},
-	"failedString": map[string]any{
+	"failedFloat": map[string]any{
 		"input": map[string]any{
-			"selector": "functionName",
+			"selector": "name",
 			"inputBag": bag.InputBag{
-				"functionName": "do",
-			},
-			"params": []string{
-				"3",
+				"name": 25.9,
 			},
 		},
 		"output": map[string]any{
 			"validationFailed": true,
-			"validationError":  "The field functionName must not have a length less than 3.",
+			"validationError":  "The field name must have an string value.",
+		},
+	},
+	"failedInteger": map[string]any{
+		"input": map[string]any{
+			"selector": "name",
+			"inputBag": bag.InputBag{
+				"name": 1989,
+			},
+		},
+		"output": map[string]any{
+			"validationFailed": true,
+			"validationError":  "The field name must have an string value.",
 		},
 	},
 	"failedSlice": map[string]any{
 		"input": map[string]any{
-			"selector": "skills",
+			"selector": "name",
 			"inputBag": bag.InputBag{
-				"skills": []string{"Go", "Software Engineering", "TDD", "Software Architecture"},
-			},
-			"params": []string{
-				"5",
+				"name": []string{"John", "Doe"},
 			},
 		},
 		"output": map[string]any{
 			"validationFailed": true,
-			"validationError":  "The field skills must not have a length less than 5.",
+			"validationError":  "The field name must have an string value.",
 		},
 	},
 	"failedMap": map[string]any{
 		"input": map[string]any{
-			"selector": "user",
+			"selector": "name",
 			"inputBag": bag.InputBag{
-				"user": map[string]any{
-					"userName": "johnDoe",
+				"name": map[string]any{
+					"username": "johnDoe",
 					"name":     "John Doe",
-					"age":      35,
 				},
-			},
-			"params": []string{
-				"5",
 			},
 		},
 		"output": map[string]any{
 			"validationFailed": true,
-			"validationError":  "The field user must not have a length less than 5.",
+			"validationError":  "The field name must have an string value.",
 		},
 	},
 }
 
-func TestMinLengthRule(t *testing.T) {
-	rule := initMinLengthRule()
+func TestStringRule(t *testing.T) {
+	rule := initStringRule()
 
-	for name, d := range minLengthRuleTestData {
+	for name, d := range stringRuleTestData {
 		t.Run(name, func(t *testing.T) {
 			data := d.(map[string]any)
 			input := data["input"].(map[string]any)
@@ -134,8 +108,6 @@ func TestMinLengthRule(t *testing.T) {
 			inputBag := input["inputBag"].(bag.InputBag)
 
 			value, _ := inputBag.Get(input["selector"].(string))
-
-			rule.AddParams(input["params"].([]string))
 			res := rule.Validate(input["selector"].(string), value, inputBag)
 
 			assert.Equal(t, output["validationFailed"].(bool), res.Failed())
@@ -144,17 +116,17 @@ func TestMinLengthRule(t *testing.T) {
 	}
 }
 
-func initMinLengthRule() *MinLength {
-	minLengthRule := &MinLength{}
-	minLengthRule.AddTranslationFunction(func(_, key string, params ...map[string]string) string {
+func initStringRule() *String {
+	stringRule := &String{}
+	stringRule.AddTranslationFunction(func(_, key string, params ...map[string]string) string {
 		var p map[string]string
 		if len(params) > 0 {
 			p = params[0]
 		}
 
 		switch key {
-		case "validation.min_length":
-			tr := "The field :field: must not have a length less than :value:."
+		case "validation.string":
+			tr := "The field :field: must have an string value."
 			for k, v := range p {
 				tr = strings.Replace(tr, ":"+k+":", v, -1)
 			}
@@ -164,5 +136,5 @@ func initMinLengthRule() *MinLength {
 			return key
 		}
 	})
-	return minLengthRule
+	return stringRule
 }
