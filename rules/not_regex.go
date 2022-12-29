@@ -28,7 +28,7 @@ func (r *NotRegex) Validate(selector string, value any, inputBag bag.InputBag) R
 		}))
 	}
 
-	ok, err := regexp.MatchString(r.pattern, strValue)
+	ok, _ := regexp.MatchString(r.pattern, strValue)
 	if ok {
 		return NewFailedResult(r.Translate(r.Locale, "validation.not_regex", map[string]string{
 			"field":   selector,

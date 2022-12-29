@@ -20,7 +20,6 @@ type BeforeOrEqual struct {
 	translation.BaseTranslatableRule
 	otherField string
 	timeZone   *time.Location
-	message    string
 }
 
 // Validate does the validation process of the rule. See struct documentation
