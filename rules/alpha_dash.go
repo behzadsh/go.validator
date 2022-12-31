@@ -3,13 +3,11 @@ package rules
 import (
 	"regexp"
 
-	"github.com/spf13/cast"
-
 	"github.com/behzadsh/go.validator/bag"
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// AlphaDash checks the field under validation have alphanumeric characters,
+// AlphaDash checks the field under validation has alphanumeric characters,
 // as well as dashes and underscore.
 // This rule accept no parameters.
 //
@@ -21,8 +19,8 @@ type AlphaDash struct {
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
 func (r *AlphaDash) Validate(selector string, value any, _ bag.InputBag) Result {
-	strValue, err := cast.ToStringE(value)
-	if err != nil {
+	strValue, ok := value.(string)
+	if !ok {
 		return NewFailedResult(r.Translate(r.Locale, "validation.alpha_dash", map[string]string{
 			"field": selector,
 		}))

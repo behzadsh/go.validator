@@ -14,8 +14,8 @@ import (
 // a valid datetime string. It also will return validation error if the other
 // field could not be found in input bag.
 //
-// Usage: "after:otherField[,timeZoneString]"
-// Example: "after:start,America/New_York"
+// Usage: "after:otherField[,timeZoneString]".
+// Example: "after:start,America/New_York".
 type After struct {
 	translation.BaseTranslatableRule
 	otherField string
