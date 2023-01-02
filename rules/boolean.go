@@ -10,7 +10,7 @@ import (
 // Boolean checks the field under validation is boolean or can be cast as
 // a boolean value.
 //
-// Usage: "boolean"
+// Usage: "boolean".
 type Boolean struct {
 	translation.BaseTranslatableRule
 }

@@ -11,8 +11,8 @@ import (
 
 // Length checks the field under validation have exact given length.
 //
-// Usage: "length:value"
-// Example: "length:10"
+// Usage: "length:value".
+// Example: "length:10".
 type Length struct {
 	translation.BaseTranslatableRule
 	expectedLength int
@@ -20,7 +20,7 @@ type Length struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *Length) Validate(selector string, value any, inputBag bag.InputBag) Result {
+func (r *Length) Validate(selector string, value any, _ bag.InputBag) Result {
 	typeOf := reflect.TypeOf(value)
 	if typeOf == nil {
 		return NewSuccessResult()
@@ -54,6 +54,6 @@ func (r *Length) AddParams(params []string) {
 
 // MinRequiredParams returns minimum parameter requirement for this rule.
 // This rule need only one parameter that is the `length`.
-func (r *Length) MinRequiredParams() int {
+func (*Length) MinRequiredParams() int {
 	return 1
 }

@@ -9,8 +9,8 @@ import (
 
 // RequiredWithAll check the field under validation exists if all given fields exist.
 //
-// Usage: "requiredWith:otherField,anotherField[,...]"
-// example: "requiredWith:type,username"
+// Usage: "requiredWith:otherField,anotherField[,...]".
+// example: "requiredWith:type,username".
 type RequiredWithAll struct {
 	translation.BaseTranslatableRule
 	otherFields []string
@@ -47,7 +47,7 @@ func (r *RequiredWithAll) AddParams(params []string) {
 // MinRequiredParams returns minimum parameter requirement for this rule.
 // This rule needs at least 2 parameters which represent the name of other
 // field or fields.
-func (r *RequiredWithAll) MinRequiredParams() int {
+func (*RequiredWithAll) MinRequiredParams() int {
 	return 2
 }
 

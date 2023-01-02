@@ -10,7 +10,7 @@ import (
 // Array checks the field under validation is an array or slice.
 // This rule accept no parameters.
 //
-// Usage: "array"
+// Usage: "array".
 type Array struct {
 	translation.BaseTranslatableRule
 }

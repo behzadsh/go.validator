@@ -11,8 +11,8 @@ import (
 
 // EndsWith check the field under validation ends with given sub string.
 //
-// Usage: "endsWith:prefix"
-// Example: "endsWith:Model"
+// Usage: "endsWith:prefix".
+// Example: "endsWith:Model".
 type EndsWith struct {
 	translation.BaseTranslatableRule
 	suffix string
@@ -20,7 +20,7 @@ type EndsWith struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *EndsWith) Validate(selector string, value any, inputBag bag.InputBag) Result {
+func (r *EndsWith) Validate(selector string, value any, _ bag.InputBag) Result {
 	strValue, err := cast.ToStringE(value)
 	if err != nil {
 		return NewFailedResult(r.Translate(r.Locale, "validation.string", map[string]string{
@@ -45,6 +45,6 @@ func (r *EndsWith) AddParams(params []string) {
 
 // MinRequiredParams returns minimum parameter requirement for this rule.
 // This rule needs only one parameter and that is the prefix.
-func (r *EndsWith) MinRequiredParams() int {
+func (*EndsWith) MinRequiredParams() int {
 	return 1
 }

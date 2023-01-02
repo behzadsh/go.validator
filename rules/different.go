@@ -8,8 +8,8 @@ import (
 // Different checks the field under validation has different value than
 // the given field.
 //
-// Usage: "different:otherField"
-// Example" "different:oldPassword"
+// Usage: "different:otherField".
+// Example" "different:oldPassword".
 type Different struct {
 	translation.BaseTranslatableRule
 	otherField string
@@ -36,8 +36,8 @@ func (r *Different) AddParams(params []string) {
 }
 
 // MinRequiredParams returns minimum parameter requirement for this rule.
-// This rule accept only one parameter, and that is `otherField`. this
+// This rule accept only one parameter, and that is `otherField`. This
 // parameter is mandatory.
-func (r *Different) MinRequiredParams() int {
+func (*Different) MinRequiredParams() int {
 	return 1
 }

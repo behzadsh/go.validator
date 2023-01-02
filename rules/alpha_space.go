@@ -11,7 +11,7 @@ import (
 // and spaces.
 // This rule accept no parameters.
 //
-// Usage: "alphaSpace"
+// Usage: "alphaSpace".
 type AlphaSpace struct {
 	translation.BaseTranslatableRule
 }

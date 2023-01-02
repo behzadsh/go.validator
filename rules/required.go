@@ -7,7 +7,7 @@ import (
 
 // Required checks the field under validation exists.
 //
-// Usage: "required"
+// Usage: "required".
 type Required struct {
 	translation.BaseTranslatableRule
 }

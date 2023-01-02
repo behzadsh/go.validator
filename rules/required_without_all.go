@@ -10,8 +10,8 @@ import (
 // RequiredWithoutAll check the field under validation exists if all given
 // fields not exist.
 //
-// Usage: "requiredWithout:otherField,anotherField[,...]"
-// example: "requiredWithout:phone,username"
+// Usage: "requiredWithout:otherField,anotherField[,...]".
+// example: "requiredWithout:phone,username".
 type RequiredWithoutAll struct {
 	translation.BaseTranslatableRule
 	otherFields []string
@@ -48,7 +48,7 @@ func (r *RequiredWithoutAll) AddParams(params []string) {
 // MinRequiredParams returns minimum parameter requirement for this rule.
 // This rule needs at least 2 parameters which represent the name of other
 // field or fields.
-func (r *RequiredWithoutAll) MinRequiredParams() int {
+func (*RequiredWithoutAll) MinRequiredParams() int {
 	return 2
 }
 

@@ -9,8 +9,8 @@ import (
 
 // NotIn checks the field under validation not be in one of given values.
 //
-// Usage: "notIn:value1,value2[,value3,...]
-// Example: "notIn:admin,superuser"
+// Usage: "notIn:value1,value2[,value3,...]".
+// Example: "notIn:admin,superuser".
 type NotIn struct {
 	translation.BaseTranslatableRule
 	values []string
@@ -38,6 +38,6 @@ func (r *NotIn) AddParams(params []string) {
 
 // MinRequiredParams returns minimum parameter requirement for this rule.
 // This rule needs at least 2 parameter or more.
-func (r *NotIn) MinRequiredParams() int {
+func (*NotIn) MinRequiredParams() int {
 	return 2
 }

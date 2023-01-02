@@ -9,8 +9,8 @@ import (
 
 // Max checks the field under validation value be less than given value.
 //
-// Usage: "max:value"
-// Example: "max:10"
+// Usage: "max:value".
+// Example: "max:10".
 type Max struct {
 	translation.BaseTranslatableRule
 	max float64
@@ -18,7 +18,7 @@ type Max struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *Max) Validate(selector string, value any, inputBag bag.InputBag) Result {
+func (r *Max) Validate(selector string, value any, _ bag.InputBag) Result {
 	floatValue := cast.ToFloat64(value)
 
 	if floatValue > r.max {
@@ -38,6 +38,6 @@ func (r *Max) AddParams(params []string) {
 
 // MinRequiredParams returns minimum parameter requirement for this rule.
 // This rule need only one parameter that is the `maxValue`.
-func (r *Max) MinRequiredParams() int {
+func (*Max) MinRequiredParams() int {
 	return 1
 }

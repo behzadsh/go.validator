@@ -73,6 +73,6 @@ func (r *After) AddParams(params []string) {
 // MinRequiredParams returns minimum parameter requirement for this rule.
 // This rule accept 2 parameter, the first one, `otherField`, is mandatory
 // and the second one, `timeZoneString` is optional.
-func (r *After) MinRequiredParams() int {
+func (*After) MinRequiredParams() int {
 	return 1
 }

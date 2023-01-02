@@ -10,7 +10,7 @@ import (
 // AlphaNum checks the field under validation has alphanumeric characters.
 // This rule accept no parameters.
 //
-// Usage: "alphaNum"
+// Usage: "alphaNum".
 type AlphaNum struct {
 	translation.BaseTranslatableRule
 }

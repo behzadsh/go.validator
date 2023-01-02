@@ -13,8 +13,8 @@ import (
 // validation is required.
 // Note that the only supported type for value parameter is string.
 //
-// Usage: "requiredIf:otherField,value"
-// example: "requiredIf:type,user"
+// Usage: "requiredIf:otherField,value".
+// example: "requiredIf:type,user".
 type RequiredIf struct {
 	translation.BaseTranslatableRule
 	otherField, expectedValue string
@@ -49,8 +49,8 @@ func (r *RequiredIf) AddParams(params []string) {
 }
 
 // MinRequiredParams returns minimum parameter requirement for this rule.
-// This rule accept 2 parameter, `otherField`, and `value`. both parameters
+// This rule accept 2 parameter, `otherField`, and `value`. Both parameters
 // are mandatory.
-func (r *RequiredIf) MinRequiredParams() int {
+func (*RequiredIf) MinRequiredParams() int {
 	return 2
 }

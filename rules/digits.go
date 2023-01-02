@@ -11,8 +11,8 @@ import (
 
 // Digits checks the field under validation has an exact length digits.
 //
-// Usage: "digits:numberOfDigit"
-// Example: "digits:5"
+// Usage: "digits:numberOfDigit".
+// Example: "digits:5".
 type Digits struct {
 	translation.BaseTranslatableRule
 	digitCount string
@@ -41,6 +41,6 @@ func (r *Digits) AddParams(params []string) {
 
 // MinRequiredParams returns minimum parameter requirement for this rule.
 // This rule accept only 1 parameter, which is number of digits and is mandatory.
-func (r *Digits) MinRequiredParams() int {
+func (*Digits) MinRequiredParams() int {
 	return 1
 }

@@ -14,8 +14,8 @@ import (
 // numeric value, the value must be between the given min and max. If the field
 // under validation is string, slice or map, the length of it will be evaluated.
 //
-// Usage: "between:min,max"
-// Example: "between:2,5"
+// Usage: "between:min,max".
+// Example: "between:2,5".
 type Between struct {
 	translation.BaseTranslatableRule
 	min, max float64
@@ -63,8 +63,8 @@ func (r *Between) AddParams(params []string) {
 
 // MinRequiredParams returns minimum parameter requirement for this rule.
 // This rule accept 2 parameter, the first one is the minimum number and
-// the second one is the maximum number of the between range. both of the
+// the second one is the maximum number of the between range. Both of the
 // parameters are mandatory.
-func (r *Between) MinRequiredParams() int {
+func (*Between) MinRequiredParams() int {
 	return 2
 }

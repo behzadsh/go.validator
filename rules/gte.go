@@ -12,8 +12,8 @@ import (
 // GreaterThanEqual checks the field under validation has a value or a length
 // greater than or equal to the given value.
 //
-// Usage: "gte:value"
-// Example: "gte:18"
+// Usage: "gte:value".
+// Example: "gte:18".
 type GreaterThanEqual struct {
 	translation.BaseTranslatableRule
 	value float64
@@ -59,6 +59,6 @@ func (r *GreaterThanEqual) AddParams(params []string) {
 
 // MinRequiredParams returns minimum parameter requirement for this rule.
 // This rule needs only 1 parameter that is the `value`.
-func (r *GreaterThanEqual) MinRequiredParams() int {
+func (*GreaterThanEqual) MinRequiredParams() int {
 	return 1
 }

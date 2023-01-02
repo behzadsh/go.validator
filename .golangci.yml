@@ -11,7 +11,7 @@ linters-settings:
     sections:
       - standard
       - default
-      - prefix( github.com/behzadsh/go.validator)
+      - prefix(github.com/behzadsh/go.validator)
       - blank
       - dot
   godot:

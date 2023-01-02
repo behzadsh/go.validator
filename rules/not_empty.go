@@ -9,7 +9,7 @@ import (
 
 // NotEmpty checks the field under validation be a non-empty or non-zero value.
 //
-// Usage: "notEmpty"
+// Usage: "notEmpty".
 type NotEmpty struct {
 	translation.BaseTranslatableRule
 }

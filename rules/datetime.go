@@ -10,7 +10,7 @@ import (
 // DateTime checks the field under validation be a valid datetime string, and
 // it is castable to time.Time.
 //
-// Usage: "datetime"
+// Usage: "datetime".
 type DateTime struct {
 	translation.BaseTranslatableRule
 }

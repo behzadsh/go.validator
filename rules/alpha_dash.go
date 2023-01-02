@@ -11,7 +11,7 @@ import (
 // as well as dashes and underscore.
 // This rule accept no parameters.
 //
-// Usage: "alphaDash"
+// Usage: "alphaDash".
 type AlphaDash struct {
 	translation.BaseTranslatableRule
 }

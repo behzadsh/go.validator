@@ -11,14 +11,14 @@ import (
 
 // Lowercase checks the field under validation be lowercase string.
 //
-// Usage: "lowercase"
+// Usage: "lowercase".
 type Lowercase struct {
 	translation.BaseTranslatableRule
 }
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *Lowercase) Validate(selector string, value any, inputBag bag.InputBag) Result {
+func (r *Lowercase) Validate(selector string, value any, _ bag.InputBag) Result {
 	strValue := cast.ToString(value)
 
 	if strValue != strings.ToLower(strValue) {

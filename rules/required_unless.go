@@ -13,8 +13,8 @@ import (
 // field under validation is required.
 // Note that the only supported type for value parameter is string.
 //
-// Usage: "requiredUnless:otherField,value"
-// example: "requiredUnless:type,user"
+// Usage: "requiredUnless:otherField,value".
+// example: "requiredUnless:type,user".
 type RequiredUnless struct {
 	translation.BaseTranslatableRule
 	otherField, expectedValue string
@@ -44,8 +44,8 @@ func (r *RequiredUnless) AddParams(params []string) {
 }
 
 // MinRequiredParams returns minimum parameter requirement for this rule.
-// This rule accept 2 parameter, `otherField`, and `value`. both parameters
+// This rule accept 2 parameter, `otherField`, and `value`. Both parameters
 // are mandatory.
-func (r *RequiredUnless) MinRequiredParams() int {
+func (*RequiredUnless) MinRequiredParams() int {
 	return 2
 }

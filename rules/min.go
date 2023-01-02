@@ -9,8 +9,8 @@ import (
 
 // Min checks the field under validation value be greater than given value.
 //
-// Usage: "min:value"
-// Example: "min:10"
+// Usage: "min:value".
+// Example: "min:10".
 type Min struct {
 	translation.BaseTranslatableRule
 	min float64
@@ -18,7 +18,7 @@ type Min struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *Min) Validate(selector string, value any, inputBag bag.InputBag) Result {
+func (r *Min) Validate(selector string, value any, _ bag.InputBag) Result {
 	floatValue := cast.ToFloat64(value)
 
 	if floatValue < r.min {
@@ -38,6 +38,6 @@ func (r *Min) AddParams(params []string) {
 
 // MinRequiredParams returns minimum parameter requirement for this rule.
 // This rule need only one parameter that is the `minValue`.
-func (r *Min) MinRequiredParams() int {
+func (*Min) MinRequiredParams() int {
 	return 1
 }
