@@ -8,8 +8,8 @@ import (
 // Different checks the field under validation has different value than
 // the given field.
 //
-// Usage: "different:otherField"
-// Example" "different:oldPassword"
+// Usage: "different:otherField".
+// Example" "different:oldPassword".
 type Different struct {
 	translation.BaseTranslatableRule
 	otherField string
@@ -17,7 +17,7 @@ type Different struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *Different) Validate(selector string, value any, inputBag bag.InputBag) Result {
+func (r *Different) Validate(selector string, value any, inputBag bag.InputBag) ValidationResult {
 	otherValue, _ := inputBag.Get(r.otherField)
 
 	if value == otherValue {
@@ -36,8 +36,8 @@ func (r *Different) AddParams(params []string) {
 }
 
 // MinRequiredParams returns minimum parameter requirement for this rule.
-// This rule accept only one parameter, and that is `otherField`. this
+// This rule accept only one parameter, and that is `otherField`. This
 // parameter is mandatory.
-func (r *Different) MinRequiredParams() int {
+func (*Different) MinRequiredParams() int {
 	return 1
 }

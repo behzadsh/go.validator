@@ -11,8 +11,8 @@ import (
 
 // MaxDigits checks the field under validation has length less than given max digits.
 //
-// Usage: "maxDigits:numberOfDigit"
-// Example: "maxDigits:5"
+// Usage: "maxDigits:numberOfDigit".
+// Example: "maxDigits:5".
 type MaxDigits struct {
 	translation.BaseTranslatableRule
 	digitCount string
@@ -20,7 +20,7 @@ type MaxDigits struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *MaxDigits) Validate(selector string, value any, _ bag.InputBag) Result {
+func (r *MaxDigits) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	strVal := cast.ToString(value)
 
 	ok, err := regexp.MatchString(`^\pN{0,`+r.digitCount+`}$`, strVal)
@@ -41,6 +41,6 @@ func (r *MaxDigits) AddParams(params []string) {
 
 // MinRequiredParams returns minimum parameter requirement for this rule.
 // This rule accept only 1 parameter, which is number of maxDigits and is mandatory.
-func (r *MaxDigits) MinRequiredParams() int {
+func (*MaxDigits) MinRequiredParams() int {
 	return 1
 }

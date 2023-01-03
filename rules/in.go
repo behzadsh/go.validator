@@ -9,8 +9,8 @@ import (
 
 // In checks the field under validation be in one of given values.
 //
-// Usage: "in:value1,value2[,value3,...]
-// Example: "in:EUR,USD,GBP"
+// Usage: "in:value1,value2[,value3,...].
+// Example: "in:EUR,USD,GBP".
 type In struct {
 	translation.BaseTranslatableRule
 	values []string
@@ -18,7 +18,7 @@ type In struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *In) Validate(selector string, value any, _ bag.InputBag) Result {
+func (r *In) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	strValue := cast.ToString(value)
 	for _, val := range r.values {
 		if strValue == val {
@@ -38,6 +38,6 @@ func (r *In) AddParams(params []string) {
 
 // MinRequiredParams returns minimum parameter requirement for this rule.
 // This rule needs at least 2 parameter or more.
-func (r *In) MinRequiredParams() int {
+func (*In) MinRequiredParams() int {
 	return 2
 }

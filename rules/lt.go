@@ -12,8 +12,8 @@ import (
 // LessThan checks the field under validation has a value or a length
 // less than the given value.
 //
-// Usage: "lt:value"
-// Example: "lt:18"
+// Usage: "lt:value".
+// Example: "lt:18".
 type LessThan struct {
 	translation.BaseTranslatableRule
 	value float64
@@ -21,7 +21,7 @@ type LessThan struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *LessThan) Validate(selector string, value any, inputBag bag.InputBag) Result {
+func (r *LessThan) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	typeOf := reflect.TypeOf(value)
 	if typeOf == nil {
 		return NewSuccessResult()
@@ -59,6 +59,6 @@ func (r *LessThan) AddParams(params []string) {
 
 // MinRequiredParams returns minimum parameter requirement for this rule.
 // This rule needs only 1 parameter that is the `value`.
-func (r *LessThan) MinRequiredParams() int {
+func (*LessThan) MinRequiredParams() int {
 	return 1
 }

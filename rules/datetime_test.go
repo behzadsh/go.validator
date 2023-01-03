@@ -41,10 +41,10 @@ func TestDateTimeRule(t *testing.T) {
 
 	for name, d := range dateTimeRuleTestData {
 		t.Run(name, func(t *testing.T) {
-			data := d.(map[string]any)
-			input := data["input"].(map[string]any)
-			output := data["output"].(map[string]any)
-			inputBag := input["inputBag"].(bag.InputBag)
+			data, _ := d.(map[string]any)
+			input, _ := data["input"].(map[string]any)
+			output, _ := data["output"].(map[string]any)
+			inputBag, _ := input["inputBag"].(bag.InputBag)
 
 			value, _ := inputBag.Get(input["selector"].(string))
 			res := rule.Validate(input["selector"].(string), value, inputBag)

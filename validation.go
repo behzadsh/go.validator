@@ -6,13 +6,57 @@ import (
 	"strings"
 
 	"github.com/spf13/cast"
+	"github.com/thoas/go-funk"
 
 	"github.com/behzadsh/go.validator/bag"
+	"github.com/behzadsh/go.validator/rules"
+	"github.com/behzadsh/go.validator/translation"
 )
 
+type ruleIndicator string
+
+// RulesMap is a custom type for a map of rules for field selectors.
 type RulesMap map[string][]string
 
-func ValidateMap(input map[string]any, rules RulesMap, locale ...string) Result {
+func (r ruleIndicator) load(locale string) rules.Rule {
+	name, params := r.parseRuleParams()
+	rule, ok := registry[name]
+	if !ok || rule == nil {
+		panic(fmt.Errorf("rule %s is not registered", name))
+	}
+
+	if ruleWithParams, ok := rule.(rules.RuleWithParams); ok {
+		paramNum := len(params)
+		minRequiredParams := ruleWithParams.MinRequiredParams()
+
+		if paramNum < minRequiredParams {
+			panic(fmt.Errorf("rule %s need at least %d parameter, got %d", name, minRequiredParams, paramNum))
+		}
+
+		ruleWithParams.AddParams(params)
+	}
+
+	if translatableRule, ok := rule.(translation.TranslatableRule); ok {
+		translatableRule.AddLocale(locale)
+		translatableRule.AddTranslationFunction(translation.GetDefaultTranslatorFunc())
+	}
+
+	return rule
+}
+
+func (r ruleIndicator) parseRuleParams() (string, []string) {
+	parts := strings.SplitN(string(r), ":", 2)
+	if len(parts) == 1 {
+		return parts[0], nil
+	}
+
+	return parts[0], cast.ToStringSlice(funk.Map(strings.Split(parts[1], ","), func(s string) string {
+		return strings.TrimSpace(s)
+	}))
+}
+
+// ValidateMap validate the given input map with given rules map.
+func ValidateMap(input map[string]any, rulesMap RulesMap, locale ...string) Result {
 	currentLocale := defaultLocale
 	if len(locale) > 0 {
 		currentLocale = locale[0]
@@ -20,10 +64,11 @@ func ValidateMap(input map[string]any, rules RulesMap, locale ...string) Result 
 
 	inputBag := bag.InputBag(input)
 
-	return doValidation(inputBag, rules, currentLocale)
+	return doValidation(inputBag, rulesMap, currentLocale)
 }
 
-func ValidateMapSlice(input []map[string]any, rules RulesMap, locale ...string) Result {
+// ValidateMapSlice validates the given slice of maps with given rules map.
+func ValidateMapSlice(input []map[string]any, rulesMap RulesMap, locale ...string) Result {
 	currentLocale := defaultLocale
 	if len(locale) > 0 {
 		currentLocale = locale[0]
@@ -32,7 +77,7 @@ func ValidateMapSlice(input []map[string]any, rules RulesMap, locale ...string) 
 	result := NewResult()
 	for i, m := range input {
 		inputBag := bag.InputBag(m)
-		tmpResult := doValidation(inputBag, rules, currentLocale)
+		tmpResult := doValidation(inputBag, rulesMap, currentLocale)
 		for key, messages := range tmpResult.Errors {
 			result.addError(fmt.Sprintf("%d.%s", i, key), messages...)
 		}
@@ -41,7 +86,8 @@ func ValidateMapSlice(input []map[string]any, rules RulesMap, locale ...string) 
 	return result
 }
 
-func ValidateStruct(input any, rules RulesMap, locale ...string) Result {
+// ValidateStruct validates the given struct with given rules map.
+func ValidateStruct(input any, rulesMap RulesMap, locale ...string) Result {
 	currentLocale := defaultLocale
 	if len(locale) > 0 {
 		currentLocale = locale[0]
@@ -54,10 +100,11 @@ func ValidateStruct(input any, rules RulesMap, locale ...string) Result {
 
 	inputBag := bag.NewInputBagFromStruct(input)
 
-	return doValidation(inputBag, rules, currentLocale)
+	return doValidation(inputBag, rulesMap, currentLocale)
 }
 
-func ValidateStructSlice(input []any, rules RulesMap, locale ...string) Result {
+// ValidateStructSlice validates the given slice of struct with given rules map.
+func ValidateStructSlice(input []any, rulesMap RulesMap, locale ...string) Result {
 	currentLocale := defaultLocale
 	if len(locale) > 0 {
 		currentLocale = locale[0]
@@ -65,7 +112,7 @@ func ValidateStructSlice(input []any, rules RulesMap, locale ...string) Result {
 
 	result := NewResult()
 	for i, strct := range input {
-		tmpResult := ValidateStruct(strct, rules, currentLocale)
+		tmpResult := ValidateStruct(strct, rulesMap, currentLocale)
 		for key, messages := range tmpResult.Errors {
 			result.addError(fmt.Sprintf("%d.%s", i, key), messages...)
 		}
@@ -74,19 +121,20 @@ func ValidateStructSlice(input []any, rules RulesMap, locale ...string) Result {
 	return result
 }
 
-func Validate(input any, rules []string, locale ...string) Result {
+// Validate validate the given input with given validation rules.
+func Validate(input any, ruleSlice []string, locale ...string) Result {
 	currentLocale := defaultLocale
 	if len(locale) > 0 {
 		currentLocale = locale[0]
 	}
 
-	return doValidation(bag.InputBag{"variable": input}, RulesMap{"variable": rules}, currentLocale)
+	return doValidation(bag.InputBag{"variable": input}, RulesMap{"variable": ruleSlice}, currentLocale)
 }
 
-func doValidation(inputBag bag.InputBag, rules RulesMap, locale string) Result {
+func doValidation(inputBag bag.InputBag, rulesMap RulesMap, locale string) Result {
 	explicitRules := make(RulesMap)
 
-	for fieldSelector, fieldRules := range rules {
+	for fieldSelector, fieldRules := range rulesMap {
 		for _, explicitFieldSelector := range normalizeFieldSelector(fieldSelector, inputBag) {
 			explicitRules[explicitFieldSelector] = fieldRules
 		}

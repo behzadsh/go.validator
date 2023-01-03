@@ -11,14 +11,14 @@ import (
 
 // Uppercase checks the field under validation be uppercase string.
 //
-// Usage: "uppercase"
+// Usage: "uppercase".
 type Uppercase struct {
 	translation.BaseTranslatableRule
 }
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *Uppercase) Validate(selector string, value any, inputBag bag.InputBag) Result {
+func (r *Uppercase) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	strValue := cast.ToString(value)
 
 	if strValue != strings.ToUpper(strValue) {

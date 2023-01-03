@@ -11,15 +11,16 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-const emailRegexPattern = "^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
+const emailRegexPattern = "^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?" +
+	"(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
 
 // Email checks the field under validation is a valid email address based on
 // RFC 53222. There is also an optional mx record check, you can enable by
 // passing `mx` as parameter.
 //
-// Usage: "email[:mx]
-// Example: "email"
-// Example: "email:mx"
+// Usage: "email[:mx].
+// Example: "email".
+// Example: "email:mx".
 type Email struct {
 	translation.BaseTranslatableRule
 	enableMXCheck bool
@@ -29,7 +30,7 @@ type Email struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *Email) Validate(selector string, value any, _ bag.InputBag) Result {
+func (r *Email) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	strValue := cast.ToString(value)
 
 	if !r.isEmail(strValue) {
@@ -55,7 +56,7 @@ func (r *Email) AddParams(params []string) {
 // This rule accept `mx` as the only and optional parameter. By passing this
 // parameter, an extra step will be added to validation process. The `mx`
 // validation checks the email domain for mx record.
-func (r *Email) MinRequiredParams() int {
+func (*Email) MinRequiredParams() int {
 	return 0
 }
 

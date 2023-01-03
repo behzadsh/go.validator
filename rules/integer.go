@@ -9,14 +9,14 @@ import (
 
 // Integer checks the field under validation has a integer value
 //
-// Usage: "integer"
+// Usage: "integer".
 type Integer struct {
 	translation.BaseTranslatableRule
 }
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *Integer) Validate(selector string, value any, inputBag bag.InputBag) Result {
+func (r *Integer) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	typeOf := reflect.TypeOf(value)
 	if typeOf == nil {
 		return NewSuccessResult()

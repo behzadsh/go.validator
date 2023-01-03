@@ -12,8 +12,8 @@ import (
 // DateTimeFormat checks the field under validation be a valid datetime string
 // and match the given format.
 //
-// Usage: "datetimeFormat:format"
-// Example: "datetimeFormat:2006-01-02T15:04:05Z07:00"
+// Usage: "datetimeFormat:format".
+// Example: "datetimeFormat:2006-01-02T15:04:05Z07:00".
 type DateTimeFormat struct {
 	translation.BaseTranslatableRule
 	layout string
@@ -21,7 +21,11 @@ type DateTimeFormat struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *DateTimeFormat) Validate(selector string, value any, _ bag.InputBag) Result {
+func (r *DateTimeFormat) Validate(selector string, value any, inputBag bag.InputBag) ValidationResult {
+	if !inputBag.Has(selector) {
+		return NewSuccessResult()
+	}
+
 	_, err := time.Parse(r.layout, cast.ToString(value))
 	if err != nil {
 		return NewFailedResult(r.Translate(r.Locale, "validation.datetime_format", map[string]string{
@@ -41,6 +45,6 @@ func (r *DateTimeFormat) AddParams(params []string) {
 // MinRequiredParams returns minimum parameter requirement for this rule.
 // This rule accept only one parameter, the time layout, which is a mandatory
 // parameter.
-func (r *DateTimeFormat) MinRequiredParams() int {
+func (*DateTimeFormat) MinRequiredParams() int {
 	return 1
 }

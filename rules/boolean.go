@@ -10,14 +10,14 @@ import (
 // Boolean checks the field under validation is boolean or can be cast as
 // a boolean value.
 //
-// Usage: "boolean"
+// Usage: "boolean".
 type Boolean struct {
 	translation.BaseTranslatableRule
 }
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *Boolean) Validate(selector string, value any, _ bag.InputBag) Result {
+func (r *Boolean) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	_, err := cast.ToBoolE(value)
 	if err != nil || value == nil {
 		return NewFailedResult(r.Translate(r.Locale, "validation.boolean", map[string]string{

@@ -11,8 +11,8 @@ import (
 
 // MinDigits checks the field under validation has length more than given min digits.
 //
-// Usage: "minDigits:numberOfDigit"
-// Example: "minDigits:5"
+// Usage: "minDigits:numberOfDigit".
+// Example: "minDigits:5".
 type MinDigits struct {
 	translation.BaseTranslatableRule
 	digitCount string
@@ -20,7 +20,7 @@ type MinDigits struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *MinDigits) Validate(selector string, value any, _ bag.InputBag) Result {
+func (r *MinDigits) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	strVal := cast.ToString(value)
 
 	ok, err := regexp.MatchString(`^\pN{`+r.digitCount+`,}$`, strVal)
@@ -41,6 +41,6 @@ func (r *MinDigits) AddParams(params []string) {
 
 // MinRequiredParams returns minimum parameter requirement for this rule.
 // This rule accept only 1 parameter, which is number of minDigits and is mandatory.
-func (r *MinDigits) MinRequiredParams() int {
+func (*MinDigits) MinRequiredParams() int {
 	return 1
 }

@@ -15,14 +15,18 @@ func init() {
 	defaultLocale = "en"
 }
 
+// SetDefaultLocale sets the default locale for validation error translations.
 func SetDefaultLocale(locale string) {
 	defaultLocale = locale
 }
 
+// StopOnFirstFailure sets an option to stop validation process when the first
+// validation occurs.
 func StopOnFirstFailure() {
 	stopOnFirstFailure = true
 }
 
+// Register registers a rule object with given rule name in rule registry.
 func Register(ruleName string, rule rules.Rule) {
 	registry[ruleName] = rule
 }

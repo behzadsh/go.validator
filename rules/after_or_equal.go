@@ -14,8 +14,8 @@ import (
 // the field are not a valid datetime string. It also will return validation
 // error if the other field could not be found in input bag.
 //
-// Usage: "afterOrEqual:otherField[,timeZoneString]
-// Example: "afterOrEqual:start,America/New_York"
+// Usage: "afterOrEqual:otherField[,timeZoneString]".
+// Example: "afterOrEqual:start,America/New_York".
 type AfterOrEqual struct {
 	translation.BaseTranslatableRule
 	otherField string
@@ -24,7 +24,7 @@ type AfterOrEqual struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *AfterOrEqual) Validate(selector string, value any, inputBag bag.InputBag) Result {
+func (r *AfterOrEqual) Validate(selector string, value any, inputBag bag.InputBag) ValidationResult {
 	timeValue, err := cast.ToTimeInDefaultLocationE(value, r.timeZone)
 	if err != nil {
 		return NewFailedResult(r.Translate(r.Locale, "validation.datetime", map[string]string{
@@ -73,6 +73,6 @@ func (r *AfterOrEqual) AddParams(params []string) {
 // MinRequiredParams returns minimum parameter requirement for this rule.
 // This rule accept 2 parameter, the first one, `otherField`, is mandatory
 // and the second one, `timeZoneString` is optional.
-func (r *AfterOrEqual) MinRequiredParams() int {
+func (*AfterOrEqual) MinRequiredParams() int {
 	return 1
 }

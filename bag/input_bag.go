@@ -7,8 +7,11 @@ import (
 	"github.com/spf13/cast"
 )
 
+// InputBag is a custom type representing the validation input.
 type InputBag map[string]any
 
+// Get returns the associated value to the given selector. The selector could
+// have dot in its value for selecting nested values. E.g. `user.settings.avatar`.
 func (b InputBag) Get(selector string) (any, bool) {
 	parts := strings.Split(selector, ".")
 
@@ -44,6 +47,8 @@ func (b InputBag) Get(selector string) (any, bool) {
 	return base, base != nil
 }
 
+// Has checks if the given selector is exists in the input bag. The selector
+// can contain dots in its value for nested values.
 func (b InputBag) Has(selector string) bool {
 	parts := strings.Split(selector, ".")
 
@@ -79,6 +84,10 @@ func (b InputBag) Has(selector string) bool {
 	return base != nil
 }
 
+// NewInputBagFromStruct converts the given input into InputBag. Since we use
+// json.Marshal and json.Unmarshal for this conversion the given input must be
+// a type that can be marshaled into json string, otherwise the returned bag
+// may be empty.
 func NewInputBagFromStruct(input any) InputBag {
 	b, _ := json.Marshal(input)
 

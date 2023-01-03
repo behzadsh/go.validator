@@ -13,14 +13,14 @@ const uuidRegex = `^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-
 
 // UUID checks field under validation is a valid uuid.
 //
-// Usage: "uuid"
+// Usage: "uuid".
 type UUID struct {
 	translation.BaseTranslatableRule
 }
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *UUID) Validate(selector string, value any, inputBag bag.InputBag) Result {
+func (r *UUID) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	strVal := cast.ToString(value)
 
 	ok, err := regexp.MatchString(uuidRegex, strVal)

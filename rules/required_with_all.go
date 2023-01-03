@@ -9,8 +9,8 @@ import (
 
 // RequiredWithAll check the field under validation exists if all given fields exist.
 //
-// Usage: "requiredWith:otherField,anotherField[,...]"
-// example: "requiredWith:type,username"
+// Usage: "requiredWith:otherField,anotherField[,...]".
+// example: "requiredWith:type,username".
 type RequiredWithAll struct {
 	translation.BaseTranslatableRule
 	otherFields []string
@@ -18,7 +18,7 @@ type RequiredWithAll struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *RequiredWithAll) Validate(selector string, _ any, inputBag bag.InputBag) Result {
+func (r *RequiredWithAll) Validate(selector string, _ any, inputBag bag.InputBag) ValidationResult {
 	exists := inputBag.Has(selector)
 
 	shouldExists := true
@@ -47,7 +47,7 @@ func (r *RequiredWithAll) AddParams(params []string) {
 // MinRequiredParams returns minimum parameter requirement for this rule.
 // This rule needs at least 2 parameters which represent the name of other
 // field or fields.
-func (r *RequiredWithAll) MinRequiredParams() int {
+func (*RequiredWithAll) MinRequiredParams() int {
 	return 2
 }
 

@@ -9,8 +9,8 @@ import (
 
 // NotEqual checks the field under validation is not equal to given value.
 //
-// Usage: "neq:value"
-// Example: "neq:admin"
+// Usage: "neq:value".
+// Example: "neq:admin".
 type NotEqual struct {
 	translation.BaseTranslatableRule
 	value string
@@ -18,7 +18,7 @@ type NotEqual struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *NotEqual) Validate(selector string, value any, _ bag.InputBag) Result {
+func (r *NotEqual) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	strValue := cast.ToString(value)
 
 	if strValue == r.value {
@@ -38,6 +38,6 @@ func (r *NotEqual) AddParams(params []string) {
 
 // MinRequiredParams returns minimum parameter requirement for this rule.
 // This rule only needs one parameter and that is the `value`.
-func (r *NotEqual) MinRequiredParams() int {
+func (*NotEqual) MinRequiredParams() int {
 	return 1
 }

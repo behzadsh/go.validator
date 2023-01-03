@@ -14,8 +14,8 @@ import (
 // the field are not a valid datetime string. It also will return validation
 // error if the other field could not be found in input bag.
 //
-// Usage: "beforeOrEqual:otherField[,timeZoneString]
-// Example: "beforeOrEqual:end,America/New_York"
+// Usage: "beforeOrEqual:otherField[,timeZoneString].
+// Example: "beforeOrEqual:end,America/New_York".
 type BeforeOrEqual struct {
 	translation.BaseTranslatableRule
 	otherField string
@@ -24,7 +24,7 @@ type BeforeOrEqual struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *BeforeOrEqual) Validate(selector string, value any, inputBag bag.InputBag) Result {
+func (r *BeforeOrEqual) Validate(selector string, value any, inputBag bag.InputBag) ValidationResult {
 	timeValue, err := cast.ToTimeInDefaultLocationE(value, r.timeZone)
 	if err != nil {
 		return NewFailedResult(r.Translate(r.Locale, "validation.datetime", map[string]string{
@@ -73,6 +73,6 @@ func (r *BeforeOrEqual) AddParams(params []string) {
 // MinRequiredParams returns minimum parameter requirement for this rule.
 // This rule accept 2 parameter, the first one, `otherField`, is mandatory
 // and the second one, `timeZoneString` is optional.
-func (r *BeforeOrEqual) MinRequiredParams() int {
+func (*BeforeOrEqual) MinRequiredParams() int {
 	return 1
 }

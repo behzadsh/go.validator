@@ -3,8 +3,6 @@ package rules
 import (
 	"regexp"
 
-	"github.com/spf13/cast"
-
 	"github.com/behzadsh/go.validator/bag"
 	"github.com/behzadsh/go.validator/translation"
 )
@@ -13,16 +11,16 @@ import (
 // and spaces.
 // This rule accept no parameters.
 //
-// Usage: "alphaSpace"
+// Usage: "alphaSpace".
 type AlphaSpace struct {
 	translation.BaseTranslatableRule
 }
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *AlphaSpace) Validate(selector string, value any, _ bag.InputBag) Result {
-	strValue, err := cast.ToStringE(value)
-	if err != nil {
+func (r *AlphaSpace) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
+	strValue, ok := value.(string)
+	if !ok {
 		return NewFailedResult(r.Translate(r.Locale, "validation.alpha_space", map[string]string{
 			"field": selector,
 		}))

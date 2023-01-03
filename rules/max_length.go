@@ -11,8 +11,8 @@ import (
 
 // MaxLength checks the field under validation length did not reach given length.
 //
-// Usage: "maxLength:value"
-// Example: "maxLength:10"
+// Usage: "maxLength:value".
+// Example: "maxLength:10".
 type MaxLength struct {
 	translation.BaseTranslatableRule
 	maxLength int
@@ -20,7 +20,7 @@ type MaxLength struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *MaxLength) Validate(selector string, value any, inputBag bag.InputBag) Result {
+func (r *MaxLength) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	typeOf := reflect.TypeOf(value)
 	if typeOf == nil {
 		return NewSuccessResult()
@@ -54,6 +54,6 @@ func (r *MaxLength) AddParams(params []string) {
 
 // MinRequiredParams returns minimum parameter requirement for this rule.
 // This rule need only one parameter that is the `length`.
-func (r *MaxLength) MinRequiredParams() int {
+func (*MaxLength) MinRequiredParams() int {
 	return 1
 }

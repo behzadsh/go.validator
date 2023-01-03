@@ -9,14 +9,14 @@ import (
 
 // String checks the field under validation has a string value
 //
-// Usage: "string"
+// Usage: "string".
 type String struct {
 	translation.BaseTranslatableRule
 }
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *String) Validate(selector string, value any, inputBag bag.InputBag) Result {
+func (r *String) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	typeOf := reflect.TypeOf(value)
 	if typeOf == nil {
 		return NewSuccessResult()

@@ -1,17 +1,22 @@
 package bag
 
+// ErrorBag is a custom type that held a map of field selector and related
+// validation errors.
 type ErrorBag map[string][]string
 
+// IsEmpty checks that the error bag map is empty.
 func (b ErrorBag) IsEmpty() bool {
 	return len(b) == 0
 }
 
+// Add adds an error message (or many error messages) for given selector.
 func (b ErrorBag) Add(selector string, msg ...string) {
 	b[selector] = append(b[selector], msg...)
 }
 
-func (b ErrorBag) FirstOf(name string) string {
-	msg, ok := b[name]
+// FirstOf returns the first error message of the given selector (if exists).
+func (b ErrorBag) FirstOf(selector string) string {
+	msg, ok := b[selector]
 	if !ok {
 		return ""
 	}
@@ -19,8 +24,9 @@ func (b ErrorBag) FirstOf(name string) string {
 	return msg[0]
 }
 
-func (b ErrorBag) Has(name string) bool {
-	_, ok := b[name]
+// Has checks if there is error for given selector in the error bag.
+func (b ErrorBag) Has(selector string) bool {
+	v, ok := b[selector]
 
-	return ok
+	return ok && v != nil && len(v) > 0
 }

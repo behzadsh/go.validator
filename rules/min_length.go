@@ -11,8 +11,8 @@ import (
 
 // MinLength checks the field under validation length be greater than given length.
 //
-// Usage: "minLength:value"
-// Example: "minLength:10"
+// Usage: "minLength:value".
+// Example: "minLength:10".
 type MinLength struct {
 	translation.BaseTranslatableRule
 	minLength int
@@ -20,7 +20,7 @@ type MinLength struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *MinLength) Validate(selector string, value any, inputBag bag.InputBag) Result {
+func (r *MinLength) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	typeOf := reflect.TypeOf(value)
 	if typeOf == nil {
 		return NewSuccessResult()
@@ -54,6 +54,6 @@ func (r *MinLength) AddParams(params []string) {
 
 // MinRequiredParams returns minimum parameter requirement for this rule.
 // This rule need only one parameter that is the `length`.
-func (r *MinLength) MinRequiredParams() int {
+func (*MinLength) MinRequiredParams() int {
 	return 1
 }

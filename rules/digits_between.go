@@ -11,8 +11,8 @@ import (
 
 // DigitsBetween checks the field under validation has length between given min and max.
 //
-// Usage: "digitsBetween:minDigits,maxDigits"
-// Example: "digitsBetween:4,6"
+// Usage: "digitsBetween:minDigits,maxDigits".
+// Example: "digitsBetween:4,6".
 type DigitsBetween struct {
 	translation.BaseTranslatableRule
 	min, max string
@@ -20,7 +20,7 @@ type DigitsBetween struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *DigitsBetween) Validate(selector string, value any, _ bag.InputBag) Result {
+func (r *DigitsBetween) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	strVal := cast.ToString(value)
 
 	ok, err := regexp.MatchString(`^\pN{`+r.min+`,`+r.max+`}$`, strVal)
@@ -43,6 +43,6 @@ func (r *DigitsBetween) AddParams(params []string) {
 
 // MinRequiredParams returns minimum parameter requirement for this rule.
 // This rule accept 2 parameters, min and max.
-func (r *DigitsBetween) MinRequiredParams() int {
+func (*DigitsBetween) MinRequiredParams() int {
 	return 2
 }

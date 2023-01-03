@@ -12,8 +12,8 @@ import (
 // GreaterThan checks the field under validation has a value or a length
 // greater than the given value.
 //
-// Usage: "gt:value"
-// Example: "gt:18"
+// Usage: "gt:value".
+// Example: "gt:18".
 type GreaterThan struct {
 	translation.BaseTranslatableRule
 	value float64
@@ -21,7 +21,7 @@ type GreaterThan struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *GreaterThan) Validate(selector string, value any, inputBag bag.InputBag) Result {
+func (r *GreaterThan) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	typeOf := reflect.TypeOf(value)
 	if typeOf == nil {
 		return NewSuccessResult()
@@ -59,6 +59,6 @@ func (r *GreaterThan) AddParams(params []string) {
 
 // MinRequiredParams returns minimum parameter requirement for this rule.
 // This rule needs only 1 parameter that is the `value`.
-func (r *GreaterThan) MinRequiredParams() int {
+func (*GreaterThan) MinRequiredParams() int {
 	return 1
 }

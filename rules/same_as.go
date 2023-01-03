@@ -7,8 +7,8 @@ import (
 
 // SameAs check the field under validation has the value same as the other given field.
 //
-// Usage: "sameAs:otherField"
-// Example: "sameAs:password"
+// Usage: "sameAs:otherField".
+// Example: "sameAs:password".
 type SameAs struct {
 	translation.BaseTranslatableRule
 	otherField string
@@ -16,7 +16,7 @@ type SameAs struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *SameAs) Validate(selector string, value any, inputBag bag.InputBag) Result {
+func (r *SameAs) Validate(selector string, value any, inputBag bag.InputBag) ValidationResult {
 	otherValue, _ := inputBag.Get(r.otherField)
 
 	if otherValue != value {
@@ -36,8 +36,6 @@ func (r *SameAs) AddParams(params []string) {
 
 // MinRequiredParams returns minimum parameter requirement for this rule.
 // This rule needs only one parameter and that is the regex pattern.
-func (r *SameAs) MinRequiredParams() int {
-	// TODO implement me
-	panic("implement me")
+func (*SameAs) MinRequiredParams() int {
+	return 1
 }
-

@@ -11,8 +11,8 @@ import (
 
 // Regex check the field under validation match the given regex pattern.
 //
-// Usage: "regex:pattern"
-// Example: "regex:[a-zA-Z0-9]+"
+// Usage: "regex:pattern".
+// Example: "regex:[a-zA-Z0-9]+".
 type Regex struct {
 	translation.BaseTranslatableRule
 	pattern string
@@ -20,7 +20,7 @@ type Regex struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *Regex) Validate(selector string, value any, inputBag bag.InputBag) Result {
+func (r *Regex) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	strValue, err := cast.ToStringE(value)
 	if err != nil {
 		return NewFailedResult(r.Translate(r.Locale, "validation.string", map[string]string{
@@ -46,6 +46,6 @@ func (r *Regex) AddParams(params []string) {
 
 // MinRequiredParams returns minimum parameter requirement for this rule.
 // This rule needs only one parameter and that is the regex pattern.
-func (r *Regex) MinRequiredParams() int {
+func (*Regex) MinRequiredParams() int {
 	return 1
 }
