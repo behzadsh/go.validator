@@ -23,7 +23,7 @@ type Between struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *Between) Validate(selector string, value any, _ bag.InputBag) Result {
+func (r *Between) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	typeOf := reflect.TypeOf(value)
 	if typeOf == nil {
 		return NewSuccessResult()

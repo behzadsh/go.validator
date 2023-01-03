@@ -14,7 +14,7 @@ type Required struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *Required) Validate(selector string, _ any, inputBag bag.InputBag) Result {
+func (r *Required) Validate(selector string, _ any, inputBag bag.InputBag) ValidationResult {
 	if !inputBag.Has(selector) {
 		return NewFailedResult(r.Translate(r.Locale, "validation.required", map[string]string{
 			"field": selector,

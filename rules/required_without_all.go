@@ -19,7 +19,7 @@ type RequiredWithoutAll struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *RequiredWithoutAll) Validate(selector string, _ any, inputBag bag.InputBag) Result {
+func (r *RequiredWithoutAll) Validate(selector string, _ any, inputBag bag.InputBag) ValidationResult {
 	exists := inputBag.Has(selector)
 
 	shouldExists := true

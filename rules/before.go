@@ -24,7 +24,7 @@ type Before struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *Before) Validate(selector string, value any, inputBag bag.InputBag) Result {
+func (r *Before) Validate(selector string, value any, inputBag bag.InputBag) ValidationResult {
 	timeValue, err := cast.ToTimeInDefaultLocationE(value, r.timeZone)
 	if err != nil {
 		return NewFailedResult(r.Translate(r.Locale, "validation.datetime", map[string]string{

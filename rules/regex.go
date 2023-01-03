@@ -20,7 +20,7 @@ type Regex struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *Regex) Validate(selector string, value any, _ bag.InputBag) Result {
+func (r *Regex) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	strValue, err := cast.ToStringE(value)
 	if err != nil {
 		return NewFailedResult(r.Translate(r.Locale, "validation.string", map[string]string{

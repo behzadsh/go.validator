@@ -22,7 +22,7 @@ type RequiredIf struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *RequiredIf) Validate(selector string, _ any, inputBag bag.InputBag) Result {
+func (r *RequiredIf) Validate(selector string, _ any, inputBag bag.InputBag) ValidationResult {
 	exists := inputBag.Has(selector)
 	otherValue, ok := inputBag.Get(r.otherField)
 	if !ok {

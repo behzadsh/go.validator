@@ -20,7 +20,7 @@ type MaxDigits struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *MaxDigits) Validate(selector string, value any, _ bag.InputBag) Result {
+func (r *MaxDigits) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	strVal := cast.ToString(value)
 
 	ok, err := regexp.MatchString(`^\pN{0,`+r.digitCount+`}$`, strVal)

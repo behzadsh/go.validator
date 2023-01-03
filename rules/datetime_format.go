@@ -21,7 +21,7 @@ type DateTimeFormat struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *DateTimeFormat) Validate(selector string, value any, inputBag bag.InputBag) Result {
+func (r *DateTimeFormat) Validate(selector string, value any, inputBag bag.InputBag) ValidationResult {
 	if !inputBag.Has(selector) {
 		return NewSuccessResult()
 	}

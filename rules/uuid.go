@@ -20,7 +20,7 @@ type UUID struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *UUID) Validate(selector string, value any, _ bag.InputBag) Result {
+func (r *UUID) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	strVal := cast.ToString(value)
 
 	ok, err := regexp.MatchString(uuidRegex, strVal)

@@ -16,7 +16,7 @@ type NotEmpty struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *NotEmpty) Validate(selector string, value any, _ bag.InputBag) Result {
+func (r *NotEmpty) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	if funk.IsEmpty(value) {
 		return NewFailedResult(r.Translate(r.Locale, "validation.not_empty", map[string]string{
 			"field": selector,

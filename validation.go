@@ -15,6 +15,7 @@ import (
 
 type ruleIndicator string
 
+// RulesMap is a custom type for a map of rules for field selectors.
 type RulesMap map[string][]string
 
 func (r ruleIndicator) load(locale string) rules.Rule {
@@ -54,6 +55,7 @@ func (r ruleIndicator) parseRuleParams() (string, []string) {
 	}))
 }
 
+// ValidateMap validate the given input map with given rules map.
 func ValidateMap(input map[string]any, rulesMap RulesMap, locale ...string) Result {
 	currentLocale := defaultLocale
 	if len(locale) > 0 {
@@ -65,6 +67,7 @@ func ValidateMap(input map[string]any, rulesMap RulesMap, locale ...string) Resu
 	return doValidation(inputBag, rulesMap, currentLocale)
 }
 
+// ValidateMapSlice validates the given slice of maps with given rules map.
 func ValidateMapSlice(input []map[string]any, rulesMap RulesMap, locale ...string) Result {
 	currentLocale := defaultLocale
 	if len(locale) > 0 {
@@ -83,6 +86,7 @@ func ValidateMapSlice(input []map[string]any, rulesMap RulesMap, locale ...strin
 	return result
 }
 
+// ValidateStruct validates the given struct with given rules map.
 func ValidateStruct(input any, rulesMap RulesMap, locale ...string) Result {
 	currentLocale := defaultLocale
 	if len(locale) > 0 {
@@ -99,6 +103,7 @@ func ValidateStruct(input any, rulesMap RulesMap, locale ...string) Result {
 	return doValidation(inputBag, rulesMap, currentLocale)
 }
 
+// ValidateStructSlice validates the given slice of struct with given rules map.
 func ValidateStructSlice(input []any, rulesMap RulesMap, locale ...string) Result {
 	currentLocale := defaultLocale
 	if len(locale) > 0 {
@@ -116,6 +121,7 @@ func ValidateStructSlice(input []any, rulesMap RulesMap, locale ...string) Resul
 	return result
 }
 
+// Validate validate the given input with given validation rules.
 func Validate(input any, ruleSlice []string, locale ...string) Result {
 	currentLocale := defaultLocale
 	if len(locale) > 0 {

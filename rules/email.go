@@ -30,7 +30,7 @@ type Email struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *Email) Validate(selector string, value any, _ bag.InputBag) Result {
+func (r *Email) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	strValue := cast.ToString(value)
 
 	if !r.isEmail(strValue) {

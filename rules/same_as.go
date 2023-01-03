@@ -16,7 +16,7 @@ type SameAs struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *SameAs) Validate(selector string, value any, inputBag bag.InputBag) Result {
+func (r *SameAs) Validate(selector string, value any, inputBag bag.InputBag) ValidationResult {
 	otherValue, _ := inputBag.Get(r.otherField)
 
 	if otherValue != value {

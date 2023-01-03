@@ -18,7 +18,7 @@ type Max struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *Max) Validate(selector string, value any, _ bag.InputBag) Result {
+func (r *Max) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	floatValue := cast.ToFloat64(value)
 
 	if floatValue > r.max {

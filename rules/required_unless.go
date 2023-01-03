@@ -22,7 +22,7 @@ type RequiredUnless struct {
 
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
-func (r *RequiredUnless) Validate(selector string, _ any, inputBag bag.InputBag) Result {
+func (r *RequiredUnless) Validate(selector string, _ any, inputBag bag.InputBag) ValidationResult {
 	exists := inputBag.Has(selector)
 	otherValue, _ := inputBag.Get(r.otherField)
 
