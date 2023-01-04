@@ -34,6 +34,7 @@ func TestErrorBag_FirstOf(t *testing.T) {
 	errorBag["test"] = []string{"error 1", "error 2", "error 3"}
 
 	assert.Equal(t, "error 1", errorBag.FirstOf("test"))
+	assert.Equal(t, "", errorBag.FirstOf("notExists"))
 }
 
 func TestErrorBag_Has(t *testing.T) {
