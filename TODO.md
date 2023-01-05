@@ -14,7 +14,9 @@
     - [ ] Distinct
 - [ ] Tests
   - [x] `translation` package test
-  - [ ] test all `validation.go` functions
+  - [x] test all `validation.go` functions
+  - [ ] Rules: corner case test
+  - [ ] Rules: test minimum required parameters
 - [ ] Documentation
     - [ ] Main Documentation
     - [ ] Rules Documentation
