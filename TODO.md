@@ -13,7 +13,8 @@
     - [ ] MacAddress
     - [ ] Distinct
 - [ ] Tests
-  - [ ] `translation` package test
+  - [x] `translation` package test
+  - [ ] test all `validation.go` functions
 - [ ] Documentation
     - [ ] Main Documentation
     - [ ] Rules Documentation

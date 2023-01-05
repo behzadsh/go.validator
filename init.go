@@ -65,6 +65,7 @@ func registerDefaultRules() {
 		"minDigits":          &rules.MinDigits{},
 		"minLength":          &rules.MinLength{},
 		"neq":                &rules.NotEqual{},
+		"notEmpty":           &rules.NotEmpty{},
 		"notIn":              &rules.NotIn{},
 		"notRegex":           &rules.NotRegex{},
 		"numeric":            &rules.Numeric{},
