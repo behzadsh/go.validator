@@ -37,8 +37,8 @@ var requiredIfRuleTestData = map[string]any{
 			},
 		},
 		"output": map[string]any{
-			"validationFailed": true,
-			"validationError":  "The field type is required.",
+			"validationFailed": false,
+			"validationError":  "",
 		},
 	},
 	"fieldNotExist": map[string]any{
@@ -88,13 +88,6 @@ func initRequiredIfRule() *RequiredIf {
 		}
 
 		switch key {
-		case "validation.required":
-			tr := "The field :field: is required."
-			for k, v := range p {
-				tr = strings.Replace(tr, ":"+k+":", v, -1)
-			}
-
-			return tr
 		case "validation.required_if":
 			tr := "The field :field: is required when :otherField: is :value:."
 			for k, v := range p {
@@ -107,4 +100,10 @@ func initRequiredIfRule() *RequiredIf {
 		}
 	})
 	return requiredIfRule
+}
+
+func TestRequiredIf_MinRequiredParams(t *testing.T) {
+	rule := initRequiredIfRule()
+
+	assert.Equal(t, 2, rule.MinRequiredParams())
 }

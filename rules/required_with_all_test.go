@@ -58,6 +58,23 @@ var requiredWithAllRuleTestData = map[string]any{
 			"validationError":  "The field email is required when type and username are present.",
 		},
 	},
+	"failed2": map[string]any{
+		"input": map[string]any{
+			"selector": "email",
+			"inputBag": bag.InputBag{
+				"type":     "user",
+				"username": "goodUser",
+				"password": "mySecurePassword",
+			},
+			"params": []string{
+				"type", "username", "password",
+			},
+		},
+		"output": map[string]any{
+			"validationFailed": true,
+			"validationError":  "The field email is required when type, username, and password are present.",
+		},
+	},
 }
 
 func TestRequiredWithAllRule(t *testing.T) {
@@ -102,4 +119,10 @@ func initRequiredWithAllRule() *RequiredWithAll {
 		}
 	})
 	return requiredWithAllRule
+}
+
+func TestRequiredWithAll_MinRequiredParams(t *testing.T) {
+	rule := initRequiredWithAllRule()
+
+	assert.Equal(t, 2, rule.MinRequiredParams())
 }

@@ -21,17 +21,15 @@ type Length struct {
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
 func (r *Length) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
-	typeOf := reflect.TypeOf(value)
-	if typeOf == nil {
+	if value == nil {
 		return NewSuccessResult()
 	}
-
-	kind := typeOf.Kind()
+	v := indirectValue(value)
 
 	var length int
-	switch kind {
+	switch v.Kind() {
 	case reflect.String, reflect.Slice, reflect.Array, reflect.Map:
-		length = reflect.ValueOf(value).Len()
+		length = v.Len()
 	default:
 		// ignore the rule if not match any of the specified types.
 		return NewSuccessResult()

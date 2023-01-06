@@ -26,6 +26,19 @@ var dateTimeFormatTestData = map[string]any{
 			"validationError":  "",
 		},
 	},
+	"successfulNotExist": map[string]any{
+		"input": map[string]any{
+			"selector": "loggedAt",
+			"inputBag": bag.InputBag{},
+			"params": []string{
+				time.RFC3339,
+			},
+		},
+		"output": map[string]any{
+			"validationFailed": false,
+			"validationError":  "",
+		},
+	},
 	"incorrectFormat": map[string]any{
 		"input": map[string]any{
 			"selector": "loggedAt",
@@ -85,4 +98,10 @@ func initDateTimeFormatRule() *DateTimeFormat {
 		}
 	})
 	return dateTimeFormatRule
+}
+
+func TestDateTimeFormat_MinRequiredParams(t *testing.T) {
+	rule := initDateTimeFormatRule()
+
+	assert.Equal(t, 1, rule.MinRequiredParams())
 }

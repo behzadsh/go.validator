@@ -85,3 +85,9 @@ func initDigitsBetweenRule() *DigitsBetween {
 	})
 	return digitsBetweenRule
 }
+
+func TestDigitsBetween_MinRequiredParams(t *testing.T) {
+	rule := initDigitsBetweenRule()
+
+	assert.Equal(t, 2, rule.MinRequiredParams())
+}

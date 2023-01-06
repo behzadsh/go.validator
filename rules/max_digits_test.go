@@ -85,3 +85,9 @@ func initMaxDigitsRule() *MaxDigits {
 	})
 	return maxDigitsRule
 }
+
+func TestMaxDigits_MinRequiredParams(t *testing.T) {
+	rule := initMaxDigitsRule()
+
+	assert.Equal(t, 1, rule.MinRequiredParams())
+}

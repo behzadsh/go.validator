@@ -18,7 +18,7 @@ type DateTime struct {
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
 func (r *DateTime) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
-	_, err := cast.ToTimeE(value)
+	_, err := cast.StringToDate(cast.ToString(value))
 	if err != nil {
 		return NewFailedResult(r.Translate(r.Locale, "validation.datetime", map[string]string{
 			"field": selector,

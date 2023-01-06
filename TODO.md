@@ -54,5 +54,3 @@
       - [ ] String
       - [ ] Uppercase
       - [ ] UUID
-- [ ] Add `assertion` Package
-- [ ] Double-check the functionality of rules

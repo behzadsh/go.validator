@@ -17,14 +17,12 @@ type String struct {
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
 func (r *String) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
-	typeOf := reflect.TypeOf(value)
-	if typeOf == nil {
+	if value == nil {
 		return NewSuccessResult()
 	}
+	v := indirectValue(value)
 
-	kind := typeOf.Kind()
-
-	switch kind {
+	switch v.Kind() {
 	case reflect.String:
 		return NewSuccessResult()
 	default:

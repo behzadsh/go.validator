@@ -3,6 +3,8 @@ package rules
 import (
 	"regexp"
 
+	"github.com/spf13/cast"
+
 	"github.com/behzadsh/go.validator/bag"
 	"github.com/behzadsh/go.validator/translation"
 )
@@ -18,14 +20,7 @@ type AlphaNum struct {
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
 func (r *AlphaNum) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
-	strValue, ok := value.(string)
-	if !ok {
-		return NewFailedResult(r.Translate(r.Locale, "validation.alpha_num", map[string]string{
-			"field": selector,
-		}))
-	}
-
-	ok, err := regexp.MatchString(`^[\pL\pM\pN]+$`, strValue)
+	ok, err := regexp.MatchString(`^[\pL\pM\pN]+$`, cast.ToString(value))
 	if !ok || err != nil {
 		return NewFailedResult(r.Translate(r.Locale, "validation.alpha_num", map[string]string{
 			"field": selector,

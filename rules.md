@@ -177,11 +177,7 @@ ruleMap := validation.RuleMap{
 ```
 
 ## Datetime: `datetime`
-This rule checks the field under validation has a valid datetime value. The acceptable types are:
-
-* Unix timestamp
-* time.Time
-* string with standard datetime layout
+This rule checks the field under validation is a valid datetime string.
 
 ```go
 ruleMap := validation.RuleMap{
@@ -194,7 +190,7 @@ This rule checks the field under validation matches the given datetime layout fo
 
 ```go
 ruleMap := validation.RuleMap{
-	"start": {"datetimeFormat:2006-01-02T15:04:05Z07:00"} 
+	"start": {"datetimeFormat:2006-01-02T15:04:05Z07:00"}
 }
 ```
 

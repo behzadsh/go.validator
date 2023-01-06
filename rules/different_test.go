@@ -87,3 +87,9 @@ func initDifferentRule() *Different {
 	})
 	return differentRule
 }
+
+func TestDifferent_MinRequiredParams(t *testing.T) {
+	rule := initDifferentRule()
+
+	assert.Equal(t, 1, rule.MinRequiredParams())
+}

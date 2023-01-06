@@ -64,7 +64,7 @@ func (r *BeforeOrEqual) AddParams(params []string) {
 	r.timeZone = time.UTC
 
 	if len(params) > 1 {
-		if tz, err := time.LoadLocation(params[1]); err != nil {
+		if tz, err := time.LoadLocation(params[1]); err == nil {
 			r.timeZone = tz
 		}
 	}

@@ -24,27 +24,25 @@ type Between struct {
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
 func (r *Between) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
-	typeOf := reflect.TypeOf(value)
-	if typeOf == nil {
+	if value == nil {
 		return NewSuccessResult()
 	}
+	v := indirectValue(value)
 
-	kind := typeOf.Kind()
-
-	var v float64
-	switch kind {
+	var floatValue float64
+	switch v.Kind() {
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
 		reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64,
 		reflect.Float32, reflect.Float64:
-		v = cast.ToFloat64(value)
+		floatValue = cast.ToFloat64(value)
 	case reflect.String, reflect.Slice, reflect.Array, reflect.Map:
-		v = float64(reflect.ValueOf(value).Len())
+		floatValue = float64(v.Len())
 	default:
 		// ignore the rule if not match any of the specified types.
 		return NewSuccessResult()
 	}
 
-	if v < r.min || v > r.max {
+	if floatValue < r.min || floatValue > r.max {
 		return NewFailedResult(r.Translate(r.Locale, "validation.between", map[string]string{
 			"field": selector,
 			"min":   cast.ToString(r.min),

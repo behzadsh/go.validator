@@ -333,4 +333,17 @@ func TestSpecialValidation(t *testing.T) {
 			})
 		})
 	})
+
+	t.Run("unregisteredRule", func(t *testing.T) {
+		resetConfigs()
+		data := map[string]any{
+			"code": 13839,
+		}
+
+		assert.Panics(t, func() {
+			ValidateMap(data, RulesMap{
+				"code": {"unregistered:10"},
+			})
+		})
+	})
 }

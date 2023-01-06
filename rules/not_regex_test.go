@@ -53,8 +53,8 @@ var notRegexRuleTestData = map[string]any{
 			},
 		},
 		"output": map[string]any{
-			"validationFailed": true,
-			"validationError":  "The field variableName must have an string value.",
+			"validationFailed": false,
+			"validationError":  "",
 		},
 	},
 }
@@ -108,4 +108,10 @@ func initNotRegexRule() *NotRegex {
 		}
 	})
 	return notRegexRule
+}
+
+func TestNotRegex_MinRequiredParams(t *testing.T) {
+	rule := initNotRegexRule()
+
+	assert.Equal(t, 1, rule.MinRequiredParams())
 }

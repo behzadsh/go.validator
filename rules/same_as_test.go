@@ -103,3 +103,9 @@ func initSameAsRule() *SameAs {
 	})
 	return sameAsRule
 }
+
+func TestSameAs_MinRequiredParams(t *testing.T) {
+	rule := initSameAsRule()
+
+	assert.Equal(t, 1, rule.MinRequiredParams())
+}

@@ -54,7 +54,7 @@ var regexRuleTestData = map[string]any{
 		},
 		"output": map[string]any{
 			"validationFailed": true,
-			"validationError":  "The field variableName must have an string value.",
+			"validationError":  "The field variableName must match the regex pattern ^[a-zA-Z0-9]+$.",
 		},
 	},
 }
@@ -96,16 +96,15 @@ func initRegexRule() *Regex {
 			}
 
 			return tr
-		case "validation.string":
-			tr := "The field :field: must have an string value."
-			for k, v := range p {
-				tr = strings.Replace(tr, ":"+k+":", v, -1)
-			}
-
-			return tr
 		default:
 			return key
 		}
 	})
 	return regexRule
+}
+
+func TestRegex_MinRequiredParams(t *testing.T) {
+	rule := initRegexRule()
+
+	assert.Equal(t, 1, rule.MinRequiredParams())
 }

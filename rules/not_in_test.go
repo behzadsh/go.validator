@@ -85,3 +85,9 @@ func initNotInRule() *NotIn {
 	})
 	return notInRule
 }
+
+func TestNotIn_MinRequiredParams(t *testing.T) {
+	rule := initNotInRule()
+
+	assert.Equal(t, 2, rule.MinRequiredParams())
+}

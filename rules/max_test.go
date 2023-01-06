@@ -115,3 +115,9 @@ func initMaxRule() *Max {
 	})
 	return maxRule
 }
+
+func TestMax_MinRequiredParams(t *testing.T) {
+	rule := initMaxRule()
+
+	assert.Equal(t, 1, rule.MinRequiredParams())
+}

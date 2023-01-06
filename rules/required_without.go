@@ -20,14 +20,16 @@ type RequiredWithout struct {
 func (r *RequiredWithout) Validate(selector string, _ any, inputBag bag.InputBag) ValidationResult {
 	exists := inputBag.Has(selector)
 
-	if !exists {
-		for _, field := range r.otherFields {
-			if !inputBag.Has(field) {
-				return NewFailedResult(r.Translate(r.Locale, "validation.required_without", map[string]string{
-					"field":      selector,
-					"otherField": field,
-				}))
-			}
+	if exists {
+		return NewSuccessResult()
+	}
+
+	for _, field := range r.otherFields {
+		if !inputBag.Has(field) {
+			return NewFailedResult(r.Translate(r.Locale, "validation.required_without", map[string]string{
+				"field":      selector,
+				"otherField": field,
+			}))
 		}
 	}
 

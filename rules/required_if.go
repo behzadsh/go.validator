@@ -24,12 +24,7 @@ type RequiredIf struct {
 // for more details.
 func (r *RequiredIf) Validate(selector string, _ any, inputBag bag.InputBag) ValidationResult {
 	exists := inputBag.Has(selector)
-	otherValue, ok := inputBag.Get(r.otherField)
-	if !ok {
-		return NewFailedResult(r.Translate(r.Locale, "validation.required", map[string]string{
-			"field": r.otherField,
-		}))
-	}
+	otherValue, _ := inputBag.Get(r.otherField)
 
 	if !exists && cast.ToString(otherValue) == r.expectedValue {
 		return NewFailedResult(r.Translate(r.Locale, "validation.required_if", map[string]string{

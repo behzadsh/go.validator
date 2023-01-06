@@ -100,3 +100,9 @@ func initDigitsRule() *Digits {
 	})
 	return digitsRule
 }
+
+func TestDigits_MinRequiredParams(t *testing.T) {
+	rule := initDigitsRule()
+
+	assert.Equal(t, 1, rule.MinRequiredParams())
+}

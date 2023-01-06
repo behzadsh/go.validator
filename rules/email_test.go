@@ -49,6 +49,32 @@ var emailRuleTestData = map[string]any{
 			"validationError":  "The field email must be a valid email.",
 		},
 	},
+	"failedFormat2": map[string]any{
+		"input": map[string]any{
+			"selector": "email",
+			"inputBag": bag.InputBag{
+				"email": "user@something@example.com",
+			},
+			"params": []string{},
+		},
+		"output": map[string]any{
+			"validationFailed": true,
+			"validationError":  "The field email must be a valid email.",
+		},
+	},
+	"failedFormat3": map[string]any{
+		"input": map[string]any{
+			"selector": "email",
+			"inputBag": bag.InputBag{
+				"email": "veryveryveryveryveryveryveryveryveryveryveryverylongusernameforanemail@example.com",
+			},
+			"params": []string{},
+		},
+		"output": map[string]any{
+			"validationFailed": true,
+			"validationError":  "The field email must be a valid email.",
+		},
+	},
 	"failedMXRecord": map[string]any{
 		"input": map[string]any{
 			"selector": "email",
@@ -106,4 +132,10 @@ func initEmailRule() *Email {
 		}
 	})
 	return emailRule
+}
+
+func TestEmail_MinRequiredParams(t *testing.T) {
+	rule := initEmailRule()
+
+	assert.Equal(t, 0, rule.MinRequiredParams())
 }
