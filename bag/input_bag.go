@@ -84,10 +84,10 @@ func (b InputBag) Has(selector string) bool {
 	return base != nil
 }
 
-// NewInputBagFromStruct converts the given input into InputBag. Since we use
-// json.Marshal and json.Unmarshal for this conversion the given input must be
-// a type that can be marshaled into json string, otherwise the returned bag
-// may be empty.
+// NewInputBagFromStruct converts the given input struct into InputBag.
+// Note that since we use json.Marshal and json.Unmarshal for this conversion
+// the given struct must have exported field, and if the exported fields have
+// json tag, keep in mind that the InputBag keys are the same as the tags.
 func NewInputBagFromStruct(input any) InputBag {
 	b, _ := json.Marshal(input)
 

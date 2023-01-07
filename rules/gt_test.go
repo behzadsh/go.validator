@@ -102,6 +102,21 @@ var greaterThanRuleTestData = map[string]any{
 			"validationError":  "",
 		},
 	},
+	"successfulOtherTypes": map[string]any{
+		"input": map[string]any{
+			"selector": "functionName",
+			"inputBag": bag.InputBag{
+				"functionName": struct{}{},
+			},
+			"params": []string{
+				"3",
+			},
+		},
+		"output": map[string]any{
+			"validationFailed": false,
+			"validationError":  "",
+		},
+	},
 	"failedInteger": map[string]any{
 		"input": map[string]any{
 			"selector": "age",
@@ -223,4 +238,10 @@ func initGreaterThanRule() *GreaterThan {
 		}
 	})
 	return greaterThanRule
+}
+
+func TestGreaterThan_MinRequiredParams(t *testing.T) {
+	rule := initGreaterThanRule()
+
+	assert.Equal(t, 1, rule.MinRequiredParams())
 }

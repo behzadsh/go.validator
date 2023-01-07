@@ -12,44 +12,13 @@
     - [ ] IPV6
     - [ ] MacAddress
     - [ ] Distinct
-- [ ] Tests
-  - [ ] `translation` package test
 - [ ] Documentation
     - [ ] Main Documentation
-    - [ ] Rules Documentation
-      - [ ] Email
-      - [ ] EndsWith
-      - [ ] Greater Than
-      - [ ] Greater Than Equal
-      - [ ] In
-      - [ ] Integer
-      - [ ] Length
-      - [ ] Lowercase
-      - [ ] Less Than
-      - [ ] Less Than Equal
-      - [ ] Max
-      - [ ] Max Digits
-      - [ ] Max Length
-      - [ ] Min
-      - [ ] Min Digits
-      - [ ] Min Length
-      - [ ] Not Equal
-      - [ ] Not Empty
-      - [ ] Not In
-      - [ ] Not Regex
-      - [ ] Numeric
-      - [ ] Regex
-      - [ ] Required
-      - [ ] Required If
-      - [ ] Required Unless
-      - [ ] Required With
-      - [ ] Required With All
-      - [ ] Required Without
-      - [ ] Required Without All
-      - [ ] Same As
-      - [ ] Start With
-      - [ ] String
-      - [ ] Uppercase
-      - [ ] UUID
-- [ ] Add `assertion` Package
-- [ ] Double-check the functionality of rules
+      - [x] Basic Documentation
+      - [ ] Translation Options
+      - [ ] Custom Rules
+      - [ ] Stop on Failure
+    - [ ] Rule Documentation
+      - [x] Rule Description
+      - [ ] Indexes
+    - [ ] Contribution Documentation

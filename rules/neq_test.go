@@ -85,3 +85,9 @@ func initNotEqualRule() *NotEqual {
 	})
 	return notEqualRule
 }
+
+func TestNotEqual_MinRequiredParams(t *testing.T) {
+	rule := initNotEqualRule()
+
+	assert.Equal(t, 1, rule.MinRequiredParams())
+}

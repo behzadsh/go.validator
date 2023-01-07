@@ -21,9 +21,7 @@ type Digits struct {
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
 func (r *Digits) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
-	strVal := cast.ToString(value)
-
-	ok, err := regexp.MatchString(`^\pN{`+r.digitCount+`}$`, strVal)
+	ok, err := regexp.MatchString(`^\d{`+r.digitCount+`}$`, cast.ToString(value))
 	if !ok || err != nil {
 		return NewFailedResult(r.Translate(r.Locale, "validation.digits", map[string]string{
 			"field":      selector,

@@ -19,9 +19,7 @@ type NotEqual struct {
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
 func (r *NotEqual) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
-	strValue := cast.ToString(value)
-
-	if strValue == r.value {
+	if cast.ToString(value) == r.value {
 		return NewFailedResult(r.Translate(r.Locale, "validation.neq", map[string]string{
 			"field": selector,
 			"value": r.value,

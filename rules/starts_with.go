@@ -21,14 +21,7 @@ type StartsWith struct {
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
 func (r *StartsWith) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
-	strValue, err := cast.ToStringE(value)
-	if err != nil {
-		return NewFailedResult(r.Translate(r.Locale, "validation.string", map[string]string{
-			"field": selector,
-		}))
-	}
-
-	if !strings.HasPrefix(strValue, r.prefix) {
+	if !strings.HasPrefix(cast.ToString(value), r.prefix) {
 		return NewFailedResult(r.Translate(r.Locale, "validation.starts_with", map[string]string{
 			"field": selector,
 			"value": r.prefix,

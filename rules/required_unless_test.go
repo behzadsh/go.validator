@@ -93,3 +93,9 @@ func initRequiredUnlessRule() *RequiredUnless {
 	})
 	return requiredUnlessRule
 }
+
+func TestRequiredUnless_MinRequiredParams(t *testing.T) {
+	rule := initRequiredUnlessRule()
+
+	assert.Equal(t, 2, rule.MinRequiredParams())
+}

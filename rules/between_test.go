@@ -102,6 +102,21 @@ var betweenRuleTestData = map[string]any{
 			"validationError":  "",
 		},
 	},
+	"successfulOtherType": map[string]any{
+		"input": map[string]any{
+			"selector": "functionName",
+			"inputBag": bag.InputBag{
+				"functionName": struct{}{},
+			},
+			"params": []string{
+				"3", "30",
+			},
+		},
+		"output": map[string]any{
+			"validationFailed": false,
+			"validationError":  "",
+		},
+	},
 	"failedInteger": map[string]any{
 		"input": map[string]any{
 			"selector": "age",
@@ -228,4 +243,10 @@ func initBetweenRule() *Between {
 		}
 	})
 	return betweenRule
+}
+
+func TestBetween_MinRequiredParams(t *testing.T) {
+	rule := initBetweenRule()
+
+	assert.Equal(t, 2, rule.MinRequiredParams())
 }

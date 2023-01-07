@@ -23,7 +23,7 @@ type MinDigits struct {
 func (r *MinDigits) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	strVal := cast.ToString(value)
 
-	ok, err := regexp.MatchString(`^\pN{`+r.digitCount+`,}$`, strVal)
+	ok, err := regexp.MatchString(`^\d{`+r.digitCount+`,}$`, strVal)
 	if !ok || err != nil {
 		return NewFailedResult(r.Translate(r.Locale, "validation.min_digits", map[string]string{
 			"field":      selector,

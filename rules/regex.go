@@ -21,14 +21,7 @@ type Regex struct {
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
 func (r *Regex) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
-	strValue, err := cast.ToStringE(value)
-	if err != nil {
-		return NewFailedResult(r.Translate(r.Locale, "validation.string", map[string]string{
-			"field": selector,
-		}))
-	}
-
-	ok, err := regexp.MatchString(r.pattern, strValue)
+	ok, err := regexp.MatchString(r.pattern, cast.ToString(value))
 	if !ok || err != nil {
 		return NewFailedResult(r.Translate(r.Locale, "validation.regex", map[string]string{
 			"field":   selector,

@@ -21,9 +21,7 @@ type DigitsBetween struct {
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
 func (r *DigitsBetween) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
-	strVal := cast.ToString(value)
-
-	ok, err := regexp.MatchString(`^\pN{`+r.min+`,`+r.max+`}$`, strVal)
+	ok, err := regexp.MatchString(`^\d{`+r.min+`,`+r.max+`}$`, cast.ToString(value))
 	if !ok || err != nil {
 		return NewFailedResult(r.Translate(r.Locale, "validation.digits_between", map[string]string{
 			"field": selector,

@@ -115,3 +115,9 @@ func initMinRule() *Min {
 	})
 	return minRule
 }
+
+func TestMin_MinRequiredParams(t *testing.T) {
+	rule := initMinRule()
+
+	assert.Equal(t, 1, rule.MinRequiredParams())
+}

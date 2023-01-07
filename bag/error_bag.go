@@ -9,6 +9,11 @@ func (b ErrorBag) IsEmpty() bool {
 	return len(b) == 0
 }
 
+// All returns all the errors.
+func (b ErrorBag) All() map[string][]string {
+	return b
+}
+
 // Add adds an error message (or many error messages) for given selector.
 func (b ErrorBag) Add(selector string, msg ...string) {
 	b[selector] = append(b[selector], msg...)

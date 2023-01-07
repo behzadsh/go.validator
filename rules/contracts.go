@@ -1,6 +1,8 @@
 package rules
 
-import "github.com/behzadsh/go.validator/bag"
+import (
+	"github.com/behzadsh/go.validator/bag"
+)
 
 // ValidationResult is a struct represents a single validation result.
 type ValidationResult struct {

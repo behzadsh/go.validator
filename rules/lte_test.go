@@ -181,6 +181,21 @@ var lessThanEqualRuleTestData = map[string]any{
 			"validationError":  "The field user must have a value or length less than or equal to 2.",
 		},
 	},
+	"successfulOtherTypes": map[string]any{
+		"input": map[string]any{
+			"selector": "functionName",
+			"inputBag": bag.InputBag{
+				"functionName": struct{}{},
+			},
+			"params": []string{
+				"3",
+			},
+		},
+		"output": map[string]any{
+			"validationFailed": false,
+			"validationError":  "",
+		},
+	},
 }
 
 func TestLessThanEqualRule(t *testing.T) {
@@ -225,4 +240,10 @@ func initLessThanEqualRule() *LessThanEqual {
 		}
 	})
 	return lessThanEqualRule
+}
+
+func TestLessThanEqual_MinRequiredParams(t *testing.T) {
+	rule := initLessThanEqualRule()
+
+	assert.Equal(t, 1, rule.MinRequiredParams())
 }

@@ -23,7 +23,7 @@ type MaxDigits struct {
 func (r *MaxDigits) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	strVal := cast.ToString(value)
 
-	ok, err := regexp.MatchString(`^\pN{0,`+r.digitCount+`}$`, strVal)
+	ok, err := regexp.MatchString(`^\d{1,`+r.digitCount+`}$`, strVal)
 	if !ok || err != nil {
 		return NewFailedResult(r.Translate(r.Locale, "validation.max_digits", map[string]string{
 			"field":      selector,

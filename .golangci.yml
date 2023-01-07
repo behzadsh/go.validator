@@ -42,6 +42,8 @@ linters-settings:
         arguments: [120]
       - name: max-public-structs
         disabled: true
+      - name: nested-structs
+        disabled: true
       - name: package-comments
         disabled: true
       - name: unhandled-error

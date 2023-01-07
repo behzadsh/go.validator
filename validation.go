@@ -160,7 +160,7 @@ func doValidation(inputBag bag.InputBag, rulesMap RulesMap, locale string) Resul
 }
 
 func normalizeFieldSelector(selector string, input bag.InputBag) []string {
-	if !strings.Contains(selector, "*") {
+	if !strings.Contains(selector, ".*") {
 		return []string{selector}
 	}
 
@@ -172,10 +172,6 @@ func normalizeFieldSelector(selector string, input bag.InputBag) []string {
 		if err == nil {
 			total = len(temp)
 		}
-	}
-
-	if len(parts) == 1 {
-		parts = append(parts, "")
 	}
 
 	var explicitSelectors []string

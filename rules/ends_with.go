@@ -11,7 +11,7 @@ import (
 
 // EndsWith check the field under validation ends with given sub string.
 //
-// Usage: "endsWith:prefix".
+// Usage: "endsWith:suffix".
 // Example: "endsWith:Model".
 type EndsWith struct {
 	translation.BaseTranslatableRule
@@ -21,14 +21,7 @@ type EndsWith struct {
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
 func (r *EndsWith) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
-	strValue, err := cast.ToStringE(value)
-	if err != nil {
-		return NewFailedResult(r.Translate(r.Locale, "validation.string", map[string]string{
-			"field": selector,
-		}))
-	}
-
-	if !strings.HasSuffix(strValue, r.suffix) {
+	if !strings.HasSuffix(cast.ToString(value), r.suffix) {
 		return NewFailedResult(r.Translate(r.Locale, "validation.ends_with", map[string]string{
 			"field": selector,
 			"value": r.suffix,

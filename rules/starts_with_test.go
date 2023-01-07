@@ -55,7 +55,7 @@ var startsWithRuleTestData = map[string]any{
 		},
 		"output": map[string]any{
 			"validationFailed": true,
-			"validationError":  "The field className must have an string value.",
+			"validationError":  "The field className must starts with User.",
 		},
 	},
 }
@@ -97,16 +97,15 @@ func initStartsWithRule() *StartsWith {
 			}
 
 			return tr
-		case "validation.string":
-			tr := "The field :field: must have an string value."
-			for k, v := range p {
-				tr = strings.Replace(tr, ":"+k+":", v, -1)
-			}
-
-			return tr
 		default:
 			return key
 		}
 	})
 	return startsWithRule
+}
+
+func TestStartsWith_MinRequiredParams(t *testing.T) {
+	rule := initStartsWithRule()
+
+	assert.Equal(t, 1, rule.MinRequiredParams())
 }

@@ -99,3 +99,9 @@ func initRequiredWithoutRule() *RequiredWithout {
 	})
 	return requiredWithoutRule
 }
+
+func TestRequiredWithout_MinRequiredParams(t *testing.T) {
+	rule := initRequiredWithoutRule()
+
+	assert.Equal(t, 1, rule.MinRequiredParams())
+}

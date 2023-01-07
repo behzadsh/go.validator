@@ -27,6 +27,19 @@ var requiredWithRuleTestData = map[string]any{
 			"validationError":  "",
 		},
 	},
+	"successfulNotRequired": map[string]any{
+		"input": map[string]any{
+			"selector": "email",
+			"inputBag": bag.InputBag{},
+			"params": []string{
+				"type", "username",
+			},
+		},
+		"output": map[string]any{
+			"validationFailed": false,
+			"validationError":  "",
+		},
+	},
 	"oneOfTheOtherFieldsExists": map[string]any{
 		"input": map[string]any{
 			"selector": "email",
@@ -102,4 +115,10 @@ func initRequiredWithRule() *RequiredWith {
 		}
 	})
 	return requiredWithRule
+}
+
+func TestRequiredWith_MinRequiredParams(t *testing.T) {
+	rule := initRequiredWithRule()
+
+	assert.Equal(t, 1, rule.MinRequiredParams())
 }

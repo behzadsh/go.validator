@@ -53,6 +53,19 @@ var requiredWithoutAllRuleTestData = map[string]any{
 			"validationError":  "The field email is required when phone and username are not present.",
 		},
 	},
+	"failed2": map[string]any{
+		"input": map[string]any{
+			"selector": "email",
+			"inputBag": bag.InputBag{},
+			"params": []string{
+				"type", "username", "password",
+			},
+		},
+		"output": map[string]any{
+			"validationFailed": true,
+			"validationError":  "The field email is required when type, username, and password are not present.",
+		},
+	},
 }
 
 func TestRequiredWithoutAllRule(t *testing.T) {
@@ -97,4 +110,10 @@ func initRequiredWithoutAllRule() *RequiredWithoutAll {
 		}
 	})
 	return requiredWithoutAllRule
+}
+
+func TestRequiredWithoutAll_MinRequiredParams(t *testing.T) {
+	rule := initRequiredWithoutAllRule()
+
+	assert.Equal(t, 2, rule.MinRequiredParams())
 }

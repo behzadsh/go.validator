@@ -148,3 +148,9 @@ func initBeforeRule() *Before {
 	})
 	return beforeRule
 }
+
+func TestBefore_MinRequiredParams(t *testing.T) {
+	rule := initBeforeRule()
+
+	assert.Equal(t, 1, rule.MinRequiredParams())
+}

@@ -85,3 +85,9 @@ func initMinDigitsRule() *MinDigits {
 	})
 	return minDigitsRule
 }
+
+func TestMinDigits_MinRequiredParams(t *testing.T) {
+	rule := initMinDigitsRule()
+
+	assert.Equal(t, 1, rule.MinRequiredParams())
+}

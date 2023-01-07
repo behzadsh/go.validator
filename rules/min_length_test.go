@@ -72,6 +72,21 @@ var minLengthRuleTestData = map[string]any{
 			"validationError":  "",
 		},
 	},
+	"successfulOtherType": map[string]any{
+		"input": map[string]any{
+			"selector": "functionName",
+			"inputBag": bag.InputBag{
+				"functionName": struct{}{},
+			},
+			"params": []string{
+				"3",
+			},
+		},
+		"output": map[string]any{
+			"validationFailed": false,
+			"validationError":  "",
+		},
+	},
 	"failedString": map[string]any{
 		"input": map[string]any{
 			"selector": "functionName",
@@ -165,4 +180,10 @@ func initMinLengthRule() *MinLength {
 		}
 	})
 	return minLengthRule
+}
+
+func TestMinLength_MinRequiredParams(t *testing.T) {
+	rule := initMinLengthRule()
+
+	assert.Equal(t, 1, rule.MinRequiredParams())
 }
