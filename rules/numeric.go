@@ -7,7 +7,7 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// Numeric checks the field under validation has a numeric value
+// Numeric checks the field under validation has a numeric value.
 //
 // Usage: "numeric".
 type Numeric struct {

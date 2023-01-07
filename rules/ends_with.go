@@ -11,7 +11,7 @@ import (
 
 // EndsWith check the field under validation ends with given sub string.
 //
-// Usage: "endsWith:prefix".
+// Usage: "endsWith:suffix".
 // Example: "endsWith:Model".
 type EndsWith struct {
 	translation.BaseTranslatableRule

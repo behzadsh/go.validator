@@ -9,7 +9,7 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// NotRegex check the field under validation does not match the given regex pattern.
+// NotRegex checks the field under validation does not match the given regex pattern.
 //
 // Usage: "notRegex:pattern".
 // Example: "notRegex:[a-zA-Z0-9]+".
