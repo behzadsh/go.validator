@@ -1,4 +1,5 @@
 # Go Validator
+![Coverage](https://img.shields.io/badge/Coverage-99.7%25-brightgreen)
 
 The `go.validator` package provides a simple and convenient way to validate your data.
 
