@@ -94,7 +94,7 @@ func ValidateStruct(input any, rulesMap RulesMap, locale ...string) Result {
 	}
 
 	v := reflect.ValueOf(input)
-	if v.Kind() != reflect.Struct || (v.Kind() == reflect.Ptr && v.Elem().Kind() == reflect.Struct) {
+	if v.Kind() != reflect.Struct && !(v.Kind() == reflect.Ptr && v.Elem().Kind() == reflect.Struct) {
 		panic("validation.ValidateStruct only support struct or a pointer to a struct as first parameter")
 	}
 
