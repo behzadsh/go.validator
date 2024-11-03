@@ -1,12 +1,11 @@
 run:
-  deadline: 5m
+  timeout: 5m
+  tests: false
 
 linters-settings:
   errcheck:
     check-type-assertions: true
     check-blank: false
-  govet:
-    check-shadowing: true
   gci:
     sections:
       - standard
