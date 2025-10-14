@@ -8,7 +8,7 @@ type TranslateFunc func(local, key string, params ...map[string]string) string
 var defaultTranslationFunc TranslateFunc
 
 func init() {
-	translator, _ := lang.NewTranslator(lang.DefaultConfigs())
+	translator, _ := lang.NewTranslator(lang.DefaultConfigs()) //nolint:errcheck // no need to check error
 	defaultTranslationFunc = translator.TranslateBy
 }
 

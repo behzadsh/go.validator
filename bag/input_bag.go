@@ -89,10 +89,10 @@ func (b InputBag) Has(selector string) bool {
 // the given struct must have exported field, and if the exported fields have
 // json tag, keep in mind that the InputBag keys are the same as the tags.
 func NewInputBagFromStruct(input any) InputBag {
-	b, _ := json.Marshal(input)
+	b, _ := json.Marshal(input) //nolint:errcheck // no need to check error
 
 	var bag InputBag
-	_ = json.Unmarshal(b, &bag)
+	_ = json.Unmarshal(b, &bag) //nolint:errcheck // no need to check error
 
 	return bag
 }
