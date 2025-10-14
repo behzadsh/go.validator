@@ -21,8 +21,8 @@ type NotRegex struct {
 // Validate does the validation process of the rule. See struct documentation
 // for more details.
 func (r *NotRegex) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
-	ok, _ := regexp.MatchString(r.pattern, cast.ToString(value))
-	if ok {
+	ok, err := regexp.MatchString(r.pattern, cast.ToString(value))
+	if ok || err != nil {
 		return NewFailedResult(r.Translate(r.Locale, "validation.not_regex", map[string]string{
 			"field":   selector,
 			"pattern": r.pattern,

@@ -1,0 +1,91 @@
+package rules
+
+import (
+	"strings"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+
+	"github.com/behzadsh/go.validator/bag"
+)
+
+func TestInArrayFieldRule(t *testing.T) {
+	rule := initInArrayFieldRule()
+
+	tests := map[string]any{
+		"ok": map[string]any{
+			"input": map[string]any{
+				"selector": "choice",
+				"inputBag": bag.InputBag{
+					"choice":  "b",
+					"options": []string{"a", "b", "c"},
+				},
+				"params": []string{"options"},
+			},
+			"output": map[string]any{"validationFailed": false, "validationError": ""},
+		},
+		"notIn": map[string]any{
+			"input": map[string]any{
+				"selector": "choice",
+				"inputBag": bag.InputBag{
+					"choice":  "x",
+					"options": []string{"a", "b", "c"},
+				},
+				"params": []string{"options"},
+			},
+			"output": map[string]any{"validationFailed": true, "validationError": "The field choice must be in given values."},
+		},
+		"missingOther": map[string]any{
+			"input": map[string]any{
+				"selector": "choice",
+				"inputBag": bag.InputBag{
+					"choice": "a",
+				},
+				"params": []string{"options"},
+			},
+			"output": map[string]any{"validationFailed": true, "validationError": "The field options is required."},
+		},
+	}
+
+	for name, d := range tests {
+		t.Run(name, func(t *testing.T) {
+			data := d.(map[string]any)
+			input := data["input"].(map[string]any)
+			output := data["output"].(map[string]any)
+			inputBag := input["inputBag"].(bag.InputBag)
+			rule.AddParams(input["params"].([]string))
+			value, _ := inputBag.Get(input["selector"].(string))
+			res := rule.Validate(input["selector"].(string), value, inputBag)
+			assert.Equal(t, output["validationFailed"].(bool), res.Failed())
+			assert.Equal(t, output["validationError"].(string), res.Message())
+		})
+	}
+}
+
+func initInArrayFieldRule() *InArrayField {
+	r := &InArrayField{}
+	r.AddTranslationFunction(func(_, key string, params ...map[string]string) string {
+		var p map[string]string
+		if len(params) > 0 {
+			p = params[0]
+		}
+
+		switch key {
+		case "validation.in":
+			tr := "The field :field: must be in given values."
+			for k, v := range p {
+				tr = strings.Replace(tr, ":"+k+":", v, -1)
+			}
+			return tr
+		case "Validation.required":
+			tr := "The field :otherField: is required."
+			for k, v := range p {
+				tr = strings.Replace(tr, ":"+k+":", v, -1)
+			}
+			return tr
+		default:
+			return key
+		}
+	})
+	return r
+}

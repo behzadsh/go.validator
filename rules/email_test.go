@@ -36,6 +36,19 @@ var emailRuleTestData = map[string]any{
 			"validationError":  "",
 		},
 	},
+	"successfulFormatIgnoredParam": map[string]any{
+		"input": map[string]any{
+			"selector": "email",
+			"inputBag": bag.InputBag{
+				"email": "user@example.com",
+			},
+			"params": []string{"ignored"},
+		},
+		"output": map[string]any{
+			"validationFailed": false,
+			"validationError":  "",
+		},
+	},
 	"failedFormat": map[string]any{
 		"input": map[string]any{
 			"selector": "email",
