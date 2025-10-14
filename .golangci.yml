@@ -1,88 +1,108 @@
+version: "2"
 run:
   timeout: 5m
+  relative-path-mode: gomod
   tests: false
-
-linters-settings:
-  errcheck:
-    check-type-assertions: true
-    check-blank: false
-  gci:
-    sections:
-      - standard
-      - default
-      - prefix(github.com/behzadsh/go.validator)
-      - blank
-      - dot
-  godot:
-    capital: true
-  gofumpt:
-    extra-rules: true
-  revive:
-    enable-all-rules: true
-    rules:
-      - name: add-constant
-        disabled: true
-      - name: argument-limit
-        disabled: true
-      - name: banned-characters
-        disabled: true
-      - name: cognitive-complexity
-        disabled: true
-      - name: cyclomatic
-        disabled: true
-      - name: file-header
-        disabled: true
-      - name: function-length
-        disabled: true
-      - name: function-result-limit
-        arguments: [2]
-      - name: line-length-limit
-        disabled: false
-        arguments: [120]
-      - name: max-public-structs
-        disabled: true
-      - name: nested-structs
-        disabled: true
-      - name: package-comments
-        disabled: true
-      - name: unhandled-error
-        arguments:
-          - "fmt.Printf"
-          - "fmt.Println"
-          - "fmt.Print"
-  misspell:
-    locale: US
-    ignore-words:
-      - behzadsh
-  nolintlint:
-    require-explanation: true
-    require-specific: true
-  gocyclo:
-    min-complexity: 15
-  gocognit:
-    min-complexity: 15
-
+  allow-parallel-runners: true
+  go: "1.24"
 linters:
-  enable-all: false
+  default: none
   enable:
     - errcheck
-    - gosimple
     - govet
     - ineffassign
     - staticcheck
     - unused
     - errname
-    - gci
     - gocyclo
-    - gocognit
     - godot
-    - gofumpt
     - gosec
     - revive
     - misspell
     - prealloc
     - unconvert
     - nolintlint
-
+  settings:
+    errcheck:
+      check-type-assertions: true
+      check-blank: true
+    govet:
+      enable:
+        - shadow
+    gocyclo:
+      min-complexity: 20
+    godot:
+      capital: true
+    revive:
+      enable-all-rules: true
+      rules:
+        - name: add-constant
+          disabled: true
+        - name: argument-limit
+          disabled: true
+        - name: cyclomatic
+          disabled: true
+        - name: import-alias-naming
+          arguments:
+            - "^[a-z][a-zA-Z0-9]{0,}$"
+        - name: line-length-limit
+          disabled: true
+        - name: package-comments
+          disabled: true
+        - name: function-result-limit
+          disabled: true
+        - name: flag-parameter
+          disabled: true
+        - name: max-public-structs
+          disabled: true
+        - name: banned-characters
+          disabled: true
+        - name: cognitive-complexity
+          disabled: true
+        - name: function-length
+          disabled: true
+        - name: file-header
+          disabled: true
+        - name: nested-structs
+          disabled: true
+        - name: unhandled-error
+          arguments:
+            - "fmt.Printf"
+            - "fmt.Println"
+            - "fmt.Print"
+    misspell:
+      locale: US
+    prealloc:
+      for-loops: true
+    nolintlint:
+      require-explanation: true
+      require-specific: true
+formatters:
+  enable:
+    - gci
+    - gofmt
+    - gofumpt
+    - golines
+  settings:
+    gci:
+      sections:
+        - standard
+        - default
+        - prefix(github.com/behzadsh/go.validator)
+        - blank
+        - dot
+      custom-order: true
+    gofmt:
+      rewrite-rules:
+        - pattern: 'interface{}'
+          replacement: 'any'
+        - pattern: 'a[b:len(a)]'
+          replacement: 'a[b:]'
+    gofumpt:
+      module-path: github.com/behzadsh/go.validator
+      extra-rules: true
+    golines:
+      max-len: 120
 issues:
-  exclude-use-default: false
+  max-issues-per-linter: 0
+  max-same-issues: 0
