@@ -1,5 +1,5 @@
 # Go Validator
-![Coverage](https://img.shields.io/badge/Coverage-99.8%25-brightgreen)
+![Coverage](https://img.shields.io/badge/Coverage-98.6%25-brightgreen)
 [![Go Report Card](https://goreportcard.com/badge/github.com/behzadsh/go.validator)](https://goreportcard.com/report/github.com/behzadsh/go.validator)
 
 The `go.validator` package provides a simple and convenient way to validate your data.
