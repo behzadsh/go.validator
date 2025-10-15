@@ -7,14 +7,16 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// Distinct checks the field under validation is an array/slice with all unique elements.
+// Distinct checks whether the field under validation is an array/slice with all unique elements.
+// This rule accepts no parameters.
 //
 // Usage: "distinct".
 type Distinct struct {
 	translation.BaseTranslatableRule
 }
 
-// Validate does the validation process of the rule.
+// Validate checks if the value of the field under validation is an array/slice with all unique elements.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *Distinct) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	v := indirectValue(value)
 	if v.Kind() != reflect.Slice && v.Kind() != reflect.Array {

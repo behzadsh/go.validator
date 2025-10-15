@@ -5,15 +5,16 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// Required checks the field under validation exists.
+// Required checks whether the field under validation must exist.
+// This rule accepts no parameters.
 //
 // Usage: "required".
 type Required struct {
 	translation.BaseTranslatableRule
 }
 
-// Validate does the validation process of the rule. See struct documentation
-// for more details.
+// Validate checks if the value of the field under validation must exist.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *Required) Validate(selector string, _ any, inputBag bag.InputBag) ValidationResult {
 	if !inputBag.Has(selector) {
 		return NewFailedResult(r.Translate(r.Locale, "validation.required", map[string]string{

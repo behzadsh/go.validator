@@ -5,8 +5,7 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// Different checks the field under validation has different value than
-// the given field.
+// Different checks whether the field under validation has a different value than the specified field.
 //
 // Usage: "different:otherField".
 // Example" "different:oldPassword".
@@ -15,8 +14,8 @@ type Different struct {
 	otherField string
 }
 
-// Validate does the validation process of the rule. See struct documentation
-// for more details.
+// Validate checks if the value of the field under validation is different from the value of the specified field.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *Different) Validate(selector string, value any, inputBag bag.InputBag) ValidationResult {
 	otherValue, _ := inputBag.Get(r.otherField)
 
@@ -30,14 +29,15 @@ func (r *Different) Validate(selector string, value any, inputBag bag.InputBag) 
 	return NewSuccessResult()
 }
 
-// AddParams adds rules parameter values to the rule instance.
+// AddParams assigns the provided parameter values to the Different rule instance.
+// The first parameter specifies the `otherField` to compare against (required).
 func (r *Different) AddParams(params []string) {
 	r.otherField = params[0]
 }
 
-// MinRequiredParams returns minimum parameter requirement for this rule.
-// This rule accept only one parameter, and that is `otherField`. This
-// parameter is mandatory.
+// MinRequiredParams returns the minimum number of required parameters for the Different rule.
+// It specifies how many parameters must be provided when configuring this rule.
+// Returns 1, indicating that the `otherField` parameter is mandatory.
 func (*Different) MinRequiredParams() int {
 	return 1
 }

@@ -9,14 +9,16 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// Timezone checks the field under validation is a valid IANA time zone name.
+// Timezone checks whether the field under validation is a valid IANA time zone name.
+// This rule accepts no parameters.
 //
 // Usage: "timezone".
 type Timezone struct {
 	translation.BaseTranslatableRule
 }
 
-// Validate does the validation process of the rule.
+// Validate checks if the value of the field under validation is a valid IANA time zone name.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *Timezone) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	name := cast.ToString(value)
 	if name == "" {

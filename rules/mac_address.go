@@ -11,15 +11,17 @@ import (
 
 var macRegex = regexp.MustCompile(`^(?i)([0-9A-F]{2}([-:])){5}([0-9A-F]{2})$`)
 
-// MacAddress checks the field under validation is a valid MAC address.
+// MacAddress checks whether the field under validation is a valid MAC address.
 // Supports formats like 01:23:45:67:89:ab or 01-23-45-67-89-ab.
+// This rule accepts no parameters.
 //
 // Usage: "macAddress".
 type MacAddress struct {
 	translation.BaseTranslatableRule
 }
 
-// Validate does the validation process of the rule.
+// Validate checks if the value of the field under validation is a valid MAC address.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *MacAddress) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	s := cast.ToString(value)
 	if !macRegex.MatchString(s) {

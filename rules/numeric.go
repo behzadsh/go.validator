@@ -7,15 +7,16 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// Numeric checks the field under validation has a numeric value.
+// Numeric checks whether the field under validation has a numeric value.
+// This rule accepts no parameters.
 //
 // Usage: "numeric".
 type Numeric struct {
 	translation.BaseTranslatableRule
 }
 
-// Validate does the validation process of the rule. See struct documentation
-// for more details.
+// Validate checks if the value of the field under validation has a numeric value.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *Numeric) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	_, err := cast.ToFloat64E(value)
 	if err != nil {

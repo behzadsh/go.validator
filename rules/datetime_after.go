@@ -9,16 +9,19 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// DateTimeAfter checks the field under validation is a datetime after the given datetime string.
+// DateTimeAfter checks whether the field under validation is a datetime string that occurs after the given datetime value.
 //
 // Usage: "dateTimeAfter:value[,timeZone]".
+// Example: "dateTimeAfter:2021-01-01".
+// Example: "dateTimeAfter:2021-01-01,America/New_York".
 type DateTimeAfter struct {
 	translation.BaseTranslatableRule
 	threshold time.Time
 	timeZone  *time.Location
 }
 
-// Validate does the validation process of the rule.
+// Validate checks if the value of the field under validation is a datetime string that occurs after the given datetime value.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *DateTimeAfter) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	timeValue, err := cast.ToTimeInDefaultLocationE(value, r.timeZone)
 	if err != nil {
@@ -37,7 +40,9 @@ func (r *DateTimeAfter) Validate(selector string, value any, _ bag.InputBag) Val
 	return NewSuccessResult()
 }
 
-// AddParams adds rules parameter values to the rule instance.
+// AddParams assigns the provided parameter values to the DateTimeAfter rule instance.
+// The first parameter specifies the `value` to compare against (required),
+// and the second parameter, if provided, sets the time zone for parsing date/time values (optional).
 func (r *DateTimeAfter) AddParams(params []string) {
 	r.timeZone = time.UTC
 	if len(params) > 1 {
@@ -53,5 +58,7 @@ func (r *DateTimeAfter) AddParams(params []string) {
 	}
 }
 
-// MinRequiredParams returns minimum parameter requirement for this rule.
+// MinRequiredParams returns the minimum number of required parameters for the DateTimeAfter rule.
+// It specifies how many parameters must be provided when configuring this rule.
+// Returns 1, indicating that the `value` parameter is mandatory, while the `timeZone` parameter is optional.
 func (*DateTimeAfter) MinRequiredParams() int { return 1 }

@@ -7,18 +7,17 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// RequiredWithoutAll check the field under validation exists if all given
-// fields not exist.
+// RequiredWithoutAll checks whether the field under validation must exist if all given fields not exist.
 //
-// Usage: "requiredWithout:otherField,anotherField[,...]".
-// example: "requiredWithout:phone,username".
+// Usage: "requiredWithoutAll:otherField,anotherField[,...]".
+// Example: "requiredWithoutAll:phone,username".
 type RequiredWithoutAll struct {
 	translation.BaseTranslatableRule
 	otherFields []string
 }
 
-// Validate does the validation process of the rule. See struct documentation
-// for more details.
+// Validate checks if the value of the field under validation must exist if all given fields not exist.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *RequiredWithoutAll) Validate(selector string, _ any, inputBag bag.InputBag) ValidationResult {
 	exists := inputBag.Has(selector)
 
@@ -40,14 +39,15 @@ func (r *RequiredWithoutAll) Validate(selector string, _ any, inputBag bag.Input
 	return NewSuccessResult()
 }
 
-// AddParams adds rules parameter values to the rule instance.
+// AddParams sets the list of field names that this rule will check for absence,
+// by assigning the given parameter values to the RequiredWithoutAll rule instance.
 func (r *RequiredWithoutAll) AddParams(params []string) {
 	r.otherFields = params
 }
 
-// MinRequiredParams returns minimum parameter requirement for this rule.
-// This rule needs at least 2 parameters which represent the name of other
-// field or fields.
+// MinRequiredParams returns the minimum number of required parameters for the RequiredWithoutAll rule.
+// It specifies how many parameters must be provided when configuring this rule.
+// Returns 2, indicating that at least two other fields are required.
 func (*RequiredWithoutAll) MinRequiredParams() int {
 	return 2
 }

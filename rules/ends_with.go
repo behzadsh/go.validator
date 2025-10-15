@@ -9,7 +9,7 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// EndsWith check the field under validation ends with given sub string.
+// EndsWith checks whether the field under validation ends with the given substring.
 //
 // Usage: "endsWith:suffix".
 // Example: "endsWith:Model".
@@ -18,8 +18,8 @@ type EndsWith struct {
 	suffix string
 }
 
-// Validate does the validation process of the rule. See struct documentation
-// for more details.
+// Validate checks if the value of the field under validation ends with the given substring.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *EndsWith) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	if !strings.HasSuffix(cast.ToString(value), r.suffix) {
 		return NewFailedResult(r.Translate(r.Locale, "validation.ends_with", map[string]string{
@@ -31,13 +31,15 @@ func (r *EndsWith) Validate(selector string, value any, _ bag.InputBag) Validati
 	return NewSuccessResult()
 }
 
-// AddParams adds rules parameter values to the rule instance.
+// AddParams assigns the provided parameter values to the EndsWith rule instance.
+// The first parameter specifies the `suffix` to compare against (required).
 func (r *EndsWith) AddParams(params []string) {
 	r.suffix = params[0]
 }
 
-// MinRequiredParams returns minimum parameter requirement for this rule.
-// This rule needs only one parameter and that is the prefix.
+// MinRequiredParams returns the minimum number of required parameters for the EndsWith rule.
+// It specifies how many parameters must be provided when configuring this rule.
+// Returns 1, indicating that the `suffix` parameter is mandatory.
 func (*EndsWith) MinRequiredParams() int {
 	return 1
 }

@@ -11,14 +11,12 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-const emailRegexPattern = "^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?" +
-	"(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
+const emailRegexPattern = "^[a-zA-Z0-9.!#$%&'*+\\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?" + "(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
 
-// Email checks the field under validation is a valid email address based on
-// RFC 53222. There is also an optional mx record check, you can enable by
-// passing `mx` as parameter.
+// Email checks if the field under validation is a valid email address based on RFC 5322. There is also an optional MX
+// record check that can be enabled by passing `mx` as a parameter.
 //
-// Usage: "email[:mx].
+// Usage: "email[:mx]".
 // Example: "email".
 // Example: "email:mx".
 type Email struct {
@@ -28,8 +26,8 @@ type Email struct {
 	domainPart    string
 }
 
-// Validate does the validation process of the rule. See struct documentation
-// for more details.
+// Validate checks if the value of the field under validation is a valid email address based on RFC 5322.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *Email) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	if !r.isEmail(cast.ToString(value)) {
 		return NewFailedResult(r.Translate(r.Locale, "validation.email", map[string]string{
@@ -40,7 +38,8 @@ func (r *Email) Validate(selector string, value any, _ bag.InputBag) ValidationR
 	return NewSuccessResult()
 }
 
-// AddParams adds rules parameter values to the rule instance.
+// AddParams assigns the provided parameter values to the Email rule instance.
+// The first parameter specifies the `mx` to compare against (optional).
 func (r *Email) AddParams(params []string) {
 	for _, param := range params {
 		if param == "mx" {
@@ -50,10 +49,9 @@ func (r *Email) AddParams(params []string) {
 	}
 }
 
-// MinRequiredParams returns minimum parameter requirement for this rule.
-// This rule accept `mx` as the only and optional parameter. By passing this
-// parameter, an extra step will be added to validation process. The `mx`
-// validation checks the email domain for mx record.
+// MinRequiredParams returns the minimum number of required parameters for the Email rule.
+// It specifies how many parameters must be provided when configuring this rule.
+// Returns 0, indicating that the `mx` parameter is optional.
 func (*Email) MinRequiredParams() int {
 	return 0
 }

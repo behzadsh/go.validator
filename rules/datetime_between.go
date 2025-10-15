@@ -9,9 +9,11 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// DateTimeBetween checks the field under validation is a datetime between two given datetime strings (inclusive).
+// DateTimeBetween checks whether the field under validation is a datetime string that occurs between two given datetime values (inclusive).
 //
 // Usage: "dateTimeBetween:min,max[,timeZone]".
+// Example: "dateTimeBetween:2021-01-01,2021-01-02".
+// Example: "dateTimeBetween:2021-01-01,2021-01-02,America/New_York".
 type DateTimeBetween struct {
 	translation.BaseTranslatableRule
 	min      time.Time
@@ -19,7 +21,8 @@ type DateTimeBetween struct {
 	timeZone *time.Location
 }
 
-// Validate does the validation process of the rule.
+// Validate checks if the value of the field under validation is a datetime string that occurs between two given datetime values (inclusive).
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *DateTimeBetween) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	timeValue, err := cast.ToTimeInDefaultLocationE(value, r.timeZone)
 	if err != nil {
@@ -39,7 +42,10 @@ func (r *DateTimeBetween) Validate(selector string, value any, _ bag.InputBag) V
 	return NewSuccessResult()
 }
 
-// AddParams adds rules parameter values to the rule instance.
+// AddParams assigns the provided parameter values to the DateTimeBetween rule instance.
+// The first parameter specifies the `min` value to compare against (required),
+// the second parameter specifies the `max` value to compare against (required),
+// and the third parameter, if provided, sets the time zone for parsing date/time values (optional).
 func (r *DateTimeBetween) AddParams(params []string) {
 	r.timeZone = time.UTC
 	if len(params) > 2 {
@@ -56,5 +62,7 @@ func (r *DateTimeBetween) AddParams(params []string) {
 	}
 }
 
-// MinRequiredParams returns minimum parameter requirement for this rule.
+// MinRequiredParams returns the minimum number of required parameters for the DateTimeBetween rule.
+// It specifies how many parameters must be provided when configuring this rule.
+// Returns 2, indicating that the `min` and `max` parameters are mandatory, while the `timeZone` parameter is optional.
 func (*DateTimeBetween) MinRequiredParams() int { return 2 }

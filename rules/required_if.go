@@ -7,21 +7,20 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// RequiredIf check the field under validation exists if the given condition
-// is true. The condition is consists of another field name and a value. If
-// the value of the other field is equal to the given value, the field under
-// validation is required.
-// Note that the only supported type for value parameter is string.
+// RequiredIf checks whether the field under validation must exist if the given condition is true.
+// The condition consists of another field name and a value. If the value of the other field is equal to the given
+// value, the field under validation is required.
+// Note that the only supported type for the value parameter is string.
 //
 // Usage: "requiredIf:otherField,value".
-// example: "requiredIf:type,user".
+// Example: "requiredIf:type,user".
 type RequiredIf struct {
 	translation.BaseTranslatableRule
 	otherField, expectedValue string
 }
 
-// Validate does the validation process of the rule. See struct documentation
-// for more details.
+// Validate checks if the value of the field under validation must exist if the given condition is true.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *RequiredIf) Validate(selector string, _ any, inputBag bag.InputBag) ValidationResult {
 	exists := inputBag.Has(selector)
 	otherValue, _ := inputBag.Get(r.otherField)
@@ -37,15 +36,17 @@ func (r *RequiredIf) Validate(selector string, _ any, inputBag bag.InputBag) Val
 	return NewSuccessResult()
 }
 
-// AddParams adds rules parameter values to the rule instance.
+// AddParams assigns the provided parameter values to the RequiredIf rule instance.
+// The first parameter specifies the `otherField` to compare against (required),
+// and the second parameter, if provided, specifies the `value` to compare against (optional).
 func (r *RequiredIf) AddParams(params []string) {
 	r.otherField = params[0]
 	r.expectedValue = params[1]
 }
 
-// MinRequiredParams returns minimum parameter requirement for this rule.
-// This rule accept 2 parameter, `otherField`, and `value`. Both parameters
-// are mandatory.
+// MinRequiredParams returns the minimum number of required parameters for the RequiredIf rule.
+// It specifies how many parameters must be provided when configuring this rule.
+// Returns 2, indicating that the `otherField` and `value` parameters are mandatory.
 func (*RequiredIf) MinRequiredParams() int {
 	return 2
 }

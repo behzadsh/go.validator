@@ -9,8 +9,7 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// LessThan checks the field under validation has a value or a length
-// less than the given value.
+// LessThan checks whether the field under validation has a value or a length less than the given value.
 //
 // Usage: "lt:value".
 // Example: "lt:18".
@@ -19,8 +18,8 @@ type LessThan struct {
 	value float64
 }
 
-// Validate does the validation process of the rule. See struct documentation
-// for more details.
+// Validate checks if the value of the field under validation has a value or a length less than the given value.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *LessThan) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	if value == nil {
 		return NewSuccessResult()
@@ -50,13 +49,15 @@ func (r *LessThan) Validate(selector string, value any, _ bag.InputBag) Validati
 	return NewSuccessResult()
 }
 
-// AddParams adds rules parameter values to the rule instance.
+// AddParams assigns the provided parameter values to the LessThan rule instance.
+// The first parameter specifies the `value` to compare against (required).
 func (r *LessThan) AddParams(params []string) {
 	r.value = cast.ToFloat64(params[0])
 }
 
-// MinRequiredParams returns minimum parameter requirement for this rule.
-// This rule needs only 1 parameter that is the `value`.
+// MinRequiredParams returns the minimum number of required parameters for the LessThan rule.
+// It specifies how many parameters must be provided when configuring this rule.
+// Returns 1, indicating that the `value` parameter is mandatory.
 func (*LessThan) MinRequiredParams() int {
 	return 1
 }

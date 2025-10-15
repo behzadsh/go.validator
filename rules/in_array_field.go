@@ -7,7 +7,7 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// InArrayField checks the field under validation exists in another array/slice field.
+// InArrayField checks whether the field under validation exists in another array/slice field.
 //
 // Usage: "inArrayField:otherField".
 // Example: value selected from enum slice field.
@@ -16,7 +16,8 @@ type InArrayField struct {
 	otherField string
 }
 
-// Validate does the validation process of the rule.
+// Validate checks if the value of the field under validation exists in another array/slice field.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *InArrayField) Validate(selector string, value any, inputBag bag.InputBag) ValidationResult {
 	other, ok := inputBag.Get(r.otherField)
 	if !ok {
@@ -44,12 +45,15 @@ func (r *InArrayField) Validate(selector string, value any, inputBag bag.InputBa
 	}))
 }
 
-// AddParams adds rules parameter values to the rule instance.
+// AddParams assigns the provided parameter values to the InArrayField rule instance.
+// The first parameter specifies the `otherField` to compare against (required).
 func (r *InArrayField) AddParams(params []string) {
 	r.otherField = params[0]
 }
 
-// MinRequiredParams returns minimum parameter requirement for this rule.
+// MinRequiredParams returns the minimum number of required parameters for the InArrayField rule.
+// It specifies how many parameters must be provided when configuring this rule.
+// Returns 1, indicating that the `otherField` parameter is mandatory.
 func (*InArrayField) MinRequiredParams() int { return 1 }
 
 func toComparableString(v any) string {

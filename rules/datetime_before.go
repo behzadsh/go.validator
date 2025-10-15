@@ -9,16 +9,19 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// DateTimeBefore checks the field under validation is a datetime before the given datetime string.
+// DateTimeBefore checks whether the field under validation is a datetime string that occurs before the given datetime value.
 //
 // Usage: "dateTimeBefore:value[,timeZone]".
+// Example: "dateTimeBefore:2021-01-01".
+// Example: "dateTimeBefore:2021-01-01,America/New_York".
 type DateTimeBefore struct {
 	translation.BaseTranslatableRule
 	threshold time.Time
 	timeZone  *time.Location
 }
 
-// Validate does the validation process of the rule.
+// Validate checks if the value of the field under validation is a datetime string that occurs before the given datetime value.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *DateTimeBefore) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	timeValue, err := cast.ToTimeInDefaultLocationE(value, r.timeZone)
 	if err != nil {
@@ -37,7 +40,9 @@ func (r *DateTimeBefore) Validate(selector string, value any, _ bag.InputBag) Va
 	return NewSuccessResult()
 }
 
-// AddParams adds rules parameter values to the rule instance.
+// AddParams assigns the provided parameter values to the DateTimeBefore rule instance.
+// The first parameter specifies the `value` to compare against (required),
+// and the second parameter, if provided, sets the time zone for parsing date/time values (optional).
 func (r *DateTimeBefore) AddParams(params []string) {
 	r.timeZone = time.UTC
 	if len(params) > 1 {
@@ -52,5 +57,7 @@ func (r *DateTimeBefore) AddParams(params []string) {
 	}
 }
 
-// MinRequiredParams returns minimum parameter requirement for this rule.
+// MinRequiredParams returns the minimum number of required parameters for the DateTimeBefore rule.
+// It specifies how many parameters must be provided when configuring this rule.
+// Returns 1, indicating that the `value` parameter is mandatory, while the `timeZone` parameter is optional.
 func (*DateTimeBefore) MinRequiredParams() int { return 1 }

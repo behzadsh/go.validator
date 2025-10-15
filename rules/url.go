@@ -9,16 +9,18 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// URL checks the field under validation is a valid URL with scheme and host.
+// URL checks whether the field under validation is a valid URL with scheme and host.
 //
-// Usage: "url".
+// Usage: "url[:scheme]".
+// Example: "url".
+// Example: "url:scheme".
 type URL struct {
 	translation.BaseTranslatableRule
 	requireScheme bool
 }
 
-// Validate does the validation process of the rule. See struct documentation
-// for more details.
+// Validate checks if the value of the field under validation is a valid URL with scheme and host.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *URL) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	raw := cast.ToString(value)
 	u, err := url.ParseRequestURI(raw)
@@ -43,9 +45,9 @@ func (r *URL) Validate(selector string, value any, _ bag.InputBag) ValidationRes
 	return NewSuccessResult()
 }
 
-// AddParams adds rules parameter values to the rule instance.
-// Optional parameters:
-// - "scheme": require scheme presence in the URL.
+// AddParams assigns the provided parameter values to the URL rule instance.
+// The first parameter specifies the `scheme` to compare against (optional).
+// The second parameter, if provided, specifies the `scheme` to compare against (optional).
 func (r *URL) AddParams(params []string) {
 	for _, p := range params {
 		if p == "scheme" {
@@ -54,5 +56,7 @@ func (r *URL) AddParams(params []string) {
 	}
 }
 
-// MinRequiredParams returns minimum parameter requirement for this rule.
+// MinRequiredParams returns the minimum number of required parameters for the URL rule.
+// It specifies how many parameters must be provided when configuring this rule.
+// Returns 0, indicating that no parameters are required.
 func (*URL) MinRequiredParams() int { return 0 }

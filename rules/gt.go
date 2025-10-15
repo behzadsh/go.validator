@@ -9,8 +9,7 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// GreaterThan checks the field under validation has a value or a length
-// greater than the given value.
+// GreaterThan checks whether the field under validation has a value or length greater than the specified value.
 //
 // Usage: "gt:value".
 // Example: "gt:18".
@@ -19,8 +18,8 @@ type GreaterThan struct {
 	value float64
 }
 
-// Validate does the validation process of the rule. See struct documentation
-// for more details.
+// Validate checks if the value of the field under validation has a value or length greater than the specified value.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *GreaterThan) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	if value == nil {
 		return NewSuccessResult()
@@ -50,13 +49,15 @@ func (r *GreaterThan) Validate(selector string, value any, _ bag.InputBag) Valid
 	return NewSuccessResult()
 }
 
-// AddParams adds rules parameter values to the rule instance.
+// AddParams assigns the provided parameter values to the GreaterThan rule instance.
+// The first parameter specifies the `value` to compare against (required).
 func (r *GreaterThan) AddParams(params []string) {
 	r.value = cast.ToFloat64(params[0])
 }
 
-// MinRequiredParams returns minimum parameter requirement for this rule.
-// This rule needs only 1 parameter that is the `value`.
+// MinRequiredParams returns the minimum number of required parameters for the GreaterThan rule.
+// It specifies how many parameters must be provided when configuring this rule.
+// Returns 1, indicating that the `value` parameter is mandatory.
 func (*GreaterThan) MinRequiredParams() int {
 	return 1
 }

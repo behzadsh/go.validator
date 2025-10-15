@@ -9,7 +9,7 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// Regex check the field under validation match the given regex pattern.
+// Regex checks whether the field under validation match the given regex pattern.
 //
 // Usage: "regex:pattern".
 // Example: "regex:[a-zA-Z0-9]+".
@@ -18,8 +18,8 @@ type Regex struct {
 	pattern string
 }
 
-// Validate does the validation process of the rule. See struct documentation
-// for more details.
+// Validate checks if the value of the field under validation match the given regex pattern.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *Regex) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	ok, err := regexp.MatchString(r.pattern, cast.ToString(value))
 	if !ok || err != nil {
@@ -32,13 +32,15 @@ func (r *Regex) Validate(selector string, value any, _ bag.InputBag) ValidationR
 	return NewSuccessResult()
 }
 
-// AddParams adds rules parameter values to the rule instance.
+// AddParams assigns the provided parameter values to the Regex rule instance.
+// The first parameter specifies the `pattern` to compare against (required).
 func (r *Regex) AddParams(params []string) {
 	r.pattern = params[0]
 }
 
-// MinRequiredParams returns minimum parameter requirement for this rule.
-// This rule needs only one parameter and that is the regex pattern.
+// MinRequiredParams returns the minimum number of required parameters for the Regex rule.
+// It specifies how many parameters must be provided when configuring this rule.
+// Returns 1, indicating that the `pattern` parameter is mandatory.
 func (*Regex) MinRequiredParams() int {
 	return 1
 }

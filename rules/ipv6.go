@@ -9,14 +9,16 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// IPv6 checks the field under validation is a valid IPv6 address.
+// IPv6 checks whether the field under validation is a valid IPv6 address.
+// This rule accepts no parameters.
 //
 // Usage: "ipv6".
 type IPv6 struct {
 	translation.BaseTranslatableRule
 }
 
-// Validate does the validation process of the rule.
+// Validate checks if the value of the field under validation is a valid IPv6 address.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *IPv6) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	s := cast.ToString(value)
 	ip := net.ParseIP(s)

@@ -5,7 +5,7 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// SameAs check the field under validation has the value same as the other given field.
+// SameAs checks whether the field under validation has the value same as the other given field.
 //
 // Usage: "sameAs:otherField".
 // Example: "sameAs:password".
@@ -14,8 +14,8 @@ type SameAs struct {
 	otherField string
 }
 
-// Validate does the validation process of the rule. See struct documentation
-// for more details.
+// Validate checks if the value of the field under validation has the value same as the other given field.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *SameAs) Validate(selector string, value any, inputBag bag.InputBag) ValidationResult {
 	otherValue, _ := inputBag.Get(r.otherField)
 
@@ -29,13 +29,15 @@ func (r *SameAs) Validate(selector string, value any, inputBag bag.InputBag) Val
 	return NewSuccessResult()
 }
 
-// AddParams adds rules parameter values to the rule instance.
+// AddParams assigns the provided parameter values to the SameAs rule instance.
+// The first parameter specifies the `otherField` to compare against (required).
 func (r *SameAs) AddParams(params []string) {
 	r.otherField = params[0]
 }
 
-// MinRequiredParams returns minimum parameter requirement for this rule.
-// This rule needs only one parameter and that is the regex pattern.
+// MinRequiredParams returns the minimum number of required parameters for the SameAs rule.
+// It specifies how many parameters must be provided when configuring this rule.
+// Returns 1, indicating that the `otherField` parameter is mandatory.
 func (*SameAs) MinRequiredParams() int {
 	return 1
 }
