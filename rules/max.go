@@ -7,7 +7,7 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// Max checks the field under validation value be less than given value.
+// Max checks whether the field under validation value be less than given value.
 //
 // Usage: "max:value".
 // Example: "max:10".
@@ -16,8 +16,8 @@ type Max struct {
 	max float64
 }
 
-// Validate does the validation process of the rule. See struct documentation
-// for more details.
+// Validate checks if the value of the field under validation value be less than given value.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *Max) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	if cast.ToFloat64(value) > r.max {
 		return NewFailedResult(r.Translate(r.Locale, "validation.max", map[string]string{
@@ -29,13 +29,15 @@ func (r *Max) Validate(selector string, value any, _ bag.InputBag) ValidationRes
 	return NewSuccessResult()
 }
 
-// AddParams adds rules parameter values to the rule instance.
+// AddParams assigns the provided parameter values to the Max rule instance.
+// The first parameter specifies the `value` to compare against (required).
 func (r *Max) AddParams(params []string) {
 	r.max = cast.ToFloat64(params[0])
 }
 
-// MinRequiredParams returns minimum parameter requirement for this rule.
-// This rule need only one parameter that is the `maxValue`.
+// MinRequiredParams returns the minimum number of required parameters for the Max rule.
+// It specifies how many parameters must be provided when configuring this rule.
+// Returns 1, indicating that the `value` parameter is mandatory.
 func (*Max) MinRequiredParams() int {
 	return 1
 }

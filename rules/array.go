@@ -7,16 +7,16 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// Array checks the field under validation is an array or slice.
-// This rule accept no parameters.
+// Array checks whether the field under validation is an array or slice.
+// This rule accepts no parameters.
 //
 // Usage: "array".
 type Array struct {
 	translation.BaseTranslatableRule
 }
 
-// Validate does the validation process of the rule. See struct documentation
-// for more details.
+// Validate checks if the value of the field under validation is an array or slice.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *Array) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	if !funk.IsCollection(value) {
 		return NewFailedResult(r.Translate(r.Locale, "validation.array", map[string]string{

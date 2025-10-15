@@ -9,15 +9,16 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// Lowercase checks the field under validation be lowercase string.
+// Lowercase checks whether the field under validation is a lowercase string.
+// This rule accepts no parameters.
 //
 // Usage: "lowercase".
 type Lowercase struct {
 	translation.BaseTranslatableRule
 }
 
-// Validate does the validation process of the rule. See struct documentation
-// for more details.
+// Validate checks if the value of the field under validation is a lowercase string.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *Lowercase) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	strValue := cast.ToString(value)
 

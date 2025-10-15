@@ -6,56 +6,16 @@ import (
 	"strings"
 
 	"github.com/spf13/cast"
-	"github.com/thoas/go-funk"
 
 	"github.com/behzadsh/go.validator/bag"
-	"github.com/behzadsh/go.validator/rules"
-	"github.com/behzadsh/go.validator/translation"
 )
-
-type ruleIndicator string
 
 // RulesMap is a custom type for a map of rules for field selectors.
 type RulesMap map[string][]string
 
-func (r ruleIndicator) load(locale string) rules.Rule {
-	name, params := r.parseRuleParams()
-	rule, ok := registry[name]
-	if !ok || rule == nil {
-		panic(fmt.Errorf("rule %s is not registered", name))
-	}
-
-	if ruleWithParams, ok := rule.(rules.RuleWithParams); ok {
-		paramNum := len(params)
-		minRequiredParams := ruleWithParams.MinRequiredParams()
-
-		if paramNum < minRequiredParams {
-			panic(fmt.Errorf("rule %s need at least %d parameter, got %d", name, minRequiredParams, paramNum))
-		}
-
-		ruleWithParams.AddParams(params)
-	}
-
-	if translatableRule, ok := rule.(translation.TranslatableRule); ok {
-		translatableRule.AddLocale(locale)
-		translatableRule.AddTranslationFunction(translation.GetDefaultTranslatorFunc())
-	}
-
-	return rule
-}
-
-func (r ruleIndicator) parseRuleParams() (string, []string) {
-	parts := strings.SplitN(string(r), ":", 2)
-	if len(parts) == 1 {
-		return parts[0], nil
-	}
-
-	return parts[0], cast.ToStringSlice(funk.Map(strings.Split(parts[1], ","), func(s string) string {
-		return strings.TrimSpace(s)
-	}))
-}
-
-// ValidateMap validate the given input map with given rules map.
+// ValidateMap validates each field in the provided input map according to the specified set of rules in rulesMap.
+// It returns a Result containing any validation errors found. The optional locale parameter specifies the language
+// used for error messages; if not provided, the default locale is used.
 func ValidateMap(input map[string]any, rulesMap RulesMap, locale ...string) Result {
 	currentLocale := defaultLocale
 	if len(locale) > 0 {
@@ -67,7 +27,9 @@ func ValidateMap(input map[string]any, rulesMap RulesMap, locale ...string) Resu
 	return doValidation(inputBag, rulesMap, currentLocale)
 }
 
-// ValidateMapSlice validates the given slice of maps with given rules map.
+// ValidateMapSlice iterates over a slice of input maps, validating each map against the specified rulesMap.
+// It returns a Result containing accumulated validation errors for all maps, indexed by their position in the slice.
+// The optional locale parameter determines the language for error messages; if not set, the default locale is used.
 func ValidateMapSlice(input []map[string]any, rulesMap RulesMap, locale ...string) Result {
 	currentLocale := defaultLocale
 	if len(locale) > 0 {
@@ -86,7 +48,9 @@ func ValidateMapSlice(input []map[string]any, rulesMap RulesMap, locale ...strin
 	return result
 }
 
-// ValidateStruct validates the given struct with given rules map.
+// ValidateStruct validates each field in the provided struct according to the specified set of rules in rulesMap.
+// It returns a Result containing any validation errors found. The optional locale parameter specifies the language
+// used for error messages; if not provided, the default locale is used.
 func ValidateStruct(input any, rulesMap RulesMap, locale ...string) Result {
 	currentLocale := defaultLocale
 	if len(locale) > 0 {
@@ -94,7 +58,7 @@ func ValidateStruct(input any, rulesMap RulesMap, locale ...string) Result {
 	}
 
 	v := reflect.ValueOf(input)
-	if v.Kind() != reflect.Struct && !(v.Kind() == reflect.Ptr && v.Elem().Kind() == reflect.Struct) {
+	if v.Kind() != reflect.Struct && (v.Kind() != reflect.Ptr || v.Elem().Kind() != reflect.Struct) {
 		panic("validation.ValidateStruct only support struct or a pointer to a struct as first parameter")
 	}
 
@@ -103,7 +67,9 @@ func ValidateStruct(input any, rulesMap RulesMap, locale ...string) Result {
 	return doValidation(inputBag, rulesMap, currentLocale)
 }
 
-// ValidateStructSlice validates the given slice of struct with given rules map.
+// ValidateStructSlice iterates over a slice of structs, validating each struct against the specified rulesMap.
+// It returns a Result containing accumulated validation errors for all structs, indexed by their position in the slice.
+// The optional locale parameter determines the language for error messages; if not set, the default locale is used.
 func ValidateStructSlice(input []any, rulesMap RulesMap, locale ...string) Result {
 	currentLocale := defaultLocale
 	if len(locale) > 0 {
@@ -121,7 +87,9 @@ func ValidateStructSlice(input []any, rulesMap RulesMap, locale ...string) Resul
 	return result
 }
 
-// Validate validate the given input with given validation rules.
+// Validate validates the provided input according to the specified set of rules in ruleSlice.
+// It returns a Result containing any validation errors found. The optional locale parameter specifies the language
+// used for error messages; if not provided, the default locale is used.
 func Validate(input any, ruleSlice []string, locale ...string) Result {
 	currentLocale := defaultLocale
 	if len(locale) > 0 {

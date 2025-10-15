@@ -7,7 +7,7 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// NotIn checks the field under validation not be in one of given values.
+// NotIn checks whether the field under validation not be in one of given values.
 //
 // Usage: "notIn:value1,value2[,value3,...]".
 // Example: "notIn:admin,superuser".
@@ -16,8 +16,8 @@ type NotIn struct {
 	values []string
 }
 
-// Validate does the validation process of the rule. See struct documentation
-// for more details.
+// Validate checks if the value of the field under validation not be in one of given values.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *NotIn) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	strValue := cast.ToString(value)
 	for _, val := range r.values {
@@ -31,13 +31,17 @@ func (r *NotIn) Validate(selector string, value any, _ bag.InputBag) ValidationR
 	return NewSuccessResult()
 }
 
-// AddParams adds rules parameter values to the rule instance.
+// AddParams assigns the provided parameter values to the NotIn rule instance.
+// The first parameter specifies the `value1` to compare against (required),
+// and the second parameter, if provided, specifies the `value2` to compare against (optional),
+// and so on.
 func (r *NotIn) AddParams(params []string) {
 	r.values = params
 }
 
-// MinRequiredParams returns minimum parameter requirement for this rule.
-// This rule needs at least 2 parameter or more.
+// MinRequiredParams returns the minimum number of required parameters for the NotIn rule.
+// It specifies how many parameters must be provided when configuring this rule.
+// Returns 2, indicating that the `value1` and `value2` parameters are mandatory.
 func (*NotIn) MinRequiredParams() int {
 	return 2
 }

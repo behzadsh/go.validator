@@ -9,7 +9,7 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// MaxDigits checks the field under validation has length less than given max digits.
+// MaxDigits checks whether the field under validation has length less than given max digits.
 //
 // Usage: "maxDigits:numberOfDigit".
 // Example: "maxDigits:5".
@@ -18,8 +18,8 @@ type MaxDigits struct {
 	digitCount string
 }
 
-// Validate does the validation process of the rule. See struct documentation
-// for more details.
+// Validate checks if the value of the field under validation has length less than given max digits.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *MaxDigits) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	strVal := cast.ToString(value)
 
@@ -34,13 +34,15 @@ func (r *MaxDigits) Validate(selector string, value any, _ bag.InputBag) Validat
 	return NewSuccessResult()
 }
 
-// AddParams adds rules parameter values to the rule instance.
+// AddParams assigns the provided parameter values to the MaxDigits rule instance.
+// The first parameter specifies the `numberOfDigit` to compare against (required).
 func (r *MaxDigits) AddParams(params []string) {
 	r.digitCount = params[0]
 }
 
-// MinRequiredParams returns minimum parameter requirement for this rule.
-// This rule accept only 1 parameter, which is number of maxDigits and is mandatory.
+// MinRequiredParams returns the minimum number of required parameters for the MaxDigits rule.
+// It specifies how many parameters must be provided when configuring this rule.
+// Returns 1, indicating that the `numberOfDigit` parameter is mandatory.
 func (*MaxDigits) MinRequiredParams() int {
 	return 1
 }

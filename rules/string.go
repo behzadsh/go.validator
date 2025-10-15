@@ -7,15 +7,16 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// String checks the field under validation has a string value
+// String checks whether the field under validation has a string value
+// This rule accepts no parameters.
 //
 // Usage: "string".
 type String struct {
 	translation.BaseTranslatableRule
 }
 
-// Validate does the validation process of the rule. See struct documentation
-// for more details.
+// Validate checks if the value of the field under validation has a string value.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *String) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	if value == nil {
 		return NewSuccessResult()

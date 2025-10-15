@@ -9,16 +9,16 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// AlphaNum checks the field under validation has alphanumeric characters.
-// This rule accept no parameters.
+// AlphaNum checks whether the field under validation contains only alphanumeric characters.
+// This rule accepts no parameters.
 //
 // Usage: "alphaNum".
 type AlphaNum struct {
 	translation.BaseTranslatableRule
 }
 
-// Validate does the validation process of the rule. See struct documentation
-// for more details.
+// Validate checks if the value of the field under validation contains only alphanumeric characters.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *AlphaNum) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	ok, err := regexp.MatchString(`^[\pL\pM\pN]+$`, cast.ToString(value))
 	if !ok || err != nil {

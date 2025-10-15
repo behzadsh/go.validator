@@ -2,6 +2,7 @@ package bag
 
 import (
 	"encoding/json"
+	"fmt"
 	"strings"
 
 	"github.com/spf13/cast"
@@ -10,8 +11,10 @@ import (
 // InputBag is a custom type representing the validation input.
 type InputBag map[string]any
 
-// Get returns the associated value to the given selector. The selector could
-// have dot in its value for selecting nested values. E.g. `user.settings.avatar`.
+// Get retrieves the value associated with the provided selector, which may reference nested values using dot notation.
+// For example, "user.settings.avatar" or "users.0.email".
+// It returns the value found at the specified path and a boolean indicating whether the value exists.
+// The returned value will be nil and false if the path does not exist in the InputBag.
 func (b InputBag) Get(selector string) (any, bool) {
 	parts := strings.Split(selector, ".")
 
@@ -47,8 +50,9 @@ func (b InputBag) Get(selector string) (any, bool) {
 	return base, base != nil
 }
 
-// Has checks if the given selector is exists in the input bag. The selector
-// can contain dots in its value for nested values.
+// Has checks if the given selector exists in the input bag. The selector can contain dots in its value for nested values.
+// For example, "user.settings.avatar" or "users.0.email".
+// The returned value indicates whether the selector exists in the InputBag.
 func (b InputBag) Has(selector string) bool {
 	parts := strings.Split(selector, ".")
 
@@ -85,14 +89,16 @@ func (b InputBag) Has(selector string) bool {
 }
 
 // NewInputBagFromStruct converts the given input struct into InputBag.
-// Note that since we use json.Marshal and json.Unmarshal for this conversion
-// the given struct must have exported field, and if the exported fields have
-// json tag, keep in mind that the InputBag keys are the same as the tags.
+// Note that since we use json.Marshal and json.Unmarshal for this conversion, the given struct must have exported
+// field, and if the exported fields have json tag, keep in mind that the InputBag keys are the same as the tags.
 func NewInputBagFromStruct(input any) InputBag {
-	b, _ := json.Marshal(input)
+	b, err := json.Marshal(input)
+	if err != nil {
+		panic(fmt.Errorf("failed to marshal input bag struct: %w", err))
+	}
 
 	var bag InputBag
-	_ = json.Unmarshal(b, &bag)
+	_ = json.Unmarshal(b, &bag) //nolint:errcheck // no need to check error
 
 	return bag
 }

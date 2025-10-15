@@ -9,7 +9,7 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// MinLength checks the field under validation length be greater than given length.
+// MinLength checks whether the field under validation length be greater than given length.
 //
 // Usage: "minLength:value".
 // Example: "minLength:10".
@@ -18,8 +18,8 @@ type MinLength struct {
 	minLength int
 }
 
-// Validate does the validation process of the rule. See struct documentation
-// for more details.
+// Validate checks if the value of the field under validation length be greater than given length.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *MinLength) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	if value == nil {
 		return NewSuccessResult()
@@ -45,13 +45,15 @@ func (r *MinLength) Validate(selector string, value any, _ bag.InputBag) Validat
 	return NewSuccessResult()
 }
 
-// AddParams adds rules parameter values to the rule instance.
+// AddParams assigns the provided parameter values to the MinLength rule instance.
+// The first parameter specifies the `value` to compare against (required).
 func (r *MinLength) AddParams(params []string) {
 	r.minLength = cast.ToInt(params[0])
 }
 
-// MinRequiredParams returns minimum parameter requirement for this rule.
-// This rule need only one parameter that is the `length`.
+// MinRequiredParams returns the minimum number of required parameters for the MinLength rule.
+// It specifies how many parameters must be provided when configuring this rule.
+// Returns 1, indicating that the `value` parameter is mandatory.
 func (*MinLength) MinRequiredParams() int {
 	return 1
 }

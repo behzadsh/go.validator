@@ -7,7 +7,7 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// In checks the field under validation be in one of given values.
+// In checks whether the field under validation is in one of the given values.
 //
 // Usage: "in:value1,value2[,value3,...].
 // Example: "in:EUR,USD,GBP".
@@ -16,8 +16,8 @@ type In struct {
 	values []string
 }
 
-// Validate does the validation process of the rule. See struct documentation
-// for more details.
+// Validate checks if the value of the field under validation is in one of the given values.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *In) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	strValue := cast.ToString(value)
 	for _, val := range r.values {
@@ -31,13 +31,17 @@ func (r *In) Validate(selector string, value any, _ bag.InputBag) ValidationResu
 	}))
 }
 
-// AddParams adds rules parameter values to the rule instance.
+// AddParams assigns the provided parameter values to the In rule instance.
+// The first parameter specifies the `value1` to compare against (required),
+// and the second parameter, if provided, specifies the `value2` to compare against (optional),
+// and so on.
 func (r *In) AddParams(params []string) {
 	r.values = params
 }
 
-// MinRequiredParams returns minimum parameter requirement for this rule.
-// This rule needs at least 2 parameter or more.
+// MinRequiredParams returns the minimum number of required parameters for the In rule.
+// It specifies how many parameters must be provided when configuring this rule.
+// Returns 2, indicating that the `value1` and `value2` parameters are mandatory.
 func (*In) MinRequiredParams() int {
 	return 2
 }

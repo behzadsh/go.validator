@@ -1,5 +1,74 @@
 # Available Rules
 
+## Index
+
+<details>
+<summary>Click to expand</summary>
+
+- [After](#after)
+- [After Or Equal](#afterOrEqual)
+- [Alpha](#alpha)
+- [Alpha Dash](#alphaDash)
+- [Alpha Num](#alphaNum)
+- [Alpha Space](#alphaSpace)
+- [Array](#array)
+- [Before](#before)
+- [Before Or Equal](#beforeOrEqual)
+- [Between](#between)
+- [Boolean](#boolean)
+- [Datetime](#datetime)
+- [Datetime Format](#datetimeFormat)
+- [DateTime After](#dateTimeAfter)
+- [DateTime Before](#dateTimeBefore)
+- [DateTime Between](#dateTimeBetween)
+- [Different](#different)
+- [Digits](#digits)
+- [Digits Between](#digitsBetween)
+- [Distinct](#distinct)
+- [Email](#email)
+- [Ends With](#endsWith)
+- [Greater Than](#gt)
+- [Greater Than or Equal](#gte)
+- [In](#in)
+- [InArrayField](#inArrayField)
+- [Integer](#integer)
+- [IP](#ip)
+- [IPV4](#ipv4)
+- [IPV6](#ipv6)
+- [Length](#length)
+- [Lowercase](#lowercase)
+- [Less Than](#lt)
+- [Less Than or Equal](#lte)
+- [Max](#max)
+- [Max Digits](#maxDigits)
+- [Max Length](#maxLength)
+- [Min](#min)
+- [Min Digits](#minDigits)
+- [Min Length](#minLength)
+- [Not Equal](#neq)
+- [Not Empty](#notEmpty)
+- [Not In](#notIn)
+- [Not Regex](#notRegex)
+- [Numeric](#numeric)
+- [Regex](#regex)
+- [Required](#required)
+- [Required If](#requiredIf)
+- [Required Unless](#requiredUnless)
+- [Required With](#requiredWith)
+- [Required With All](#requiredWithAll)
+- [Required Without](#requiredWithout)
+- [Required Without All](#requiredWithoutAll)
+- [Same As](#sameAs)
+- [Starts With](#startsWith)
+- [String](#string)
+- [Timezone](#timezone)
+- [Uppercase](#uppercase)
+- [URL](#url)
+- [UUID](#uuid)
+
+</details>
+
+<a id="after"></a>
 ## After: `after:otherField[,timeZone]`
 This rule checks the field under validation is a datetime value after the given datetime. The `after` rule accepts two parameters, `otherField` and `timeZone`. The `otherField` is a mandatory parameter that specifies the field to compare the current field value.
 
@@ -37,6 +106,7 @@ rulesMap := validation.RulesMap{
 | field      | The field under validation.                             |
 | OtherField | The other field that the current field is compare with. |
 
+<a id="afterOrEqual"></a>
 ## After Or Equal: `afterOrEqual:otherField[,timeZone]`
 This rule checks the field under validation is a datetime value after or equal to the given datetime. The `afterOrEqual` rule accepts two parameters, `otherField` and `timeZone`. The `otherField` is a mandatory parameter that specifies the field to compare the current field value.
 
@@ -74,6 +144,7 @@ rulesMap := validation.RulesMap{
 | field      | The field under validation.                             |
 | OtherField | The other field that the current field is compare with. |
 
+<a id="alpha"></a>
 ## Alpha: `alpha`
 This rule checks the field under validation is entirely alphabetic characters.
 
@@ -93,6 +164,7 @@ rulesMap := validation.RulesMap{
 |------------|---------------------------------------------------------|
 | field      | The field under validation.                             |
 
+<a id="alphaDash"></a>
 ## Alpha Dash: `alphaDash`
 This rule checks the field under validation has alphabetic characters as well as dashes and underscores.
 
@@ -112,6 +184,7 @@ rulesMap := validation.RulesMap{
 |------------|---------------------------------------------------------|
 | field      | The field under validation.                             |
 
+<a id="alphaNum"></a>
 ## Alpha Num: `alphaNum`
 This rule checks the field under validation has alphanumeric characters.
 
@@ -131,6 +204,7 @@ rulesMap := validation.RulesMap{
 |------------|---------------------------------------------------------|
 | field      | The field under validation.                             |
 
+<a id="alphaSpace"></a>
 ## Alpha Space: `alphaSpace`
 This rule checks the field under validation has alphabetic characters as well as spaces.
 
@@ -150,6 +224,7 @@ rulesMap := validation.RulesMap{
 |------------|---------------------------------------------------------|
 | field      | The field under validation.                             |
 
+<a id="array"></a>
 ## Array: `array`
 This rule checks the field under validation is an array or slice.
 
@@ -169,6 +244,7 @@ rulesMap := validation.RulesMap{
 |------------|---------------------------------------------------------|
 | field      | The field under validation.                             |
 
+<a id="before"></a>
 ## Before: `before:otherField[,timeZone]`
 This rule checks the field under validation is a datetime value before the given datetime. The `before` rule accepts two parameters, `otherField` and `timeZone`. The `otherField` is a mandatory parameter that specifies the field to compare the current field value.
 
@@ -206,8 +282,9 @@ rulesMap := validation.RulesMap{
 | field      | The field under validation.                             |
 | OtherField | The other field that the current field is compare with. |
 
+<a id="beforeOrEqual"></a>
 ## Before Or Equal: `beforeOrEqual:otherField[,timeZone]`
-This rule checks the field under validation is a datetime value before the given datetime. The `beforeOrEqual` rule accepts two parameters, `otherField` and `timeZone`. The `otherField` is a mandatory parameter that specifies the field to compare the current field value.
+This rule checks the field under validation is a datetime value before or equal to the given datetime. The `beforeOrEqual` rule accepts two parameters, `otherField` and `timeZone`. The `otherField` is a mandatory parameter that specifies the field to compare the current field value.
 
 > Note that when using this rule, the field under validation must pass the `datetime` rule, and the `otherField` must be present and also pass the `datetime` rule.
 
@@ -226,7 +303,7 @@ If you want to compare the time values in a specified time zone, you can pass yo
 
 ```go
 rulesMap := validation.RulesMap{
-	"end": {"beforeOrEqual:start,America/New_York"} 
+    "start": {"beforeOrEqual:end,America/New_York"} 
 }
 ```
 
@@ -243,6 +320,7 @@ rulesMap := validation.RulesMap{
 | field      | The field under validation.                             |
 | OtherField | The other field that the current field is compare with. |
 
+<a id="between"></a>
 ## Between: `between:min,max`
 This rule acts a little differently based on the type of field value.
 
@@ -273,6 +351,7 @@ rulesMap := validation.RulesMap{
 | min        | The minimum value set in the rule. |
 | max        | The maximum value set in the rule. |
 
+<a id="boolean"></a>
 ## Boolean: `boolean`
 This rule checks the field under validation has a boolean value.
 
@@ -292,6 +371,7 @@ rulesMap := validation.RulesMap{
 |------------|---------------------------------------------------------|
 | field      | The field under validation.                             |
 
+<a id="datetime"></a>
 ## Datetime: `datetime`
 This rule checks the field under validation is a valid datetime string.
 
@@ -311,6 +391,7 @@ rulesMap := validation.RulesMap{
 |------------|---------------------------------------------------------|
 | field      | The field under validation.                             |
 
+<a id="datetimeFormat"></a>
 ## Datetime Format: `datetimeFormat:format`
 This rule checks the field under validation matches the given datetime layout format.
 
@@ -333,6 +414,74 @@ rulesMap := validation.RulesMap{
 | field      | The field under validation. |
 | format     | The datetime layout format. |
 
+## DateTime After: `dateTimeAfter:value[,timeZone]`
+This rule checks the field under validation is a datetime after the given datetime value.
+
+```go
+rulesMap := validation.RulesMap{
+    "start": {"dateTimeAfter:2022-01-01,America/New_York"},
+}
+```
+
+> The default value for the time zone parameter is **UTC**.
+
+### Translation
+
+| Key                       | Params       |
+|---------------------------|--------------|
+| validation.datetime_after | field, value |
+
+| Param name | Description                        |
+|------------|------------------------------------|
+| field      | The field under validation.        |
+| value      | The threshold datetime string.     |
+
+## DateTime Before: `dateTimeBefore:value[,timeZone]`
+This rule checks the field under validation is a datetime before the given datetime value.
+
+```go
+rulesMap := validation.RulesMap{
+    "end": {"dateTimeBefore:2022-01-01,America/New_York"},
+}
+```
+
+> The default value for the time zone parameter is **UTC**.
+
+### Translation
+
+| Key                        | Params       |
+|----------------------------|--------------|
+| validation.datetime_before | field, value |
+
+| Param name | Description                        |
+|------------|------------------------------------|
+| field      | The field under validation.        |
+| value      | The threshold datetime string.     |
+
+## DateTime Between: `dateTimeBetween:min,max[,timeZone]`
+This rule checks the field under validation is a datetime value between the given min and max.
+
+```go
+rulesMap := validation.RulesMap{
+    "date": {"dateTimeBetween:2022-01-01,2022-02-01,UTC"},
+}
+```
+
+> The default value for the time zone parameter is **UTC**.
+
+### Translation
+
+| Key                          | Params          |
+|------------------------------|-----------------|
+| validation.datetime_between  | field, min, max |
+
+| Param name | Description                        |
+|------------|------------------------------------|
+| field      | The field under validation.        |
+| min        | The minimum datetime string.       |
+| max        | The maximum datetime string.       |
+
+<a id="different"></a>
 ## Different: `different:otherField`
 This rule checks the field under validation has a different value than the given field.
 
@@ -353,6 +502,7 @@ rulesMap := validation.RulesMap{
 | field      | The field under validation.                        |
 | otherField | The other field that current field is compared to. |
 
+<a id="digits"></a>
 ## Digits: `digits:count`
 This rule checks the field under validation is all digits and has exact digits as given count.
 
@@ -373,12 +523,13 @@ rulesMap := validation.RulesMap{
 | field       | The field under validation.       |
 | digitsCount | The number of digits set in rule. |
 
+<a id="digitsBetween"></a>
 ## Digits Between: `digitsBetween:min,max`
 This rule checks the field under validation is all digits and has digits between the given min and max.
 
 ```go
 rulesMap := validation.RulesMap{
-	"code": {"digits:4,6"} 
+    "code": {"digitsBetween:4,6"} 
 }
 ```
 
@@ -394,6 +545,7 @@ rulesMap := validation.RulesMap{
 | min        | The minimum digits count set in the rule. |
 | max        | The maximum digits count set in the rule. |
 
+<a id="email"></a>
 ## Email: `email[:mx]`
 This rule checks the field under validation has a valid email format.
 
@@ -422,6 +574,26 @@ rulesMap := validation.RulesMap{
 |------------|-------------------------------------------|
 | field      | The field under validation.               |
 
+## Distinct: `distinct`
+This rule checks the field under validation is an array/slice with unique elements.
+
+```go
+rulesMap := validation.RulesMap{
+    "tags": {"distinct"},
+}
+```
+
+### Translation
+
+| Key                 | Params |
+|---------------------|--------|
+| validation.distinct | field  |
+
+| Param name | Description                 |
+|------------|-----------------------------|
+| field      | The field under validation. |
+
+<a id="endsWith"></a>
 ## Ends With: `ends_with:suffix`
 This rules checks the field under validation ends with the given suffix string.
 
@@ -444,6 +616,7 @@ rulesMap := validation.RulesMap{
 | field      | The field under validation.   |
 | value      | The suffix value set in rule. |
 
+<a id="gt"></a>
 ## Greater Than: `gt:value`
 This rule acts a little differently based on the type of field value.
 
@@ -471,6 +644,7 @@ rulesMap := validation.RulesMap{
 | field      | The field under validation. |
 | value      | The min value set in rule.  |
 
+<a id="gte"></a>
 ## Greater Than or Equal: `gte:value`
 This rule acts a little differently based on the type of field value.
 
@@ -498,6 +672,7 @@ rulesMap := validation.RulesMap{
 | field      | The field under validation. |
 | value      | The min value set in rule.  |
 
+<a id="in"></a>
 ## In: `in:value1,value2[,value3,...]`
 This rule check the field under validation exists in one of the given options.
 
@@ -517,6 +692,28 @@ rulesMap := validation.RulesMap{
 |------------|-----------------------------|
 | field      | The field under validation. |
 
+## In Array Field: `inArrayField:otherField`
+This rule checks the field under validation exists in another array/slice field.
+
+```go
+rulesMap := validation.RulesMap{
+    "choice": {"inArrayField:options"},
+}
+```
+
+### Translation
+
+| Key                 | Params            |
+|---------------------|-------------------|
+| validation.in       | field             |
+| Validation.required | otherField        |
+
+| Param name | Description                                 |
+|------------|---------------------------------------------|
+| field      | The field under validation.                  |
+| otherField | The other field that contains valid options. |
+
+<a id="integer"></a>
 ## Integer: `integer`
 This rule checks the field under validation is an integer.
 
@@ -536,6 +733,64 @@ rulesMap := validation.RulesMap{
 |------------|-----------------------------|
 | field      | The field under validation. |
 
+## IP: `ip`
+This rule checks the field under validation is a valid IP address (v4 or v6).
+
+```go
+rulesMap := validation.RulesMap{
+    "addr": {"ip"},
+}
+```
+
+### Translation
+
+| Key            | Params |
+|----------------|--------|
+| validation.ip  | field  |
+
+| Param name | Description                 |
+|------------|-----------------------------|
+| field      | The field under validation. |
+
+## IPV4: `ipv4`
+This rule checks the field under validation is a valid IPv4 address.
+
+```go
+rulesMap := validation.RulesMap{
+    "addr": {"ipv4"},
+}
+```
+
+### Translation
+
+| Key              | Params |
+|------------------|--------|
+| validation.ipv4  | field  |
+
+| Param name | Description                 |
+|------------|-----------------------------|
+| field      | The field under validation. |
+
+## IPV6: `ipv6`
+This rule checks the field under validation is a valid IPv6 address.
+
+```go
+rulesMap := validation.RulesMap{
+    "addr": {"ipv6"},
+}
+```
+
+### Translation
+
+| Key              | Params |
+|------------------|--------|
+| validation.ipv6  | field  |
+
+| Param name | Description                 |
+|------------|-----------------------------|
+| field      | The field under validation. |
+
+<a id="length"></a>
 ## Length: `length:value`
 This rule checks the field under validation length is as the given value.
 
@@ -559,6 +814,7 @@ rulesMap := validation.RulesMap{
 | value      | The given value in the rule. |
 
 
+<a id="lowercase"></a>
 ## Lowercase: `lowercase`
 This rule checks the field under validation is all lowercase.
 
@@ -578,6 +834,7 @@ rulesMap := validation.RulesMap{
 |------------|-----------------------------|
 | field      | The field under validation. |
 
+<a id="lt"></a>
 ## Less Than: `lt:value`
 This rule acts a little differently based on the type of field value.
 
@@ -605,6 +862,7 @@ rulesMap := validation.RulesMap{
 | field      | The field under validation. |
 | value      | The max value set in rule.  |
 
+<a id="lte"></a>
 ## Less Than or Equal: `lte:value`
 This rule acts a little differently based on the type of field value.
 
@@ -632,7 +890,8 @@ rulesMap := validation.RulesMap{
 | field      | The field under validation. |
 | value      | The max value set in rule.  |
 
-# Max: `max:value`
+<a id="max"></a>
+## Max: `max:value`
 This rule checks the field under validation value be less than given value.
 
 ```go
@@ -652,6 +911,7 @@ rulesMap := validation.RulesMap{
 | field      | The field under validation. |
 | value      | The max value set in rule.  |
 
+<a id="maxDigits"></a>
 ## Max Digits: `maxDigits:value`
 This rule checks the field under validation has length less than given max digits.
 
@@ -672,6 +932,7 @@ rulesMap := validation.RulesMap{
 | field       | The field under validation.           |
 | digitsCount | The max number of digits set in rule. |
 
+<a id="maxLength"></a>
 ## Max Length: `maxLength:value`
 This rule checks the field under validation has length less than given value.
 
@@ -692,7 +953,8 @@ rulesMap := validation.RulesMap{
 | field      | The field under validation.     |
 | value      | The maximum length set in rule. |
 
-# Min: `min:value`
+<a id="min"></a>
+## Min: `min:value`
 This rule checks the field under validation value be greater than given value.
 
 ```go
@@ -712,6 +974,7 @@ rulesMap := validation.RulesMap{
 | field      | The field under validation. |
 | value      | The min value set in rule.  |
 
+<a id="minDigits"></a>
 ## Min Digits: `minDigits:value`
 This rule checks the field under validation has length greater than given min digits.
 
@@ -732,6 +995,7 @@ rulesMap := validation.RulesMap{
 | field       | The field under validation.           |
 | digitsCount | The min number of digits set in rule. |
 
+<a id="minLength"></a>
 ## Min Length: `minLength:value`
 This rule checks the field under validation has length greater than given value.
 
@@ -752,6 +1016,7 @@ rulesMap := validation.RulesMap{
 | field      | The field under validation.     |
 | value      | The minimum length set in rule. |
 
+<a id="neq"></a>
 ## Not Equal: `neq:value`
 This rule checks the field under validation is not equal to given value.
 
@@ -763,15 +1028,16 @@ rulesMap := validation.RulesMap{
 
 ### Translation
 
-| Key                  | Params       |
-|----------------------|--------------|
-| validation.not_equal | field, value |
+| Key            | Params       |
+|----------------|--------------|
+| validation.neq | field, value |
 
 | Param name | Description                     |
 |------------|---------------------------------|
 | field      | The field under validation.     |
-| value      | The maximum length set in rule. |
+| value      | The given value in the rule.    |
 
+<a id="notEmpty"></a>
 ## Not Empty: `notEmpty`
 
 This rule checks the field under validation presents and have a non-empty or non-zero value.
@@ -792,6 +1058,7 @@ rulesMap := validation.RulesMap{
 |------------|---------------------------------|
 | field      | The field under validation.     |
 
+<a id="notIn"></a>
 ## Not In: `notIn:value1,value2[,value3,...]`
 
 This rule check the field under validation not exists in one of the given options.
@@ -812,6 +1079,7 @@ rulesMap := validation.RulesMap{
 |------------|-----------------------------|
 | field      | The field under validation. |
 
+<a id="notRegex"></a>
 ## Not Regex: `notRegex:pattern`
 This rule checks the field under validation does not match the given regex pattern.
 
@@ -832,6 +1100,7 @@ rulesMap := validation.RulesMap{
 | field      | The field under validation.    |
 | pattern    | The given pattern in the rule. |
 
+<a id="numeric"></a>
 ## Numeric: `numeric`
 This rule checks the field under validation has a numeric value.
 
@@ -852,6 +1121,7 @@ rulesMap := validation.RulesMap{
 |------------|-----------------------------|
 | field      | The field under validation. |
 
+<a id="regex"></a>
 ## Regex: `regex:pattern`
 This rule checks the field under validation matches the given regex pattern.
 
@@ -872,6 +1142,7 @@ rulesMap := validation.RulesMap{
 | field      | The field under validation.    |
 | pattern    | The given pattern in the rule. |
 
+<a id="required"></a>
 ## Required: `required`
 This rule checks the field under validation exists.
 
@@ -891,6 +1162,7 @@ rulesMap := validation.RulesMap{
 |------------|-----------------------------|
 | field      | The field under validation. |
 
+<a id="requiredIf"></a>
 ## Required If: `requiredIf:otherField,value`
 This rule check the field under validation exists if the given condition is true.
 The condition is consists of another field name and a value. If the value of the other field is equal to
@@ -916,6 +1188,7 @@ rulesMap := validation.RulesMap{
 | otherField | The other field to check its value.  |
 | value      | The given value for the other value. |
 
+<a id="requiredUnless"></a>
 ## Required Unless: `requiredUnless:otherField,value`
 This rule check the field under validation exists unless the given condition is true.
 The condition is consists of another field name and a value. Unless the value of the other field is equal to
@@ -941,6 +1214,7 @@ rulesMap := validation.RulesMap{
 | otherField | The other field to check its value.  |
 | value      | The given value for the other value. |
 
+<a id="requiredWith"></a>
 ## Required With: `requiredWith:otherField[,anotherField,...]`
 This rule check the field under validation exists if any of given fields exist.
 
@@ -961,6 +1235,7 @@ rulesMap := validation.RulesMap{
 | field      | The field under validation.          |
 | otherField | The other field to check its value.  |
 
+<a id="requiredWithAll"></a>
 ## Required With All: `requiredWithAll:otherField,anotherField[,...]`
 This rule check the field under validation exists if all given fields exist.
 
@@ -981,6 +1256,7 @@ rulesMap := validation.RulesMap{
 | field       | The field under validation.          |
 | otherFields | The other field to check its value.  |
 
+<a id="requiredWithout"></a>
 ## Required Without: `requiredWithout:otherField[,anotherField,...]`
 This rule check the field under validation exists if any of given fields doesn't exist.
 
@@ -1001,6 +1277,7 @@ rulesMap := validation.RulesMap{
 | field      | The field under validation.          |
 | otherField | The other field to check its value.  |
 
+<a id="requiredWithoutAll"></a>
 ## Required Without All: `requiredWithoutAll:otherField,anotherField[,...]`
 This rule check the field under validation exists if all given fields not exist.
 
@@ -1021,6 +1298,7 @@ rulesMap := validation.RulesMap{
 | field       | The field under validation.          |
 | otherFields | The other field to check its value.  |
 
+<a id="sameAs"></a>
 ## Same As: `sameAs:otherField`
 This rule check the field under validation has the value same as the other given field.
 
@@ -1041,12 +1319,13 @@ rulesMap := validation.RulesMap{
 | field      | The field under validation.          |
 | otherField | The other field to check its value.  |
 
-## Start With: `startWith:prefix`
+<a id="startsWith"></a>
+## Starts With: `startsWith:prefix`
 This rule check the field under validation starts with given sub string.
 
 ```go
 rulesMap := validation.RulesMap{
-	"functionName": {"startWith:Set"}
+    "functionName": {"startsWith:Set"}
 }
 ```
 
@@ -1054,15 +1333,55 @@ rulesMap := validation.RulesMap{
 
 ### Translation
 
-| Key                  | Params       |
-|----------------------|--------------|
-| validation.ends_with | field, value |
+| Key                     | Params       |
+|-------------------------|--------------|
+| validation.starts_with   | field, value |
 
 | Param name | Description                   |
 |------------|-------------------------------|
 | field      | The field under validation.   |
 | value      | The prefix value set in rule. |
 
+## Timezone: `timezone`
+This rule checks the field under validation is a valid IANA time zone name.
+
+```go
+rulesMap := validation.RulesMap{
+    "tz": {"timezone"},
+}
+```
+
+### Translation
+
+| Key                 | Params |
+|---------------------|--------|
+| validation.timezone | field  |
+
+| Param name | Description                 |
+|------------|-----------------------------|
+| field      | The field under validation. |
+
+<a id="string"></a>
+## String: `string`
+This rule checks the field under validation is a string.
+
+```go
+rulesMap := validation.RulesMap{
+    "title": {"string"},
+}
+```
+
+### Translation
+
+| Key               | Params |
+|-------------------|--------|
+| validation.string | field  |
+
+| Param name | Description                 |
+|------------|-----------------------------|
+| field      | The field under validation. |
+
+<a id="uppercase"></a>
 ## Uppercase: `uppercase`
 This rule checks the field under validation is all uppercase.
 
@@ -1082,6 +1401,28 @@ rulesMap := validation.RulesMap{
 |------------|-----------------------------|
 | field      | The field under validation. |
 
+<a id="url"></a>
+## URL: `url[:scheme]`
+This rule checks the field under validation is a valid URL. By default, the scheme is optional; pass `scheme` to require it.
+
+```go
+rulesMap := validation.RulesMap{
+    "site": {"url"},          // scheme optional
+    "strict": {"url:scheme"}, // scheme required
+}
+```
+
+### Translation
+
+| Key            | Params |
+|----------------|--------|
+| validation.url | field  |
+
+| Param name | Description                 |
+|------------|-----------------------------|
+| field      | The field under validation. |
+
+<a id="uuid"></a>
 ## UUID: `uuid`
 This rule checks field under validation is a valid uuid.
 

@@ -9,10 +9,9 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// Between checks the field under validation have a value or a length between
-// the given min and max parameters. If the field under validation has a
-// numeric value, the value must be between the given min and max. If the field
-// under validation is string, slice or map, the length of it will be evaluated.
+// Between checks whether the field under validation has a value or a length between the given min and max parameters.
+// It will return a validation error if the field under validation has a numeric value, the value must be between the
+// given min and max. If the field under validation is string, slice or map, the length of it will be evaluated.
 //
 // Usage: "between:min,max".
 // Example: "between:2,5".
@@ -21,8 +20,8 @@ type Between struct {
 	min, max float64
 }
 
-// Validate does the validation process of the rule. See struct documentation
-// for more details.
+// Validate checks if the value of the field under validation is between the given min and max parameters.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *Between) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	if value == nil {
 		return NewSuccessResult()
@@ -53,16 +52,18 @@ func (r *Between) Validate(selector string, value any, _ bag.InputBag) Validatio
 	return NewSuccessResult()
 }
 
-// AddParams adds rules parameter values to the rule instance.
+// AddParams sets the minimum and maximum values for the Between rule based on the provided parameters.
+// It expects exactly two parameters: the first for the minimum boundary (min),
+// and the second for the maximum boundary (max). The extracted values are converted to float64 and stored.
+// Returns nothing.
 func (r *Between) AddParams(params []string) {
 	r.min = cast.ToFloat64(params[0])
 	r.max = cast.ToFloat64(params[1])
 }
 
-// MinRequiredParams returns minimum parameter requirement for this rule.
-// This rule accept 2 parameter, the first one is the minimum number and
-// the second one is the maximum number of the between range. Both of the
-// parameters are mandatory.
+// MinRequiredParams returns the minimum number of required parameters for the Between rule.
+// It specifies how many parameters must be provided when configuring this rule.
+// Returns 2, indicating that the `min` and `max` parameters are mandatory.
 func (*Between) MinRequiredParams() int {
 	return 2
 }

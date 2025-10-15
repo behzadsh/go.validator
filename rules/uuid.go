@@ -11,15 +11,16 @@ import (
 
 const uuidRegex = `^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$`
 
-// UUID checks field under validation is a valid uuid.
+// UUID checks whether the field under validation is a valid uuid.
+// This rule accepts no parameters.
 //
 // Usage: "uuid".
 type UUID struct {
 	translation.BaseTranslatableRule
 }
 
-// Validate does the validation process of the rule. See struct documentation
-// for more details.
+// Validate checks if the value of the field under validation is a valid uuid.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *UUID) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	strVal := cast.ToString(value)
 

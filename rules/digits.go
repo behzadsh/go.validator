@@ -9,7 +9,7 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// Digits checks the field under validation has an exact length digits.
+// Digits checks whether the field under validation has an exact number of digits.
 //
 // Usage: "digits:numberOfDigit".
 // Example: "digits:5".
@@ -18,8 +18,8 @@ type Digits struct {
 	digitCount string
 }
 
-// Validate does the validation process of the rule. See struct documentation
-// for more details.
+// Validate checks if the value of the field under validation has an exact number of digits.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *Digits) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	ok, err := regexp.MatchString(`^\d{`+r.digitCount+`}$`, cast.ToString(value))
 	if !ok || err != nil {
@@ -32,13 +32,15 @@ func (r *Digits) Validate(selector string, value any, _ bag.InputBag) Validation
 	return NewSuccessResult()
 }
 
-// AddParams adds rules parameter values to the rule instance.
+// AddParams assigns the provided parameter values to the Digits rule instance.
+// The first parameter specifies the `numberOfDigit` to compare against (required).
 func (r *Digits) AddParams(params []string) {
 	r.digitCount = params[0]
 }
 
-// MinRequiredParams returns minimum parameter requirement for this rule.
-// This rule accept only 1 parameter, which is number of digits and is mandatory.
+// MinRequiredParams returns the minimum number of required parameters for the Digits rule.
+// It specifies how many parameters must be provided when configuring this rule.
+// Returns 1, indicating that the `numberOfDigit` parameter is mandatory.
 func (*Digits) MinRequiredParams() int {
 	return 1
 }

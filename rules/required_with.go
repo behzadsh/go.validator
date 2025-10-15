@@ -5,17 +5,17 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// RequiredWith check the field under validation exists if any of given fields exist.
+// RequiredWith checks whether the field under validation must exist if any of given fields exist.
 //
 // Usage: "requiredWith:otherField[,anotherField,...]".
-// example: "requiredWith:type".
+// Example: "requiredWith:type".
 type RequiredWith struct {
 	translation.BaseTranslatableRule
 	otherFields []string
 }
 
-// Validate does the validation process of the rule. See struct documentation
-// for more details.
+// Validate checks if the value of the field under validation must exist if any of given fields exist.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *RequiredWith) Validate(selector string, _ any, inputBag bag.InputBag) ValidationResult {
 	exists := inputBag.Has(selector)
 
@@ -35,14 +35,15 @@ func (r *RequiredWith) Validate(selector string, _ any, inputBag bag.InputBag) V
 	return NewSuccessResult()
 }
 
-// AddParams adds rules parameter values to the rule instance.
+// AddParams sets the list of field names that this rule will check for presence,
+// by assigning the given parameter values to the RequiredWith rule instance.
 func (r *RequiredWith) AddParams(params []string) {
 	r.otherFields = params
 }
 
-// MinRequiredParams returns minimum parameter requirement for this rule.
-// This rule needs at least 1 parameter which represent the name of other
-// field or fields.
+// MinRequiredParams returns the minimum number of required parameters for the RequiredWith rule.
+// It specifies how many parameters must be provided when configuring this rule.
+// Returns 1, indicating that at least one other field is required.
 func (*RequiredWith) MinRequiredParams() int {
 	return 1
 }

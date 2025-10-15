@@ -9,7 +9,7 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// MinDigits checks the field under validation has length more than given min digits.
+// MinDigits checks whether the field under validation has length more than given min digits.
 //
 // Usage: "minDigits:numberOfDigit".
 // Example: "minDigits:5".
@@ -18,8 +18,8 @@ type MinDigits struct {
 	digitCount string
 }
 
-// Validate does the validation process of the rule. See struct documentation
-// for more details.
+// Validate checks if the value of the field under validation has length more than given min digits.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *MinDigits) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	strVal := cast.ToString(value)
 
@@ -34,13 +34,15 @@ func (r *MinDigits) Validate(selector string, value any, _ bag.InputBag) Validat
 	return NewSuccessResult()
 }
 
-// AddParams adds rules parameter values to the rule instance.
+// AddParams assigns the provided parameter values to the MinDigits rule instance.
+// The first parameter specifies the `numberOfDigit` to compare against (required).
 func (r *MinDigits) AddParams(params []string) {
 	r.digitCount = params[0]
 }
 
-// MinRequiredParams returns minimum parameter requirement for this rule.
-// This rule accept only 1 parameter, which is number of minDigits and is mandatory.
+// MinRequiredParams returns the minimum number of required parameters for the MinDigits rule.
+// It specifies how many parameters must be provided when configuring this rule.
+// Returns 1, indicating that the `numberOfDigit` parameter is mandatory.
 func (*MinDigits) MinRequiredParams() int {
 	return 1
 }

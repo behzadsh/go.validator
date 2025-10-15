@@ -9,17 +9,16 @@ import (
 	"github.com/behzadsh/go.validator/translation"
 )
 
-// AlphaDash checks the field under validation has alphanumeric characters,
-// as well as dashes and underscore.
-// This rule accept no parameters.
+// AlphaDash checks whether the field under validation contains only alphanumeric characters, dashes, and underscores.
+// This rule accepts no parameters.
 //
 // Usage: "alphaDash".
 type AlphaDash struct {
 	translation.BaseTranslatableRule
 }
 
-// Validate does the validation process of the rule. See struct documentation
-// for more details.
+// Validate checks if the value of the field under validation contains only alphanumeric characters, dashes, and underscores.
+// It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *AlphaDash) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	ok, err := regexp.MatchString(`^[\pL\pM\pN_-]+$`, cast.ToString(value))
 	if !ok || err != nil {
