@@ -70,6 +70,8 @@ linters:
             - "fmt.Printf"
             - "fmt.Println"
             - "fmt.Print"
+        - name: package-directory-mismatch
+          disabled: true
     misspell:
       locale: US
     prealloc:
