@@ -140,21 +140,21 @@ func initAfterOrEqualRule() *AfterOrEqual {
 		case "validation.after_or_equal":
 			tr := "The field :field: must be after or equal to field :otherField:."
 			for k, v := range p {
-				tr = strings.Replace(tr, ":"+k+":", v, -1)
+				tr = strings.ReplaceAll(tr, ":"+k+":", v)
 			}
 
 			return tr
 		case "validation.datetime":
 			tr := "The field :field: must be a valid date time string."
 			for k, v := range p {
-				tr = strings.Replace(tr, ":"+k+":", v, -1)
+				tr = strings.ReplaceAll(tr, ":"+k+":", v)
 			}
 
 			return tr
 		case "Validation.required":
 			tr := "The field :otherField: is required."
 			for k, v := range p {
-				tr = strings.Replace(tr, ":"+k+":", v, -1)
+				tr = strings.ReplaceAll(tr, ":"+k+":", v)
 			}
 
 			return tr

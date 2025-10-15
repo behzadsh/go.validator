@@ -128,7 +128,7 @@ func initIntegerRule() *Integer {
 		case "validation.integer":
 			tr := "The field :field: must have an integer value."
 			for k, v := range p {
-				tr = strings.Replace(tr, ":"+k+":", v, -1)
+				tr = strings.ReplaceAll(tr, ":"+k+":", v)
 			}
 
 			return tr

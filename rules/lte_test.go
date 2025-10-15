@@ -231,7 +231,7 @@ func initLessThanEqualRule() *LessThanEqual {
 		case "validation.lte":
 			tr := "The field :field: must have a value or length less than or equal to :value:."
 			for k, v := range p {
-				tr = strings.Replace(tr, ":"+k+":", v, -1)
+				tr = strings.ReplaceAll(tr, ":"+k+":", v)
 			}
 
 			return tr

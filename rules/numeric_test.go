@@ -118,7 +118,7 @@ func initNumericRule() *Numeric {
 		case "validation.numeric":
 			tr := "The field :field: must be a number."
 			for k, v := range p {
-				tr = strings.Replace(tr, ":"+k+":", v, -1)
+				tr = strings.ReplaceAll(tr, ":"+k+":", v)
 			}
 
 			return tr

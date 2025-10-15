@@ -89,7 +89,7 @@ func initDateTimeFormatRule() *DateTimeFormat {
 		case "validation.datetime_format":
 			tr := "the field :field: must be in :format: format."
 			for k, v := range p {
-				tr = strings.Replace(tr, ":"+k+":", v, -1)
+				tr = strings.ReplaceAll(tr, ":"+k+":", v)
 			}
 
 			return tr

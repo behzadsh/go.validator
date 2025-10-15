@@ -67,7 +67,7 @@ func initUUIDRule() *UUID {
 		case "validation.uuid":
 			tr := "The field :field: is not a valid uuid."
 			for k, v := range p {
-				tr = strings.Replace(tr, ":"+k+":", v, -1)
+				tr = strings.ReplaceAll(tr, ":"+k+":", v)
 			}
 
 			return tr

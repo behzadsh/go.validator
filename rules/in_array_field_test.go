@@ -74,13 +74,13 @@ func initInArrayFieldRule() *InArrayField {
 		case "validation.in":
 			tr := "The field :field: must be in given values."
 			for k, v := range p {
-				tr = strings.Replace(tr, ":"+k+":", v, -1)
+				tr = strings.ReplaceAll(tr, ":"+k+":", v)
 			}
 			return tr
 		case "Validation.required":
 			tr := "The field :otherField: is required."
 			for k, v := range p {
-				tr = strings.Replace(tr, ":"+k+":", v, -1)
+				tr = strings.ReplaceAll(tr, ":"+k+":", v)
 			}
 			return tr
 		default:

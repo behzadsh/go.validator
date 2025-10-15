@@ -67,7 +67,7 @@ func initAlphaRule() *Alpha {
 		case "validation.alpha":
 			tr := "The field :field: must only contain letters."
 			for k, v := range p {
-				tr = strings.Replace(tr, ":"+k+":", v, -1)
+				tr = strings.ReplaceAll(tr, ":"+k+":", v)
 			}
 
 			return tr

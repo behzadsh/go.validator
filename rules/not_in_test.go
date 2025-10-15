@@ -75,7 +75,7 @@ func initNotInRule() *NotIn {
 		case "validation.not_in":
 			tr := "The selected :field: is invalid."
 			for k, v := range p {
-				tr = strings.Replace(tr, ":"+k+":", v, -1)
+				tr = strings.ReplaceAll(tr, ":"+k+":", v)
 			}
 
 			return tr

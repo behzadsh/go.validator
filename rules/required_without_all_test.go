@@ -101,7 +101,7 @@ func initRequiredWithoutAllRule() *RequiredWithoutAll {
 		case "validation.required_without_all":
 			tr := "The field :field: is required when :otherFields: are not present."
 			for k, v := range p {
-				tr = strings.Replace(tr, ":"+k+":", v, -1)
+				tr = strings.ReplaceAll(tr, ":"+k+":", v)
 			}
 
 			return tr

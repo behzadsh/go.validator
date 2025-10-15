@@ -171,7 +171,7 @@ func initMinLengthRule() *MinLength {
 		case "validation.min_length":
 			tr := "The field :field: must not have a length less than :value:."
 			for k, v := range p {
-				tr = strings.Replace(tr, ":"+k+":", v, -1)
+				tr = strings.ReplaceAll(tr, ":"+k+":", v)
 			}
 
 			return tr

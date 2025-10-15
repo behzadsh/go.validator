@@ -52,7 +52,7 @@ func initMacRule() *MacAddress {
 		case "validation.mac_address":
 			tr := "The field :field: must be a valid mac address."
 			for k, v := range p {
-				tr = strings.Replace(tr, ":"+k+":", v, -1)
+				tr = strings.ReplaceAll(tr, ":"+k+":", v)
 			}
 			return tr
 		default:

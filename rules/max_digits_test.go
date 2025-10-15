@@ -75,7 +75,7 @@ func initMaxDigitsRule() *MaxDigits {
 		case "validation.max_digits":
 			tr := "The field :field: must not have more than :digitCount: digits."
 			for k, v := range p {
-				tr = strings.Replace(tr, ":"+k+":", v, -1)
+				tr = strings.ReplaceAll(tr, ":"+k+":", v)
 			}
 
 			return tr

@@ -90,7 +90,7 @@ func initDigitsRule() *Digits {
 		case "validation.digits":
 			tr := "The field :field: must have exactly :digitCount: digits."
 			for k, v := range p {
-				tr = strings.Replace(tr, ":"+k+":", v, -1)
+				tr = strings.ReplaceAll(tr, ":"+k+":", v)
 			}
 
 			return tr

@@ -124,21 +124,21 @@ func initAfterRule() *After {
 		case "validation.after":
 			tr := "The field :field: must be after field :otherField:."
 			for k, v := range p {
-				tr = strings.Replace(tr, ":"+k+":", v, -1)
+				tr = strings.ReplaceAll(tr, ":"+k+":", v)
 			}
 
 			return tr
 		case "validation.datetime":
 			tr := "The field :field: must be a valid date time string."
 			for k, v := range p {
-				tr = strings.Replace(tr, ":"+k+":", v, -1)
+				tr = strings.ReplaceAll(tr, ":"+k+":", v)
 			}
 
 			return tr
 		case "Validation.required":
 			tr := "The field :field: is required."
 			for k, v := range p {
-				tr = strings.Replace(tr, ":"+k+":", v, -1)
+				tr = strings.ReplaceAll(tr, ":"+k+":", v)
 			}
 
 			return tr

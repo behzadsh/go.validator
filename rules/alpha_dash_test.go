@@ -68,7 +68,7 @@ func initAlphaDashRule() *AlphaDash {
 		case "validation.alpha_dash":
 			tr := "The field :field: must only contain letters, numbers, dashes and underscores."
 			for k, v := range p {
-				tr = strings.Replace(tr, ":"+k+":", v, -1)
+				tr = strings.ReplaceAll(tr, ":"+k+":", v)
 			}
 
 			return tr

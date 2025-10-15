@@ -75,7 +75,7 @@ func initDigitsBetweenRule() *DigitsBetween {
 		case "validation.digits_between":
 			tr := "The field :field: must be between :min: and :max: digits."
 			for k, v := range p {
-				tr = strings.Replace(tr, ":"+k+":", v, -1)
+				tr = strings.ReplaceAll(tr, ":"+k+":", v)
 			}
 
 			return tr
