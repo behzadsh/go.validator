@@ -674,7 +674,9 @@ rulesMap := validation.RulesMap{
 
 <a id="in"></a>
 ## In: `in:value1,value2[,value3,...]`
-This rule check the field under validation exists in one of the given options.
+This rule check the field under validation exists in one of the given options. 
+
+> This rule is case-insensitive.
 
 ```go
 rulesMap := validation.RulesMap{

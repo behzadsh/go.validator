@@ -1,6 +1,8 @@
 package rules
 
 import (
+	"strings"
+
 	"github.com/spf13/cast"
 
 	"github.com/behzadsh/go.validator/bag"
@@ -19,8 +21,9 @@ type In struct {
 // Validate checks if the value of the field under validation is in one of the given values.
 // It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *In) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
-	strValue := cast.ToString(value)
+	strValue := strings.ToLower(cast.ToString(value))
 	for _, val := range r.values {
+		val = strings.ToLower(val)
 		if strValue == val {
 			return NewSuccessResult()
 		}
