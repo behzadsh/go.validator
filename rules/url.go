@@ -23,6 +23,10 @@ type URL struct {
 // It returns a ValidationResult that indicates success if valid, or the appropriate error message if the check fails.
 func (r *URL) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
 	raw := cast.ToString(value)
+	if raw == "" {
+		return NewSuccessResult()
+	}
+
 	u, err := url.ParseRequestURI(raw)
 	if r.requireScheme {
 		if err != nil || u.Scheme == "" || u.Host == "" {
