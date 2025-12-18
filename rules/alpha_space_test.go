@@ -78,3 +78,8 @@ func initAlphaSpaceRule() *AlphaSpace {
 	})
 	return alphaRule
 }
+
+func TestAlphaSpace_RequiresField(t *testing.T) {
+	rule := &AlphaSpace{}
+	assert.False(t, rule.RequiresField())
+}

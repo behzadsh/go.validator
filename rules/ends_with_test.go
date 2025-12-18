@@ -109,3 +109,8 @@ func TestEndsWith_MinRequiredParams(t *testing.T) {
 
 	assert.Equal(t, 1, rule.MinRequiredParams())
 }
+
+func TestEndsWith_RequiresField(t *testing.T) {
+	rule := &EndsWith{}
+	assert.False(t, rule.RequiresField())
+}

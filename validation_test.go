@@ -99,9 +99,8 @@ func TestValidateMapSlice(t *testing.T) {
 		assert.Equal(t, "validation.required", res.Errors["0.password"][0])
 		assert.NotEmpty(t, res.Errors)
 		assert.True(t, res.Errors.Has("1.email"))
-		assert.Len(t, res.Errors["1.email"], 2)
+		assert.Len(t, res.Errors["1.email"], 1)
 		assert.Equal(t, "validation.required", res.Errors["1.email"][0])
-		assert.Equal(t, "validation.email", res.Errors["1.email"][1])
 		assert.True(t, res.Errors.Has("1.password"))
 		assert.Len(t, res.Errors["1.password"], 1)
 		assert.Equal(t, "validation.string", res.Errors["1.password"][0])
@@ -345,5 +344,104 @@ func TestSpecialValidation(t *testing.T) {
 				"code": {"unregistered:10"},
 			})
 		})
+	})
+}
+
+func TestValidationSkippingBehavior(t *testing.T) {
+	resetConfigs()
+
+	t.Run("skipNonRequiredWhenMissing", func(t *testing.T) {
+		data := map[string]any{}
+
+		res := ValidateMap(data, RulesMap{
+			"email":    {"email"},
+			"password": {"string"},
+			"age":      {"integer"},
+		})
+
+		// Non-required rules should be skipped when field is missing
+		assert.False(t, res.Failed())
+		assert.Empty(t, res.Errors)
+	})
+
+	t.Run("skipNonRequiredWhenEmpty", func(t *testing.T) {
+		data := map[string]any{
+			"email":    "",
+			"password": nil,
+			"age":      0,
+		}
+
+		res := ValidateMap(data, RulesMap{
+			"email":    {"email"},
+			"password": {"string"},
+			"age":      {"integer"},
+		})
+
+		// Non-required rules should still validate when field exists but is empty
+		// (they only skip when field doesn't exist)
+		assert.True(t, res.Failed())
+		assert.True(t, res.Errors.Has("email"))
+	})
+
+	t.Run("requiredRulesStillValidateWhenMissing", func(t *testing.T) {
+		data := map[string]any{}
+
+		res := ValidateMap(data, RulesMap{
+			"email":    {"required"},
+			"password": {"required"},
+		})
+
+		// Required rules should still validate even when field is missing
+		assert.True(t, res.Failed())
+		assert.True(t, res.Errors.Has("email"))
+		assert.True(t, res.Errors.Has("password"))
+	})
+
+	t.Run("requiredRulesStillValidateWhenEmpty", func(t *testing.T) {
+		data := map[string]any{
+			"email": "",
+		}
+
+		res := ValidateMap(data, RulesMap{
+			"email":    {"notEmpty"},
+			"password": {"required"},
+		})
+
+		// Required rules (notEmpty, required) should still validate even when field is empty
+		assert.True(t, res.Failed())
+		assert.True(t, res.Errors.Has("email"))
+		assert.True(t, res.Errors.Has("password"))
+	})
+
+	t.Run("mixedRequiredAndNonRequired", func(t *testing.T) {
+		data := map[string]any{
+			"name": "John",
+		}
+
+		res := ValidateMap(data, RulesMap{
+			"name":     {"required", "string", "minLength:10"},
+			"email":    {"email"},
+			"password": {"string"},
+		})
+
+		// Required rule should validate (minLength fails), non-required rules should be skipped
+		assert.True(t, res.Failed())
+		assert.True(t, res.Errors.Has("name"))
+		assert.False(t, res.Errors.Has("email"))
+		assert.False(t, res.Errors.Has("password"))
+	})
+
+	t.Run("nonRequiredValidatesWhenFieldExistsAndNotEmpty", func(t *testing.T) {
+		data := map[string]any{
+			"email": "invalid-email",
+		}
+
+		res := ValidateMap(data, RulesMap{
+			"email": {"email"},
+		})
+
+		// Non-required rule should validate when field exists and is not empty
+		assert.True(t, res.Failed())
+		assert.True(t, res.Errors.Has("email"))
 	})
 }

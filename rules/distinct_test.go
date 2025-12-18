@@ -173,3 +173,8 @@ func initDistinctRule() *Distinct {
 	})
 	return r
 }
+
+func TestDistinct_RequiresField(t *testing.T) {
+	rule := &Distinct{}
+	assert.False(t, rule.RequiresField())
+}

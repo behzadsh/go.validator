@@ -250,3 +250,8 @@ func TestBetween_MinRequiredParams(t *testing.T) {
 
 	assert.Equal(t, 2, rule.MinRequiredParams())
 }
+
+func TestBetween_RequiresField(t *testing.T) {
+	rule := &Between{}
+	assert.False(t, rule.RequiresField())
+}

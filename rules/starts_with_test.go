@@ -109,3 +109,8 @@ func TestStartsWith_MinRequiredParams(t *testing.T) {
 
 	assert.Equal(t, 1, rule.MinRequiredParams())
 }
+
+func TestStartsWith_RequiresField(t *testing.T) {
+	rule := &StartsWith{}
+	assert.False(t, rule.RequiresField())
+}

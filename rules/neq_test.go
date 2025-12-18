@@ -91,3 +91,8 @@ func TestNotEqual_MinRequiredParams(t *testing.T) {
 
 	assert.Equal(t, 1, rule.MinRequiredParams())
 }
+
+func TestNotEqual_RequiresField(t *testing.T) {
+	rule := &NotEqual{}
+	assert.False(t, rule.RequiresField())
+}

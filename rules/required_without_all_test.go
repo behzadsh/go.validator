@@ -117,3 +117,8 @@ func TestRequiredWithoutAll_MinRequiredParams(t *testing.T) {
 
 	assert.Equal(t, 2, rule.MinRequiredParams())
 }
+
+func TestRequiredWithoutAll_RequiresField(t *testing.T) {
+	rule := &RequiredWithoutAll{}
+	assert.True(t, rule.RequiresField())
+}

@@ -68,3 +68,8 @@ func initDateTimeBeforeRule() *DateTimeBefore {
 	})
 	return r
 }
+
+func TestDateTimeBefore_RequiresField(t *testing.T) {
+	rule := &DateTimeBefore{}
+	assert.False(t, rule.RequiresField())
+}

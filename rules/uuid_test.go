@@ -77,3 +77,8 @@ func initUUIDRule() *UUID {
 	})
 	return uuidRule
 }
+
+func TestUUID_RequiresField(t *testing.T) {
+	rule := &UUID{}
+	assert.False(t, rule.RequiresField())
+}

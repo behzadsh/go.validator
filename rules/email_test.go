@@ -152,3 +152,8 @@ func TestEmail_MinRequiredParams(t *testing.T) {
 
 	assert.Equal(t, 0, rule.MinRequiredParams())
 }
+
+func TestEmail_RequiresField(t *testing.T) {
+	rule := &Email{}
+	assert.False(t, rule.RequiresField())
+}

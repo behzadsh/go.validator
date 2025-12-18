@@ -68,3 +68,8 @@ func initDateTimeBetweenRule() *DateTimeBetween {
 	})
 	return r
 }
+
+func TestDateTimeBetween_RequiresField(t *testing.T) {
+	rule := &DateTimeBetween{}
+	assert.False(t, rule.RequiresField())
+}

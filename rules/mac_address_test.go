@@ -61,3 +61,8 @@ func initMacRule() *MacAddress {
 	})
 	return r
 }
+
+func TestMacAddress_RequiresField(t *testing.T) {
+	rule := &MacAddress{}
+	assert.False(t, rule.RequiresField())
+}

@@ -154,3 +154,8 @@ func TestAfter_MinRequiredParams(t *testing.T) {
 
 	assert.Equal(t, 1, rule.MinRequiredParams())
 }
+
+func TestAfter_RequiresField(t *testing.T) {
+	rule := &After{}
+	assert.False(t, rule.RequiresField())
+}

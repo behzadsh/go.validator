@@ -74,3 +74,8 @@ func initDateTimeAfterRule() *DateTimeAfter {
 	})
 	return r
 }
+
+func TestDateTimeAfter_RequiresField(t *testing.T) {
+	rule := &DateTimeAfter{}
+	assert.False(t, rule.RequiresField())
+}

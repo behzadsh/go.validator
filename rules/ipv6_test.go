@@ -57,3 +57,8 @@ func initIPv6Rule() *IPv6 {
 	})
 	return r
 }
+
+func TestIPv6_RequiresField(t *testing.T) {
+	rule := &IPv6{}
+	assert.False(t, rule.RequiresField())
+}

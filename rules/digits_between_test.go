@@ -91,3 +91,8 @@ func TestDigitsBetween_MinRequiredParams(t *testing.T) {
 
 	assert.Equal(t, 2, rule.MinRequiredParams())
 }
+
+func TestDigitsBetween_RequiresField(t *testing.T) {
+	rule := &DigitsBetween{}
+	assert.False(t, rule.RequiresField())
+}

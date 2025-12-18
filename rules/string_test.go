@@ -138,3 +138,8 @@ func initStringRule() *String {
 	})
 	return stringRule
 }
+
+func TestString_RequiresField(t *testing.T) {
+	rule := &String{}
+	assert.False(t, rule.RequiresField())
+}

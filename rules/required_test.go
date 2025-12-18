@@ -78,3 +78,8 @@ func initRequiredRule() *Required {
 	})
 	return requiredRule
 }
+
+func TestRequired_RequiresField(t *testing.T) {
+	rule := &Required{}
+	assert.True(t, rule.RequiresField())
+}
