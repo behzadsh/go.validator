@@ -107,3 +107,8 @@ func TestRequiredIf_MinRequiredParams(t *testing.T) {
 
 	assert.Equal(t, 2, rule.MinRequiredParams())
 }
+
+func TestRequiredIf_RequiresField(t *testing.T) {
+	rule := &RequiredIf{}
+	assert.True(t, rule.RequiresField())
+}

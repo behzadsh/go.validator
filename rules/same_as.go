@@ -41,3 +41,8 @@ func (r *SameAs) AddParams(params []string) {
 func (*SameAs) MinRequiredParams() int {
 	return 1
 }
+
+// RequiresField returns false as the SameAs rule does not require the field to exist.
+func (*SameAs) RequiresField() bool {
+	return false
+}

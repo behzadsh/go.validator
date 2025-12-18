@@ -77,3 +77,8 @@ func initUppercaseRule() *Uppercase {
 	})
 	return uppercaseRule
 }
+
+func TestUppercase_RequiresField(t *testing.T) {
+	rule := &Uppercase{}
+	assert.False(t, rule.RequiresField())
+}

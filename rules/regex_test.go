@@ -108,3 +108,8 @@ func TestRegex_MinRequiredParams(t *testing.T) {
 
 	assert.Equal(t, 1, rule.MinRequiredParams())
 }
+
+func TestRegex_RequiresField(t *testing.T) {
+	rule := &Regex{}
+	assert.False(t, rule.RequiresField())
+}

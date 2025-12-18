@@ -28,3 +28,8 @@ func (r *IP) Validate(selector string, value any, _ bag.InputBag) ValidationResu
 	}
 	return NewSuccessResult()
 }
+
+// RequiresField returns false as the IP rule does not require the field to exist.
+func (*IP) RequiresField() bool {
+	return false
+}

@@ -30,3 +30,8 @@ func (r *Uppercase) Validate(selector string, value any, _ bag.InputBag) Validat
 
 	return NewSuccessResult()
 }
+
+// RequiresField returns false as the Uppercase rule does not require the field to exist.
+func (*Uppercase) RequiresField() bool {
+	return false
+}

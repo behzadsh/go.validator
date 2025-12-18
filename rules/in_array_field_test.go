@@ -89,3 +89,8 @@ func initInArrayFieldRule() *InArrayField {
 	})
 	return r
 }
+
+func TestInArrayField_RequiresField(t *testing.T) {
+	rule := &InArrayField{}
+	assert.False(t, rule.RequiresField())
+}

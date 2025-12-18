@@ -61,3 +61,8 @@ func (r *DateTimeBefore) AddParams(params []string) {
 // It specifies how many parameters must be provided when configuring this rule.
 // Returns 1, indicating that the `value` parameter is mandatory, while the `timeZone` parameter is optional.
 func (*DateTimeBefore) MinRequiredParams() int { return 1 }
+
+// RequiresField returns false as the DateTimeBefore rule does not require the field to exist.
+func (*DateTimeBefore) RequiresField() bool {
+	return false
+}

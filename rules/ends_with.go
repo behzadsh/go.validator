@@ -43,3 +43,8 @@ func (r *EndsWith) AddParams(params []string) {
 func (*EndsWith) MinRequiredParams() int {
 	return 1
 }
+
+// RequiresField returns false as the EndsWith rule does not require the field to exist.
+func (*EndsWith) RequiresField() bool {
+	return false
+}

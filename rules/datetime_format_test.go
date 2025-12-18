@@ -105,3 +105,8 @@ func TestDateTimeFormat_MinRequiredParams(t *testing.T) {
 
 	assert.Equal(t, 1, rule.MinRequiredParams())
 }
+
+func TestDateTimeFormat_RequiresField(t *testing.T) {
+	rule := &DateTimeFormat{}
+	assert.False(t, rule.RequiresField())
+}

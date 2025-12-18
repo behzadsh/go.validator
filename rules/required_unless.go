@@ -50,3 +50,8 @@ func (r *RequiredUnless) AddParams(params []string) {
 func (*RequiredUnless) MinRequiredParams() int {
 	return 2
 }
+
+// RequiresField returns true as the RequiredUnless rule requires the field to exist.
+func (*RequiredUnless) RequiresField() bool {
+	return true
+}

@@ -124,3 +124,8 @@ func initBooleanRule() *Boolean {
 
 	return booleanRule
 }
+
+func TestBoolean_RequiresField(t *testing.T) {
+	rule := &Boolean{}
+	assert.False(t, rule.RequiresField())
+}

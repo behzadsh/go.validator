@@ -50,3 +50,8 @@ func (r *RequiredIf) AddParams(params []string) {
 func (*RequiredIf) MinRequiredParams() int {
 	return 2
 }
+
+// RequiresField returns true as the RequiredIf rule requires the field to exist.
+func (*RequiredIf) RequiresField() bool {
+	return true
+}

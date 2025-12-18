@@ -57,3 +57,8 @@ func initIPv4Rule() *IPv4 {
 	})
 	return r
 }
+
+func TestIPv4_RequiresField(t *testing.T) {
+	rule := &IPv4{}
+	assert.False(t, rule.RequiresField())
+}

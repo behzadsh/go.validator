@@ -92,3 +92,8 @@ func (r *Email) checkMXRecord() bool {
 
 	return true
 }
+
+// RequiresField returns false as the Email rule does not require the field to exist.
+func (*Email) RequiresField() bool {
+	return false
+}

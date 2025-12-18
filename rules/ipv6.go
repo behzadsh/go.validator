@@ -29,3 +29,8 @@ func (r *IPv6) Validate(selector string, value any, _ bag.InputBag) ValidationRe
 	}
 	return NewSuccessResult()
 }
+
+// RequiresField returns false as the IPv6 rule does not require the field to exist.
+func (*IPv6) RequiresField() bool {
+	return false
+}

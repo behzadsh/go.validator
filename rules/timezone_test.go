@@ -61,3 +61,8 @@ func initTimezoneRule() *Timezone {
 	})
 	return r
 }
+
+func TestTimezone_RequiresField(t *testing.T) {
+	rule := &Timezone{}
+	assert.False(t, rule.RequiresField())
+}

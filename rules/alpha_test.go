@@ -77,3 +77,8 @@ func initAlphaRule() *Alpha {
 	})
 	return alphaRule
 }
+
+func TestAlpha_RequiresField(t *testing.T) {
+	rule := &Alpha{}
+	assert.False(t, rule.RequiresField())
+}

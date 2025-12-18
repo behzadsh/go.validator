@@ -61,3 +61,8 @@ func (r *RequiredWithoutAll) getOtherFieldsConcatenated() string {
 	i := strings.LastIndex(output, ",")
 	return output[:i+1] + " and" + output[i+1:]
 }
+
+// RequiresField returns true as the RequiredWithoutAll rule requires the field to exist.
+func (*RequiredWithoutAll) RequiresField() bool {
+	return true
+}

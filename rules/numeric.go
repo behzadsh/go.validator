@@ -27,3 +27,8 @@ func (r *Numeric) Validate(selector string, value any, _ bag.InputBag) Validatio
 
 	return NewSuccessResult()
 }
+
+// RequiresField returns false as the Numeric rule does not require the field to exist.
+func (*Numeric) RequiresField() bool {
+	return false
+}

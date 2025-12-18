@@ -66,3 +66,8 @@ func (r *DateTimeBetween) AddParams(params []string) {
 // It specifies how many parameters must be provided when configuring this rule.
 // Returns 2, indicating that the `min` and `max` parameters are mandatory, while the `timeZone` parameter is optional.
 func (*DateTimeBetween) MinRequiredParams() int { return 2 }
+
+// RequiresField returns false as the DateTimeBetween rule does not require the field to exist.
+func (*DateTimeBetween) RequiresField() bool {
+	return false
+}

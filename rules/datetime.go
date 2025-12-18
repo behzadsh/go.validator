@@ -27,3 +27,8 @@ func (r *DateTime) Validate(selector string, value any, _ bag.InputBag) Validati
 
 	return NewSuccessResult()
 }
+
+// RequiresField returns false as the DateTime rule does not require the field to exist.
+func (*DateTime) RequiresField() bool {
+	return false
+}

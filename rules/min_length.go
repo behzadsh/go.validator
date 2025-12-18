@@ -57,3 +57,8 @@ func (r *MinLength) AddParams(params []string) {
 func (*MinLength) MinRequiredParams() int {
 	return 1
 }
+
+// RequiresField returns false as the MinLength rule does not require the field to exist.
+func (*MinLength) RequiresField() bool {
+	return false
+}

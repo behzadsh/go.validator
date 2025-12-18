@@ -187,3 +187,8 @@ func TestLength_MinRequiredParams(t *testing.T) {
 
 	assert.Equal(t, 1, rule.MinRequiredParams())
 }
+
+func TestLength_RequiresField(t *testing.T) {
+	rule := &Length{}
+	assert.False(t, rule.RequiresField())
+}

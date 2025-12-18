@@ -48,3 +48,8 @@ func (r *In) AddParams(params []string) {
 func (*In) MinRequiredParams() int {
 	return 2
 }
+
+// RequiresField returns false as the In rule does not require the field to exist.
+func (*In) RequiresField() bool {
+	return false
+}

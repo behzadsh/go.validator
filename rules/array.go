@@ -26,3 +26,8 @@ func (r *Array) Validate(selector string, value any, _ bag.InputBag) ValidationR
 
 	return NewSuccessResult()
 }
+
+// RequiresField returns false as the Array rule does not require the field to exist.
+func (*Array) RequiresField() bool {
+	return false
+}

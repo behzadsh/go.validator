@@ -138,3 +138,8 @@ func initIntegerRule() *Integer {
 	})
 	return integerRule
 }
+
+func TestInteger_RequiresField(t *testing.T) {
+	rule := &Integer{}
+	assert.False(t, rule.RequiresField())
+}

@@ -44,3 +44,8 @@ func (r *NotRegex) AddParams(params []string) {
 func (*NotRegex) MinRequiredParams() int {
 	return 1
 }
+
+// RequiresField returns false as the NotRegex rule does not require the field to exist.
+func (*NotRegex) RequiresField() bool {
+	return false
+}

@@ -47,3 +47,8 @@ func (r *RequiredWithout) AddParams(params []string) {
 func (*RequiredWithout) MinRequiredParams() int {
 	return 1
 }
+
+// RequiresField returns true as the RequiredWithout rule requires the field to exist.
+func (*RequiredWithout) RequiresField() bool {
+	return true
+}

@@ -43,3 +43,8 @@ func (r *StartsWith) AddParams(params []string) {
 func (*StartsWith) MinRequiredParams() int {
 	return 1
 }
+
+// RequiresField returns false as the StartsWith rule does not require the field to exist.
+func (*StartsWith) RequiresField() bool {
+	return false
+}

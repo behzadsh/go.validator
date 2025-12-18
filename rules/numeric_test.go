@@ -128,3 +128,8 @@ func initNumericRule() *Numeric {
 	})
 	return numericRule
 }
+
+func TestNumeric_RequiresField(t *testing.T) {
+	rule := &Numeric{}
+	assert.False(t, rule.RequiresField())
+}

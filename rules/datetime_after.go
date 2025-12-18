@@ -62,3 +62,8 @@ func (r *DateTimeAfter) AddParams(params []string) {
 // It specifies how many parameters must be provided when configuring this rule.
 // Returns 1, indicating that the `value` parameter is mandatory, while the `timeZone` parameter is optional.
 func (*DateTimeAfter) MinRequiredParams() int { return 1 }
+
+// RequiresField returns false as the DateTimeAfter rule does not require the field to exist.
+func (*DateTimeAfter) RequiresField() bool {
+	return false
+}

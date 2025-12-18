@@ -29,3 +29,8 @@ func (r *AlphaDash) Validate(selector string, value any, _ bag.InputBag) Validat
 
 	return NewSuccessResult()
 }
+
+// RequiresField returns false as the AlphaDash rule does not require the field to exist.
+func (*AlphaDash) RequiresField() bool {
+	return false
+}

@@ -99,3 +99,8 @@ func TestRequiredUnless_MinRequiredParams(t *testing.T) {
 
 	assert.Equal(t, 2, rule.MinRequiredParams())
 }
+
+func TestRequiredUnless_RequiresField(t *testing.T) {
+	rule := &RequiredUnless{}
+	assert.True(t, rule.RequiresField())
+}

@@ -49,3 +49,8 @@ func (r *Distinct) Validate(selector string, value any, _ bag.InputBag) Validati
 
 	return NewSuccessResult()
 }
+
+// RequiresField returns false as the Distinct rule does not require the field to exist.
+func (*Distinct) RequiresField() bool {
+	return false
+}
