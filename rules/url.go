@@ -32,18 +32,26 @@ func (r *URL) Validate(selector string, value any, _ bag.InputBag) ValidationRes
 	u, err := url.ParseRequestURI(raw)
 	if r.requireScheme {
 		if err != nil || u.Scheme == "" || !isValidURLHost(u.Host) {
-			return NewFailedResult(r.Translate(r.Locale, "validation.url", map[string]string{
-				"field": selector,
-			}))
+			return NewFailedResult(
+				r.Translate(
+					r.Locale, "validation.url", map[string]string{
+						"field": selector,
+					},
+				),
+			)
 		}
 	} else {
 		// Accept URLs without scheme by attempting to parse with an implied scheme
 		if err != nil || !isValidURLHost(u.Host) {
 			u2, err2 := url.Parse("http://" + raw)
 			if err2 != nil || !isValidURLHost(u2.Host) {
-				return NewFailedResult(r.Translate(r.Locale, "validation.url", map[string]string{
-					"field": selector,
-				}))
+				return NewFailedResult(
+					r.Translate(
+						r.Locale, "validation.url", map[string]string{
+							"field": selector,
+						},
+					),
+				)
 			}
 		}
 	}
@@ -73,7 +81,7 @@ func (*URL) MinRequiredParams() int { return 0 }
 // It accepts:
 // - domain-like hosts with at least one dot (e.g. "example.com")
 // - "localhost"
-// - valid IP addresses (IPv4 / IPv6, with or without port)
+// - valid IP addresses (IPv4 / IPv6, with or without port).
 func isValidURLHost(host string) bool {
 	if host == "" {
 		return false
