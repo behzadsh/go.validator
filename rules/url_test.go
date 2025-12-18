@@ -62,6 +62,32 @@ var urlRuleTestData = map[string]any{
 			"validationError":  "The field site must be a valid url.",
 		},
 	},
+	"failedGibberishNoScheme": map[string]any{
+		"input": map[string]any{
+			"selector": "site",
+			"inputBag": bag.InputBag{
+				"site": "jhfdskhk",
+			},
+			"params": []string{},
+		},
+		"output": map[string]any{
+			"validationFailed": true,
+			"validationError":  "The field site must be a valid url.",
+		},
+	},
+	"failedGibberishWithScheme": map[string]any{
+		"input": map[string]any{
+			"selector": "site",
+			"inputBag": bag.InputBag{
+				"site": "http://jhfdskhk",
+			},
+			"params": []string{},
+		},
+		"output": map[string]any{
+			"validationFailed": true,
+			"validationError":  "The field site must be a valid url.",
+		},
+	},
 	"emptyInput": map[string]any{
 		"input": map[string]any{
 			"selector": "site",
