@@ -61,3 +61,8 @@ func (r *GreaterThanEqual) AddParams(params []string) {
 func (*GreaterThanEqual) MinRequiredParams() int {
 	return 1
 }
+
+// RequiresField returns false as the GreaterThanEqual rule does not require the field to exist.
+func (*GreaterThanEqual) RequiresField() bool {
+	return false
+}

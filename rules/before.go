@@ -79,3 +79,8 @@ func (r *Before) AddParams(params []string) {
 func (*Before) MinRequiredParams() int {
 	return 1
 }
+
+// RequiresField returns false as the Before rule does not require the field to exist.
+func (*Before) RequiresField() bool {
+	return false
+}

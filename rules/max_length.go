@@ -57,3 +57,8 @@ func (r *MaxLength) AddParams(params []string) {
 func (*MaxLength) MinRequiredParams() int {
 	return 1
 }
+
+// RequiresField returns false as the MaxLength rule does not require the field to exist.
+func (*MaxLength) RequiresField() bool {
+	return false
+}

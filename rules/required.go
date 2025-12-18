@@ -24,3 +24,8 @@ func (r *Required) Validate(selector string, _ any, inputBag bag.InputBag) Valid
 
 	return NewSuccessResult()
 }
+
+// RequiresField returns true as the Required rule requires the field to exist.
+func (*Required) RequiresField() bool {
+	return true
+}

@@ -46,3 +46,8 @@ func (r *MaxDigits) AddParams(params []string) {
 func (*MaxDigits) MinRequiredParams() int {
 	return 1
 }
+
+// RequiresField returns false as the MaxDigits rule does not require the field to exist.
+func (*MaxDigits) RequiresField() bool {
+	return false
+}

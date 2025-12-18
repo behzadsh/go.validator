@@ -113,3 +113,8 @@ func isValidURLHost(host string) bool {
 
 	return true
 }
+
+// RequiresField returns false as the URL rule does not require the field to exist.
+func (*URL) RequiresField() bool {
+	return false
+}

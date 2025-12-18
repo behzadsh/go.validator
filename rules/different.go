@@ -41,3 +41,8 @@ func (r *Different) AddParams(params []string) {
 func (*Different) MinRequiredParams() int {
 	return 1
 }
+
+// RequiresField returns false as the Different rule does not require the field to exist.
+func (*Different) RequiresField() bool {
+	return false
+}

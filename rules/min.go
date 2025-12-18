@@ -43,3 +43,8 @@ func (r *Min) AddParams(params []string) {
 func (*Min) MinRequiredParams() int {
 	return 1
 }
+
+// RequiresField returns false as the Min rule does not require the field to exist.
+func (*Min) RequiresField() bool {
+	return false
+}

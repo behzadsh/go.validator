@@ -29,3 +29,8 @@ func (r *IPv4) Validate(selector string, value any, _ bag.InputBag) ValidationRe
 	}
 	return NewSuccessResult()
 }
+
+// RequiresField returns false as the IPv4 rule does not require the field to exist.
+func (*IPv4) RequiresField() bool {
+	return false
+}

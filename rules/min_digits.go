@@ -46,3 +46,8 @@ func (r *MinDigits) AddParams(params []string) {
 func (*MinDigits) MinRequiredParams() int {
 	return 1
 }
+
+// RequiresField returns false as the MinDigits rule does not require the field to exist.
+func (*MinDigits) RequiresField() bool {
+	return false
+}

@@ -29,3 +29,8 @@ func (r *AlphaSpace) Validate(selector string, value any, _ bag.InputBag) Valida
 
 	return NewSuccessResult()
 }
+
+// RequiresField returns false as the AlphaSpace rule does not require the field to exist.
+func (*AlphaSpace) RequiresField() bool {
+	return false
+}

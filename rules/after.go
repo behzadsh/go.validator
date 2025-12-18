@@ -79,3 +79,8 @@ func (r *After) AddParams(params []string) {
 func (*After) MinRequiredParams() int {
 	return 1
 }
+
+// RequiresField returns false as the After rule does not require the field to exist.
+func (*After) RequiresField() bool {
+	return false
+}

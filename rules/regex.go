@@ -44,3 +44,8 @@ func (r *Regex) AddParams(params []string) {
 func (*Regex) MinRequiredParams() int {
 	return 1
 }
+
+// RequiresField returns false as the Regex rule does not require the field to exist.
+func (*Regex) RequiresField() bool {
+	return false
+}

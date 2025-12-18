@@ -27,3 +27,8 @@ func (r *Boolean) Validate(selector string, value any, _ bag.InputBag) Validatio
 
 	return NewSuccessResult()
 }
+
+// RequiresField returns false as the Boolean rule does not require the field to exist.
+func (*Boolean) RequiresField() bool {
+	return false
+}

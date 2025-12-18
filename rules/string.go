@@ -32,3 +32,8 @@ func (r *String) Validate(selector string, value any, _ bag.InputBag) Validation
 		}))
 	}
 }
+
+// RequiresField returns false as the String rule does not require the field to exist.
+func (*String) RequiresField() bool {
+	return false
+}

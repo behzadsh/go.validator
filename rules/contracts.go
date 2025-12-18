@@ -39,6 +39,7 @@ func (r ValidationResult) Failed() bool {
 // Rule is an interface for rules.
 type Rule interface {
 	Validate(selector string, value any, inputBag bag.InputBag) ValidationResult
+	RequiresField() bool
 }
 
 // RuleWithParams is an interface for rules that have parameters.

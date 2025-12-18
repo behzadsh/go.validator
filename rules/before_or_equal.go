@@ -79,3 +79,8 @@ func (r *BeforeOrEqual) AddParams(params []string) {
 func (*BeforeOrEqual) MinRequiredParams() int {
 	return 1
 }
+
+// RequiresField returns false as the BeforeOrEqual rule does not require the field to exist.
+func (*BeforeOrEqual) RequiresField() bool {
+	return false
+}

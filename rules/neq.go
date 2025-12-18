@@ -41,3 +41,8 @@ func (r *NotEqual) AddParams(params []string) {
 func (*NotEqual) MinRequiredParams() int {
 	return 1
 }
+
+// RequiresField returns false as the NotEqual rule does not require the field to exist.
+func (*NotEqual) RequiresField() bool {
+	return false
+}

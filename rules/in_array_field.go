@@ -56,6 +56,11 @@ func (r *InArrayField) AddParams(params []string) {
 // Returns 1, indicating that the `otherField` parameter is mandatory.
 func (*InArrayField) MinRequiredParams() int { return 1 }
 
+// RequiresField returns false as the InArrayField rule does not require the field to exist.
+func (*InArrayField) RequiresField() bool {
+	return false
+}
+
 func toComparableString(v any) string {
 	s, ok := v.(string)
 	if ok {

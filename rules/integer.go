@@ -33,3 +33,8 @@ func (r *Integer) Validate(selector string, value any, _ bag.InputBag) Validatio
 		}))
 	}
 }
+
+// RequiresField returns false as the Integer rule does not require the field to exist.
+func (*Integer) RequiresField() bool {
+	return false
+}

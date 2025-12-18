@@ -47,3 +47,8 @@ func (r *RequiredWith) AddParams(params []string) {
 func (*RequiredWith) MinRequiredParams() int {
 	return 1
 }
+
+// RequiresField returns true as the RequiredWith rule requires the field to exist.
+func (*RequiredWith) RequiresField() bool {
+	return true
+}
