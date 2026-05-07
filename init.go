@@ -58,6 +58,7 @@ func registerDefaultRules() {
 		"dateTimeAfter":      &rules.DateTimeAfter{},
 		"dateTimeBefore":     &rules.DateTimeBefore{},
 		"dateTimeBetween":    &rules.DateTimeBetween{},
+		"dateTimeFormat":     &rules.DateTimeFormat{},
 		"different":          &rules.Different{},
 		"digits":             &rules.Digits{},
 		"digitsBetween":      &rules.DigitsBetween{},
