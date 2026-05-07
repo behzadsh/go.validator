@@ -4,11 +4,11 @@ import "reflect"
 
 func indirectValue(a any) reflect.Value {
 	v := reflect.ValueOf(a)
-	if v.Kind() != reflect.Ptr {
+	if v.Kind() != reflect.Pointer {
 		return v
 	}
 
-	for v.Kind() == reflect.Ptr && !v.IsNil() {
+	for v.Kind() == reflect.Pointer && !v.IsNil() {
 		v = v.Elem()
 	}
 
