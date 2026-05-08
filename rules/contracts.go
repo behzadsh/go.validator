@@ -39,6 +39,12 @@ func (r ValidationResult) Failed() bool {
 // Rule is an interface for rules.
 type Rule interface {
 	Validate(selector string, value any, inputBag bag.InputBag) ValidationResult
+}
+
+// FieldRequiredRule is an interface for rules that require the field to exist in order to run validation.
+// Rules not implementing this interface are skipped when the field is absent.
+type FieldRequiredRule interface {
+	Rule
 	RequiresField() bool
 }
 

@@ -44,8 +44,3 @@ func (r *Digits) AddParams(params []string) {
 func (*Digits) MinRequiredParams() int {
 	return 1
 }
-
-// RequiresField returns false as the Digits rule does not require the field to exist.
-func (*Digits) RequiresField() bool {
-	return false
-}

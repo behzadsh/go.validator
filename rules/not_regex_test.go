@@ -115,8 +115,3 @@ func TestNotRegex_MinRequiredParams(t *testing.T) {
 
 	assert.Equal(t, 1, rule.MinRequiredParams())
 }
-
-func TestNotRegex_RequiresField(t *testing.T) {
-	rule := &NotRegex{}
-	assert.False(t, rule.RequiresField())
-}

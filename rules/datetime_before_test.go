@@ -14,16 +14,34 @@ func TestDateTimeBeforeRule(t *testing.T) {
 
 	tests := map[string]any{
 		"ok": map[string]any{
-			"input":  map[string]any{"selector": "end", "inputBag": bag.InputBag{"end": "2021-12-31"}, "params": []string{"2022-01-01", "America/New_York"}},
+			"input": map[string]any{
+				"selector": "end",
+				"inputBag": bag.InputBag{"end": "2021-12-31"},
+				"params":   []string{"2022-01-01", "America/New_York"},
+			},
 			"output": map[string]any{"validationFailed": false, "validationError": ""},
 		},
 		"invalidField": map[string]any{
-			"input":  map[string]any{"selector": "end", "inputBag": bag.InputBag{"end": "invalid"}, "params": []string{"2022-01-01"}},
-			"output": map[string]any{"validationFailed": true, "validationError": "The field end must be a valid date time string."},
+			"input": map[string]any{
+				"selector": "end",
+				"inputBag": bag.InputBag{"end": "invalid"},
+				"params":   []string{"2022-01-01"},
+			},
+			"output": map[string]any{
+				"validationFailed": true,
+				"validationError":  "The field end must be a valid date time string.",
+			},
 		},
 		"notBefore": map[string]any{
-			"input":  map[string]any{"selector": "end", "inputBag": bag.InputBag{"end": "2022-02-01"}, "params": []string{"2022-01-01"}},
-			"output": map[string]any{"validationFailed": true, "validationError": "The field end must be before 2022-01-01T00:00:00Z."},
+			"input": map[string]any{
+				"selector": "end",
+				"inputBag": bag.InputBag{"end": "2022-02-01"},
+				"params":   []string{"2022-01-01"},
+			},
+			"output": map[string]any{
+				"validationFailed": true,
+				"validationError":  "The field end must be before 2022-01-01T00:00:00Z.",
+			},
 		},
 	}
 
@@ -67,9 +85,4 @@ func initDateTimeBeforeRule() *DateTimeBefore {
 		}
 	})
 	return r
-}
-
-func TestDateTimeBefore_RequiresField(t *testing.T) {
-	rule := &DateTimeBefore{}
-	assert.False(t, rule.RequiresField())
 }

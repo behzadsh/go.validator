@@ -113,8 +113,3 @@ func initNotEmptyRule() *NotEmpty {
 	})
 	return notEmptyRule
 }
-
-func TestNotEmpty_RequiresField(t *testing.T) {
-	rule := &NotEmpty{}
-	assert.True(t, rule.RequiresField())
-}

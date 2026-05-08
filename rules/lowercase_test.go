@@ -77,8 +77,3 @@ func initLowercaseRule() *Lowercase {
 	})
 	return lowercaseRule
 }
-
-func TestLowercase_RequiresField(t *testing.T) {
-	rule := &Lowercase{}
-	assert.False(t, rule.RequiresField())
-}

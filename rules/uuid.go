@@ -33,8 +33,3 @@ func (r *UUID) Validate(selector string, value any, _ bag.InputBag) ValidationRe
 
 	return NewSuccessResult()
 }
-
-// RequiresField returns false as the UUID rule does not require the field to exist.
-func (*UUID) RequiresField() bool {
-	return false
-}

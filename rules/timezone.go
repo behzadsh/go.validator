@@ -33,8 +33,3 @@ func (r *Timezone) Validate(selector string, value any, _ bag.InputBag) Validati
 	}
 	return NewSuccessResult()
 }
-
-// RequiresField returns false as the Timezone rule does not require the field to exist.
-func (*Timezone) RequiresField() bool {
-	return false
-}

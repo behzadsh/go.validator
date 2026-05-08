@@ -41,8 +41,3 @@ func (r *Max) AddParams(params []string) {
 func (*Max) MinRequiredParams() int {
 	return 1
 }
-
-// RequiresField returns false as the Max rule does not require the field to exist.
-func (*Max) RequiresField() bool {
-	return false
-}

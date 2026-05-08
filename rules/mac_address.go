@@ -31,8 +31,3 @@ func (r *MacAddress) Validate(selector string, value any, _ bag.InputBag) Valida
 	}
 	return NewSuccessResult()
 }
-
-// RequiresField returns false as the MacAddress rule does not require the field to exist.
-func (*MacAddress) RequiresField() bool {
-	return false
-}

@@ -109,8 +109,3 @@ func TestSameAs_MinRequiredParams(t *testing.T) {
 
 	assert.Equal(t, 1, rule.MinRequiredParams())
 }
-
-func TestSameAs_RequiresField(t *testing.T) {
-	rule := &SameAs{}
-	assert.False(t, rule.RequiresField())
-}

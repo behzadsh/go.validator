@@ -14,16 +14,34 @@ func TestDateTimeAfterRule(t *testing.T) {
 
 	tests := map[string]any{
 		"ok": map[string]any{
-			"input":  map[string]any{"selector": "start", "inputBag": bag.InputBag{"start": "2022-02-01"}, "params": []string{"2022-01-01", "America/New_York"}},
+			"input": map[string]any{
+				"selector": "start",
+				"inputBag": bag.InputBag{"start": "2022-02-01"},
+				"params":   []string{"2022-01-01", "America/New_York"},
+			},
 			"output": map[string]any{"validationFailed": false, "validationError": ""},
 		},
 		"invalidField": map[string]any{
-			"input":  map[string]any{"selector": "start", "inputBag": bag.InputBag{"start": "invalid"}, "params": []string{"2022-01-01"}},
-			"output": map[string]any{"validationFailed": true, "validationError": "The field start must be a valid date time string."},
+			"input": map[string]any{
+				"selector": "start",
+				"inputBag": bag.InputBag{"start": "invalid"},
+				"params":   []string{"2022-01-01"},
+			},
+			"output": map[string]any{
+				"validationFailed": true,
+				"validationError":  "The field start must be a valid date time string.",
+			},
 		},
 		"notAfter": map[string]any{
-			"input":  map[string]any{"selector": "start", "inputBag": bag.InputBag{"start": "2021-12-31"}, "params": []string{"2022-01-01"}},
-			"output": map[string]any{"validationFailed": true, "validationError": "The field start must be after 2022-01-01T00:00:00Z."},
+			"input": map[string]any{
+				"selector": "start",
+				"inputBag": bag.InputBag{"start": "2021-12-31"},
+				"params":   []string{"2022-01-01"},
+			},
+			"output": map[string]any{
+				"validationFailed": true,
+				"validationError":  "The field start must be after 2022-01-01T00:00:00Z.",
+			},
 		},
 	}
 
@@ -53,19 +71,19 @@ func initDateTimeAfterRule() *DateTimeAfter {
 		case "validation.datetime":
 			tr := "The field :field: must be a valid date time string."
 			for k, v := range p {
-				tr = strings.ReplaceAll(tr, ":"+k+":", v, )
+				tr = strings.ReplaceAll(tr, ":"+k+":", v)
 			}
 			return tr
 		case "validation.datetime_after":
 			tr := "The field :field: must be after :value:."
 			for k, v := range p {
-				tr = strings.ReplaceAll(tr, ":"+k+":", v, )
+				tr = strings.ReplaceAll(tr, ":"+k+":", v)
 			}
 			return tr
 		case "validation.after":
 			tr := "The field :field: must be after field :otherField:."
 			for k, v := range p {
-				tr = strings.ReplaceAll(tr, ":"+k+":", v, )
+				tr = strings.ReplaceAll(tr, ":"+k+":", v)
 			}
 			return tr
 		default:
@@ -73,9 +91,4 @@ func initDateTimeAfterRule() *DateTimeAfter {
 		}
 	})
 	return r
-}
-
-func TestDateTimeAfter_RequiresField(t *testing.T) {
-	rule := &DateTimeAfter{}
-	assert.False(t, rule.RequiresField())
 }

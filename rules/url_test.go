@@ -151,8 +151,3 @@ func initURLRule() *URL {
 	)
 	return urlRule
 }
-
-func TestURL_RequiresField(t *testing.T) {
-	rule := &URL{}
-	assert.False(t, rule.RequiresField())
-}

@@ -61,8 +61,3 @@ func (r *GreaterThan) AddParams(params []string) {
 func (*GreaterThan) MinRequiredParams() int {
 	return 1
 }
-
-// RequiresField returns false as the GreaterThan rule does not require the field to exist.
-func (*GreaterThan) RequiresField() bool {
-	return false
-}

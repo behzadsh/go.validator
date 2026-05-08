@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/cast"
 
 	"github.com/behzadsh/go.validator/bag"
+	"github.com/behzadsh/go.validator/rules"
 )
 
 // RulesMap is a custom type for a map of rules for field selectors.
@@ -115,8 +116,11 @@ func doValidation(inputBag bag.InputBag, rulesMap RulesMap, locale string) Resul
 			ruleName := ruleIndicator(ruleStr)
 			rule := ruleName.load(locale)
 
-			if !exists && !rule.RequiresField() {
-				continue
+			if !exists {
+				fr, ok := rule.(rules.FieldRequiredRule)
+				if !ok || !fr.RequiresField() {
+					continue
+				}
 			}
 
 			ruleResult := rule.Validate(selector, val, inputBag)

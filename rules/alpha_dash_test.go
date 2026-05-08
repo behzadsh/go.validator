@@ -78,8 +78,3 @@ func initAlphaDashRule() *AlphaDash {
 	})
 	return alphaRule
 }
-
-func TestAlphaDash_RequiresField(t *testing.T) {
-	rule := &AlphaDash{}
-	assert.False(t, rule.RequiresField())
-}

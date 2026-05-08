@@ -91,8 +91,3 @@ func TestNotIn_MinRequiredParams(t *testing.T) {
 
 	assert.Equal(t, 2, rule.MinRequiredParams())
 }
-
-func TestNotIn_RequiresField(t *testing.T) {
-	rule := &NotIn{}
-	assert.False(t, rule.RequiresField())
-}

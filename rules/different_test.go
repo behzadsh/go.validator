@@ -93,8 +93,3 @@ func TestDifferent_MinRequiredParams(t *testing.T) {
 
 	assert.Equal(t, 1, rule.MinRequiredParams())
 }
-
-func TestDifferent_RequiresField(t *testing.T) {
-	rule := &Different{}
-	assert.False(t, rule.RequiresField())
-}

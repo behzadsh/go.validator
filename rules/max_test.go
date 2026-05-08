@@ -121,8 +121,3 @@ func TestMax_MinRequiredParams(t *testing.T) {
 
 	assert.Equal(t, 1, rule.MinRequiredParams())
 }
-
-func TestMax_RequiresField(t *testing.T) {
-	rule := &Max{}
-	assert.False(t, rule.RequiresField())
-}

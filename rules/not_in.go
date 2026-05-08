@@ -45,8 +45,3 @@ func (r *NotIn) AddParams(params []string) {
 func (*NotIn) MinRequiredParams() int {
 	return 2
 }
-
-// RequiresField returns false as the NotIn rule does not require the field to exist.
-func (*NotIn) RequiresField() bool {
-	return false
-}

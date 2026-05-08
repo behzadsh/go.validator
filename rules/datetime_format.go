@@ -48,8 +48,3 @@ func (r *DateTimeFormat) AddParams(params []string) {
 func (*DateTimeFormat) MinRequiredParams() int {
 	return 1
 }
-
-// RequiresField returns false as the DateTimeFormat rule does not require the field to exist.
-func (*DateTimeFormat) RequiresField() bool {
-	return false
-}
