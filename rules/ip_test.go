@@ -99,8 +99,3 @@ func initIPRule() *IP {
 	})
 	return r
 }
-
-func TestIP_RequiresField(t *testing.T) {
-	rule := &IP{}
-	assert.False(t, rule.RequiresField())
-}

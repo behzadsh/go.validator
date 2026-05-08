@@ -47,8 +47,3 @@ func (r *DigitsBetween) AddParams(params []string) {
 func (*DigitsBetween) MinRequiredParams() int {
 	return 2
 }
-
-// RequiresField returns false as the DigitsBetween rule does not require the field to exist.
-func (*DigitsBetween) RequiresField() bool {
-	return false
-}

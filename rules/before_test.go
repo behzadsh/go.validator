@@ -154,8 +154,3 @@ func TestBefore_MinRequiredParams(t *testing.T) {
 
 	assert.Equal(t, 1, rule.MinRequiredParams())
 }
-
-func TestBefore_RequiresField(t *testing.T) {
-	rule := &Before{}
-	assert.False(t, rule.RequiresField())
-}

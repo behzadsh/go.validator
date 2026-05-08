@@ -14,16 +14,34 @@ func TestDateTimeBetweenRule(t *testing.T) {
 
 	tests := map[string]any{
 		"ok": map[string]any{
-			"input":  map[string]any{"selector": "d", "inputBag": bag.InputBag{"d": "2022-01-15"}, "params": []string{"2022-01-01", "2022-02-01", "UTC"}},
+			"input": map[string]any{
+				"selector": "d",
+				"inputBag": bag.InputBag{"d": "2022-01-15"},
+				"params":   []string{"2022-01-01", "2022-02-01", "UTC"},
+			},
 			"output": map[string]any{"validationFailed": false, "validationError": ""},
 		},
 		"invalidField": map[string]any{
-			"input":  map[string]any{"selector": "d", "inputBag": bag.InputBag{"d": "invalid"}, "params": []string{"2022-01-01", "2022-02-01"}},
-			"output": map[string]any{"validationFailed": true, "validationError": "The field d must be a valid date time string."},
+			"input": map[string]any{
+				"selector": "d",
+				"inputBag": bag.InputBag{"d": "invalid"},
+				"params":   []string{"2022-01-01", "2022-02-01"},
+			},
+			"output": map[string]any{
+				"validationFailed": true,
+				"validationError":  "The field d must be a valid date time string.",
+			},
 		},
 		"outOfRange": map[string]any{
-			"input":  map[string]any{"selector": "d", "inputBag": bag.InputBag{"d": "2021-12-31"}, "params": []string{"2022-01-01", "2022-02-01"}},
-			"output": map[string]any{"validationFailed": true, "validationError": "The field d must be between 2022-01-01T00:00:00Z and 2022-02-01T00:00:00Z."},
+			"input": map[string]any{
+				"selector": "d",
+				"inputBag": bag.InputBag{"d": "2021-12-31"},
+				"params":   []string{"2022-01-01", "2022-02-01"},
+			},
+			"output": map[string]any{
+				"validationFailed": true,
+				"validationError":  "The field d must be between 2022-01-01T00:00:00Z and 2022-02-01T00:00:00Z.",
+			},
 		},
 	}
 
@@ -67,9 +85,4 @@ func initDateTimeBetweenRule() *DateTimeBetween {
 		}
 	})
 	return r
-}
-
-func TestDateTimeBetween_RequiresField(t *testing.T) {
-	rule := &DateTimeBetween{}
-	assert.False(t, rule.RequiresField())
 }

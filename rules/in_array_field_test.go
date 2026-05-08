@@ -33,7 +33,10 @@ func TestInArrayFieldRule(t *testing.T) {
 				},
 				"params": []string{"options"},
 			},
-			"output": map[string]any{"validationFailed": true, "validationError": "The field choice must be in given values."},
+			"output": map[string]any{
+				"validationFailed": true,
+				"validationError":  "The field choice must be in given values.",
+			},
 		},
 		"missingOther": map[string]any{
 			"input": map[string]any{
@@ -88,9 +91,4 @@ func initInArrayFieldRule() *InArrayField {
 		}
 	})
 	return r
-}
-
-func TestInArrayField_RequiresField(t *testing.T) {
-	rule := &InArrayField{}
-	assert.False(t, rule.RequiresField())
 }

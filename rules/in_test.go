@@ -91,8 +91,3 @@ func TestIn_MinRequiredParams(t *testing.T) {
 
 	assert.Equal(t, 2, rule.MinRequiredParams())
 }
-
-func TestIn_RequiresField(t *testing.T) {
-	rule := &In{}
-	assert.False(t, rule.RequiresField())
-}

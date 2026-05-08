@@ -29,8 +29,3 @@ func (r *AlphaNum) Validate(selector string, value any, _ bag.InputBag) Validati
 
 	return NewSuccessResult()
 }
-
-// RequiresField returns false as the AlphaNum rule does not require the field to exist.
-func (*AlphaNum) RequiresField() bool {
-	return false
-}

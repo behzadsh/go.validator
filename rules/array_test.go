@@ -80,8 +80,3 @@ func initArrayRule() *Array {
 	})
 	return alphaRule
 }
-
-func TestArray_RequiresField(t *testing.T) {
-	rule := &Array{}
-	assert.False(t, rule.RequiresField())
-}

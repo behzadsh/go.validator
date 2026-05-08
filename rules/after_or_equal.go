@@ -79,8 +79,3 @@ func (r *AfterOrEqual) AddParams(params []string) {
 func (*AfterOrEqual) MinRequiredParams() int {
 	return 1
 }
-
-// RequiresField returns false as the AfterOrEqual rule does not require the field to exist.
-func (*AfterOrEqual) RequiresField() bool {
-	return false
-}

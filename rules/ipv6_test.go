@@ -18,8 +18,11 @@ func TestIPv6Rule(t *testing.T) {
 			"output": map[string]any{"validationFailed": false, "validationError": ""},
 		},
 		"invalidV4": map[string]any{
-			"input":  map[string]any{"selector": "addr", "inputBag": bag.InputBag{"addr": "127.0.0.1"}},
-			"output": map[string]any{"validationFailed": true, "validationError": "The field addr must be a valid ipv6."},
+			"input": map[string]any{"selector": "addr", "inputBag": bag.InputBag{"addr": "127.0.0.1"}},
+			"output": map[string]any{
+				"validationFailed": true,
+				"validationError":  "The field addr must be a valid ipv6.",
+			},
 		},
 	}
 
@@ -56,9 +59,4 @@ func initIPv6Rule() *IPv6 {
 		}
 	})
 	return r
-}
-
-func TestIPv6_RequiresField(t *testing.T) {
-	rule := &IPv6{}
-	assert.False(t, rule.RequiresField())
 }

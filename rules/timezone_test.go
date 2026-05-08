@@ -18,12 +18,18 @@ func TestTimezoneRule(t *testing.T) {
 			"output": map[string]any{"validationFailed": false, "validationError": ""},
 		},
 		"invalid": map[string]any{
-			"input":  map[string]any{"selector": "tz", "inputBag": bag.InputBag{"tz": "Not/AZone"}},
-			"output": map[string]any{"validationFailed": true, "validationError": "The field tz must be a valid timezone."},
+			"input": map[string]any{"selector": "tz", "inputBag": bag.InputBag{"tz": "Not/AZone"}},
+			"output": map[string]any{
+				"validationFailed": true,
+				"validationError":  "The field tz must be a valid timezone.",
+			},
 		},
 		"empty": map[string]any{
-			"input":  map[string]any{"selector": "tz", "inputBag": bag.InputBag{"tz": ""}},
-			"output": map[string]any{"validationFailed": true, "validationError": "The field tz must be a valid timezone."},
+			"input": map[string]any{"selector": "tz", "inputBag": bag.InputBag{"tz": ""}},
+			"output": map[string]any{
+				"validationFailed": true,
+				"validationError":  "The field tz must be a valid timezone.",
+			},
 		},
 	}
 
@@ -60,9 +66,4 @@ func initTimezoneRule() *Timezone {
 		}
 	})
 	return r
-}
-
-func TestTimezone_RequiresField(t *testing.T) {
-	rule := &Timezone{}
-	assert.False(t, rule.RequiresField())
 }

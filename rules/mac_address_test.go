@@ -22,8 +22,11 @@ func TestMacAddressRule(t *testing.T) {
 			"output": map[string]any{"validationFailed": false, "validationError": ""},
 		},
 		"invalid": map[string]any{
-			"input":  map[string]any{"selector": "mac", "inputBag": bag.InputBag{"mac": "0123.4567.89ab"}},
-			"output": map[string]any{"validationFailed": true, "validationError": "The field mac must be a valid mac address."},
+			"input": map[string]any{"selector": "mac", "inputBag": bag.InputBag{"mac": "0123.4567.89ab"}},
+			"output": map[string]any{
+				"validationFailed": true,
+				"validationError":  "The field mac must be a valid mac address.",
+			},
 		},
 	}
 
@@ -60,9 +63,4 @@ func initMacRule() *MacAddress {
 		}
 	})
 	return r
-}
-
-func TestMacAddress_RequiresField(t *testing.T) {
-	rule := &MacAddress{}
-	assert.False(t, rule.RequiresField())
 }

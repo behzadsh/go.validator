@@ -18,8 +18,11 @@ func TestIPv4Rule(t *testing.T) {
 			"output": map[string]any{"validationFailed": false, "validationError": ""},
 		},
 		"invalidV6": map[string]any{
-			"input":  map[string]any{"selector": "addr", "inputBag": bag.InputBag{"addr": "2001:db8::1"}},
-			"output": map[string]any{"validationFailed": true, "validationError": "The field addr must be a valid ipv4."},
+			"input": map[string]any{"selector": "addr", "inputBag": bag.InputBag{"addr": "2001:db8::1"}},
+			"output": map[string]any{
+				"validationFailed": true,
+				"validationError":  "The field addr must be a valid ipv4.",
+			},
 		},
 	}
 
@@ -56,9 +59,4 @@ func initIPv4Rule() *IPv4 {
 		}
 	})
 	return r
-}
-
-func TestIPv4_RequiresField(t *testing.T) {
-	rule := &IPv4{}
-	assert.False(t, rule.RequiresField())
 }

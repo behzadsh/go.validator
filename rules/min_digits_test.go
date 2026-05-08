@@ -91,8 +91,3 @@ func TestMinDigits_MinRequiredParams(t *testing.T) {
 
 	assert.Equal(t, 1, rule.MinRequiredParams())
 }
-
-func TestMinDigits_RequiresField(t *testing.T) {
-	rule := &MinDigits{}
-	assert.False(t, rule.RequiresField())
-}

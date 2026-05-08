@@ -30,8 +30,3 @@ func (r *Lowercase) Validate(selector string, value any, _ bag.InputBag) Validat
 
 	return NewSuccessResult()
 }
-
-// RequiresField returns false as the Lowercase rule does not require the field to exist.
-func (*Lowercase) RequiresField() bool {
-	return false
-}

@@ -78,8 +78,3 @@ func initDateTimeRule() *DateTime {
 
 	return datetimeRule
 }
-
-func TestDateTime_RequiresField(t *testing.T) {
-	rule := &DateTime{}
-	assert.False(t, rule.RequiresField())
-}

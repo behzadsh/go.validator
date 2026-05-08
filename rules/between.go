@@ -67,8 +67,3 @@ func (r *Between) AddParams(params []string) {
 func (*Between) MinRequiredParams() int {
 	return 2
 }
-
-// RequiresField returns false as the Between rule does not require the field to exist.
-func (*Between) RequiresField() bool {
-	return false
-}

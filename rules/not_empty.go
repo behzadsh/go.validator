@@ -26,8 +26,3 @@ func (r *NotEmpty) Validate(selector string, value any, _ bag.InputBag) Validati
 
 	return NewSuccessResult()
 }
-
-// RequiresField returns true as the NotEmpty rule requires the field to exist.
-func (*NotEmpty) RequiresField() bool {
-	return true
-}

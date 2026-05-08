@@ -244,8 +244,3 @@ func TestGreaterThanEqual_MinRequiredParams(t *testing.T) {
 
 	assert.Equal(t, 1, rule.MinRequiredParams())
 }
-
-func TestGreaterThanEqual_RequiresField(t *testing.T) {
-	rule := &GreaterThanEqual{}
-	assert.False(t, rule.RequiresField())
-}

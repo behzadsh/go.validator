@@ -78,8 +78,3 @@ func initAlphaNumRule() *AlphaNum {
 	})
 	return alphaRule
 }
-
-func TestAlphaNum_RequiresField(t *testing.T) {
-	rule := &AlphaNum{}
-	assert.False(t, rule.RequiresField())
-}
