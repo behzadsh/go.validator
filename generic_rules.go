@@ -1,0 +1,66 @@
+package validation
+
+// In returns a Rule that validates the value is present in the given slice.
+//
+// Comparison uses ==, so T must be a comparable type. The value must be exactly f type T; a float64 does not match an
+// int slice even if numerically equal.
+//
+// Fails if:
+//   - value cannot be type-asserted to T
+//   - value is not found in slice
+//
+// Examples:
+//
+//	validation.In([]string{"a", "b", "c"}).Validate("a")  // pass
+//	validation.In([]string{"a", "b", "c"}).Validate("d")  // fail — not in list
+//	validation.In([]int{1, 2, 3}).Validate(2)             // pass
+//	validation.In([]int{1, 2, 3}).Validate(float64(2))    // fail — wrong type
+func In[T comparable](slice []T) Rule {
+	fn := func(value any) error {
+		v, ok := value.(T)
+		if !ok || !contains(slice, v) {
+			return ErrValidationIn
+		}
+
+		return nil
+	}
+
+	return RuleFunc(fn)
+}
+
+// NotIn returns a Rule that validates the value is not present in the given slice.
+//
+// Like In, comparison uses ==. The value must be exactly of type T.
+//
+// Fails if:
+//   - value cannot be type-asserted to T
+//   - value is found in slice
+//
+// Examples:
+//
+//	validation.NotIn([]string{"banned", "blocked"}).Validate("allowed") // pass
+//	validation.NotIn([]string{"banned", "blocked"}).Validate("banned")  // fail — in list
+//	validation.NotIn([]int{0, -1}).Validate(5)                          // pass
+//	validation.NotIn([]int{0, -1}).Validate(0)                          // fail — in list
+func NotIn[T comparable](slice []T) Rule {
+	fn := func(value any) error {
+		v, ok := value.(T)
+		if !ok || contains(slice, v) {
+			return ErrValidationNotIn
+		}
+
+		return nil
+	}
+
+	return RuleFunc(fn)
+}
+
+func contains[T comparable](slice []T, value T) bool {
+	for _, v := range slice {
+		if value == v {
+			return true
+		}
+	}
+
+	return false
+}

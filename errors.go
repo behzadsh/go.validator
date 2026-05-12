@@ -1,5 +1,49 @@
 package validation
 
+import "errors"
+
+// General validation errors.
+var (
+	ErrValidationRequired   = errors.New("required validation failed")
+	ErrValidationRequiredIf = errors.New("required if validation failed")
+	ErrValidationNotEmpty   = errors.New("not empty validation failed")
+)
+
+// Strings validation errors.
+var (
+	ErrValidationAlpha      = errors.New("alpha validation failed")
+	ErrValidationAlphaDash  = errors.New("alpha dash validation failed")
+	ErrValidationAlphaNum   = errors.New("alpha num validation failed")
+	ErrValidationAlphaSpace = errors.New("alpha space validation failed")
+	ErrValidationURL        = errors.New("url validation failed")
+	ErrValidationLength     = errors.New("length validation failed")
+	ErrValidationMinLength  = errors.New("min length validation failed")
+	ErrValidationMaxLength  = errors.New("max length validation failed")
+	ErrValidationEmail      = errors.New("email validation failed")
+	ErrValidationEmailMX    = errors.New("email mx validation failed")
+)
+
+// Numbers validation errors.
+var (
+	ErrValidationNumeric = errors.New("numeric validation failed")
+	ErrValidationBetween = errors.New("between validation failed")
+	ErrValidationMin     = errors.New("min validation failed")
+	ErrValidationMax     = errors.New("max validation failed")
+)
+
+// Date/Time validation errors.
+var (
+	ErrValidationDateTimeFormat = errors.New("datetime format validation failed")
+	ErrValidationAfter          = errors.New("after validation failed")
+	ErrValidationBefore         = errors.New("before validation failed")
+)
+
+// Generic validation errors.
+var (
+	ErrValidationIn    = errors.New("in validation failed")
+	ErrValidationNotIn = errors.New("not in validation failed")
+)
+
 // FieldError describes a single validation failure for a single field.
 //
 // Err holds the underlying error returned by the rule; Message is its pre-rendered string form, kept on the struct so
