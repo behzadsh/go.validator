@@ -1,437 +1,246 @@
-# Go Validator
-![Coverage](https://img.shields.io/badge/Coverage-98.0%25-brightgreen)
-[![Go Report Card](https://goreportcard.com/badge/github.com/behzadsh/go.validator)](https://goreportcard.com/report/github.com/behzadsh/go.validator)
+# go.validator
 
-The `go.validator` package provides a simple and convenient way to validate your data.
+A small, schema-based validator for Go. No globals, no struct tags, no reflection magic in your business code — just a `Schema` you build with chained `Field` calls and validate against any map or struct.
 
-## Installation
+```go
+schema := validation.New().
+    Field("name", validation.Required, validation.MinLength(2)).
+    Field("email", validation.Required, validation.Email)
 
-To install the `go.validator` package, run the following command:
+res, err := schema.Validate(input)
+if err != nil {
+    log.Fatal(err) // RuleSyntaxError: misconfigured rule, fix at startup
+}
+if res.HasErrors() {
+    for _, e := range res.Errors() {
+        fmt.Println(e.Path, e.Message)
+    }
+}
+```
+
+## Install
 
 ```bash
-go get -u github.com/behzadsh/go.validator
+go get github.com/behzadsh/go.validator/v2
 ```
 
-## How to use
-You can use this package to validate HTTP request data in any form.
+Requires Go 1.21 or later.
 
-### Validating map data
+## Concepts
 
-To validate map data, use the `ValidateMap` function. `ValidateMap` accepts two parameters: the input data
-and the validation rules map.
+Three types are all you need to know:
+
+- **`Rule`** — an interface with one method: `Validate(value any) error`. Rules are values you pass around. Built-in rules are exposed as variables (e.g. `Required`, `Email`) or constructors that return a `Rule` (e.g. `Min(18)`, `MinLength(3)`).
+- **`Schema`** — a sequence of (path, rules) pairs. Build it with `New()` and chain `Field` calls.
+- **`Result`** — the value returned by `Schema.Validate`. Inspect it via `HasErrors()`, `Errors()`, and `For(path)`. `Result` does **not** implement the `error` interface; iterate `res.Errors()` to handle individual failures. Each entry is a `FieldError{Path, Err, Message, Code, Params}` and *does* implement `error`.
+
+### Absence model
+
+Only the `Required*` and `NotEmpty` rules fail when a field is absent or empty. Every other built-in rule returns `nil` for a missing value. Combine `Required` with another rule to enforce both presence and shape:
 
 ```go
-package main
+.Field("email", validation.Required, validation.Email)
+```
 
-import (
-	"encoding/json"
-	"log"
-	"net/http"
+Without `Required`, a missing `email` is accepted; if present, it must be a valid email.
 
-	validation "github.com/behzadsh/go.validator"
-)
+## Validating a map
 
-func main() {
-    http.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
-        var body map[string]any
-        decoder := json.NewDecoder(r.Body)
-        err := decoder.Decode(&body)
-        if err != nil {
-            log.Fatal(err)
+```go
+input := map[string]any{
+    "name":  "Alice",
+    "email": "alice@example.com",
+    "age":   29,
+}
+
+schema := validation.New().
+    Field("name", validation.Required, validation.MinLength(2)).
+    Field("email", validation.Required, validation.Email).
+    Field("age", validation.Min[int](18), validation.Max[int](120))
+
+res, _ := schema.Validate(input)
+```
+
+Nested keys use dot-notation:
+
+```go
+schema := validation.New().
+    Field("profile.handle", validation.Required, validation.AlphaNum)
+
+input := map[string]any{
+    "profile": map[string]any{"handle": "alice99"},
+}
+```
+
+## Validating a struct
+
+The same schema works against a struct or `*struct`. Field names in the path resolve in this order:
+
+1. The first comma-segment of the `json` struct tag, if present and not `"-"`.
+2. The exported Go field name.
+
+A `json:"-"` tag hides the field from the validator. Embedded (anonymous) struct fields are searched recursively.
+
+```go
+type User struct {
+    Name    string  `json:"name"`
+    Email   string  `json:"email"`
+    Age     int     `json:"age"`
+    Profile Profile `json:"profile"`
+}
+
+type Profile struct {
+    Handle string `json:"handle"`
+}
+
+schema := validation.New().
+    Field("name", validation.Required, validation.MinLength(2)).
+    Field("email", validation.Required, validation.Email).
+    Field("age", validation.Min[int](18)).
+    Field("profile.handle", validation.Required)
+
+res, _ := schema.Validate(User{Name: "Alice", Email: "alice@example.com", Age: 29})
+```
+
+A field without a `json` tag is reachable by its Go name:
+
+```go
+type Item struct {
+    SKU string
+}
+
+validation.New().Field("SKU", validation.Required).Validate(Item{})
+```
+
+A `nil` `*struct` is treated as if every field were absent. Required fields will fail; other rules will pass.
+
+## Built-in rules
+
+See **[RULES.md](RULES.md)** for the complete rule reference with signatures, fail conditions, and examples.
+
+Quick overview by category:
+
+| Category | Rules |
+|---|---|
+| General | `Required`, `RequiredIf`, `RequiredUnless`, `RequiredWith`, `RequiredWithAll`, `RequiredWithout`, `RequiredWithoutAll`, `NotEmpty` |
+| String | `Alpha`, `AlphaDash`, `AlphaNum`, `AlphaSpace`, `ASCII`, `Base64`, `Contains`, `CreditCard`, `Email`, `EmailMX`, `EndsWith`, `HexColor`, `JSON`, `JWT`, `Length`, `Lowercase`, `MaxLength`, `MinLength`, `NotRegex`, `PhoneE164`, `Regex`, `Semver`, `Slug`, `StartsWith`, `Uppercase`, `URL`, `UUID` |
+| Number | `Numeric`, `Integer`, `Min`, `Max`, `GT`, `GTE`, `LT`, `LTE`, `Between`, `Positive`, `Negative`, `NonNegative`, `MultipleOf`, `Port`, `Latitude`, `Longitude` |
+| Digit | `Digits`, `MinDigits`, `MaxDigits`, `DigitsBetween` |
+| DateTime | `DateTime`, `DateTimeFormat`, `After`, `AfterOrEqual`, `AfterField`, `Before`, `BeforeOrEqual`, `BeforeField`, `DateTimeBetween`, `Timezone` |
+| Network | `IP`, `IPv4`, `IPv6`, `CIDR`, `MACAddress` |
+| Collection | `Distinct`, `Each`, `Size`, `MinSize`, `MaxSize` |
+| Generic | `In`, `NotIn`, `NEQ` |
+| Comparison | `SameAs`, `Different` |
+| Logical | `Any`, `Not`, `When`, `Unless` |
+
+Every rule except `Required`, `RequiredIf`, `RequiredUnless`, `RequiredWith*`, and `NotEmpty` returns `nil` for a missing value.
+
+## RequiredIf
+
+`RequiredIf` accepts a small expression language for cross-field conditions:
+
+- **Comparisons:** `field == value`, `field != value`, `field < value`, `field > value`, `field <= value`, `field >= value`
+- **Logical:** `expr && expr`, `expr || expr`, `!expr`
+- **Grouping:** `(expr)`
+- **Functions:** `exists(path)`, `len(path) == n`
+
+String literals must be quoted (`"admin"` or `'admin'`). Unquoted identifiers are looked up as field paths.
+
+```go
+schema := validation.New().
+    Field("billing_address", validation.RequiredIf(`plan == "paid"`)).
+    Field("company_name",    validation.RequiredIf(`role == "business" && exists(vat_number)`)).
+    Field("note",            validation.RequiredIf(`(status == "active" || status == "pending") && verified == true`))
+```
+
+## Custom rules
+
+Any value that implements `Rule` is acceptable. The fastest path is `RuleFunc`:
+
+```go
+isCorporate := validation.RuleFunc(func(v any) error {
+    if v == nil {
+        return nil
+    }
+    s, ok := v.(string)
+    if !ok || !strings.HasSuffix(s, "@acme.corp") {
+        return errors.New("must be a corporate email")
+    }
+    return nil
+})
+
+schema := validation.New().
+    Field("email", validation.Required, validation.Email, isCorporate)
+```
+
+For rules that need to read other fields, implement `InputRule` or use `InputRuleFunc`:
+
+```go
+mustMatchField := func(otherPath string) validation.InputRule {
+    return validation.InputRuleFunc(func(value any, input *validation.InputBag) error {
+        other, _ := input.Lookup(otherPath)
+        if value != other {
+            return errors.New("values do not match")
         }
-
-        res := validation.ValidateMap(body, validation.RulesMap{
-            "email": {"required", "email:mx"},
-            "password": {"required", "minLength:6"},
-            "birthDate": {"dateTime"},
-        })
-        
-        if res.Failed() {
-            _ = json.NewEncoder(w).Encode(map[string]any{
-                "message": "validation failed",
-                "errors": res.Errors.All(), // it will return a map[string][]string, key is the field name and the slice is the list of the field errors.
-            })
-        }
+        return nil
     })
-
-    err := http.ListenAndServe(":8080", nil)
-    if err != nil {
-        log.Fatal(err)
-    }
 }
 
-
+schema := validation.New().
+    Field("password_confirm", validation.Required, mustMatchField("password"))
 ```
 
-You can also validate other types of data with the following functions:
-* `ValidateMapSlice`: Validate a slice of maps (rules are applied to each map).
-* `ValidateStruct`: Validate a struct value, just like map validation.
-* `ValidateStructSlice`: Same as `ValidateMapSlice`, but for a slice of structs.
+The built-in `SameAs` and `Different` rules cover the most common cross-field comparison patterns.
 
-### Validating a single variable
+Rules are values: build them once at startup and reuse across validations and goroutines.
+
+## Error handling
 
 ```go
-package main
+res, err := schema.Validate(input)
+if err != nil {
+    log.Fatal(err) // RuleSyntaxError: misconfigured rule, fix at startup
+}
 
-import (
-	"fmt"
-	"log"
-	"os"
+if res.HasErrors() {
+    for _, e := range res.Errors() {
+        log.Printf("%s: %s", e.Path, e.Message)
+    }
+}
 
-	validation "github.com/behzadsh/go.validator"
-)
-
-func main() {
-	args := os.Args[1:]
-
-	if len(args) == 0 {
-		log.Fatal("an argument is required.")
-	}
-
-	res := validation.Validate(args[0], []string{"notEmpty", "integer", "between:3,5"})
-
-	if res.Failed() {
-		fmt.Println("Validation failed!")
-        // the validation errors are stored in res.Errors under the `variable` key when using `validation.Validate()`.
-		for _, value := range res.Errors["variable"] {
-            fmt.Println(value)
-		}
-		os.Exit(1)
-	}
+// Get every error for a single path
+for _, e := range res.For("email") {
+    log.Println(e.Message)
 }
 ```
 
-## Translation and Localization
-
-The `go.validator` package supports internationalization (i18n) for validation error messages. You can customize translations and locales in several ways.
-
-### Setting Default Locale
-
-You can set a default locale for all validation operations:
+`FieldError` carries `Code` (a stable snake_case key for i18n) and `Params` (rule parameters). Use `Code` to branch on specific failures:
 
 ```go
-package main
-
-import (
-    "fmt"
-    "log"
-    "net/http"
-    "encoding/json"
-
-    validation "github.com/behzadsh/go.validator"
-)
-
-func main() {
-    // Set default locale to Spanish
-    validation.SetDefaultLocale("es")
-    
-    http.HandleFunc("/register", func(w http.ResponseWriter, r *http.Request) {
-        var body map[string]any
-        decoder := json.NewDecoder(r.Body)
-        err := decoder.Decode(&body)
-        if err != nil {
-            log.Fatal(err)
-        }
-
-        // This will use Spanish locale by default
-        res := validation.ValidateMap(body, validation.RulesMap{
-            "email": {"required", "email"},
-            "password": {"required", "minLength:6"},
-        })
-        
-        if res.Failed() {
-            _ = json.NewEncoder(w).Encode(map[string]any{
-                "message": "validation failed",
-                "errors": res.Errors.All(),
-            })
-        }
-    })
-
-    err := http.ListenAndServe(":8080", nil)
-    if err != nil {
-        log.Fatal(err)
+for _, e := range res.Errors() {
+    switch e.Code {
+    case "email":
+        // handle invalid email
+    case "min_length":
+        // e.Params["length"] holds the minimum
     }
 }
 ```
 
-### Per-Validation Locale
+`FieldError` also implements `error` and exposes the underlying rule error via `Err`, so `errors.As` works for custom rules that return structured errors.
 
-You can also specify a locale for individual validation calls:
+`Result` deliberately does **not** implement `error`. Decide at the API boundary how to surface the collection — most apps return the slice from `Errors()` as JSON to the client, or fail-fast on `HasErrors()`.
 
-```go
-// Validate with French locale
-res := validation.ValidateMap(data, rules, "fr")
+## Concurrency
 
-// Validate struct with German locale  
-res := validation.ValidateStruct(user, rules, "de")
+A `Schema` is meant to be built once and called many times. Once construction is complete, `Validate` is safe to call from multiple goroutines: it only reads the schema, and rules are immutable values.
 
-// Validate single variable with Italian locale
-res := validation.Validate(value, []string{"required", "email"}, "it")
-```
+## What this version does not include
 
-### Custom Translation Function
+- An `And` combinator (unnecessary — multiple rules on a `Field` call are implicitly AND).
+- Slice or wildcard paths (`items.*.name`).
+- Internationalization. Error messages are plain English strings; use `Code` and `Params` on `FieldError` to build translated messages.
 
-You can provide your own translation function to handle custom translation logic:
+## License
 
-```go
-package main
-
-import (
-    "fmt"
-    "strings"
-
-    validation "github.com/behzadsh/go.validator"
-    "github.com/behzadsh/go.validator/translation"
-)
-
-func main() {
-    // Set custom translation function
-    translation.SetDefaultTranslatorFunc(func(locale, key string, params ...map[string]string) string {
-        var p map[string]string
-        if len(params) > 0 {
-            p = params[0]
-        }
-
-        // Custom translation logic
-        switch key {
-        case "validation.required":
-            switch locale {
-            case "es":
-                return "El campo :field: es obligatorio."
-            case "fr":
-                return "Le champ :field: est requis."
-            default:
-                return "The :field: field is required."
-            }
-        case "validation.email":
-            switch locale {
-            case "es":
-                return "El campo :field: debe ser una dirección de correo válida."
-            case "fr":
-                return "Le champ :field: doit être une adresse e-mail valide."
-            default:
-                return "The :field: field must be a valid email address."
-            }
-        default:
-            return key
-        }
-    })
-
-    // Set default locale
-    validation.SetDefaultLocale("es")
-
-    // Now all validations will use Spanish translations
-    res := validation.ValidateMap(map[string]any{
-        "email": "",
-    }, validation.RulesMap{
-        "email": {"required", "email"},
-    })
-
-    if res.Failed() {
-        fmt.Println(res.Errors.All())
-        // Output: map[email:[El campo email es obligatorio.]]
-    }
-}
-```
-
-> For an even easier translation experience, we recommend using the [`go.localization`](https://github.com/behzadsh/go.localization) package.
-
-### Translation Key Format
-
-Validation error messages use translation keys in the format `validation.{ruleName}`. The translation function receives:
-
-- `locale`: The current locale (e.g., "en", "es", "fr")
-- `key`: The translation key (e.g., "validation.required", "validation.email")
-- `params`: Optional parameters map containing field names and other placeholders
-
-Common placeholders in translation messages:
-- `:field:`: The field name being validated
-- `:value:`: The actual value being validated
-- `:min:`: Minimum value (for rules like `min`, `minLength`)
-- `:max:`: Maximum value (for rules like `max`, `maxLength`)
-
-## Custom Rules
-
-You can define your own validation rules and register them with the validator.
-
-### Rule building blocks
-
-- **Rule interface**: implement `Validate(selector string, value any, inputBag bag.InputBag) rules.ValidationResult`.
-- **RuleWithParams (optional)**: implement `AddParams(params []string)` and `MinRequiredParams() int` to receive rule parameters (e.g., `between:3,5`).
-- **TranslatableRule (optional but recommended)**: embed `translation.BaseTranslatableRule` to get the current locale and a translation function injected automatically.
-
-### Minimal rule (no params, no translations)
-
-```go
-package rules
-
-import (
-    "strings"
-    "github.com/behzadsh/go.validator/bag"
-)
-
-// Palindrome checks if the value is a palindrome string.
-type Palindrome struct{}
-
-func (r *Palindrome) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
-    s, ok := value.(string)
-    if !ok {
-        return NewFailedResult(":field: must be a string")
-    }
-    t := strings.ToLower(strings.ReplaceAll(s, " ", ""))
-    i, j := 0, len(t)-1
-    for i < j {
-        if t[i] != t[j] {
-            return NewFailedResult(":field: must be a palindrome")
-        }
-        i++; j--
-    }
-    return NewSuccessResult()
-}
-```
-
-### Rule with parameters
-
-```go
-package rules
-
-import (
-    "github.com/behzadsh/go.validator/bag"
-    "github.com/spf13/cast"
-)
-
-// MinWords:value — ensures a string has at least :value words.
-type MinWords struct {
-    min int
-}
-
-func (r *MinWords) AddParams(params []string) {
-    r.min = cast.ToInt(params[0])
-}
-
-func (*MinWords) MinRequiredParams() int { return 1 }
-
-func (r *MinWords) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
-    s, ok := value.(string)
-    if !ok {
-        return NewFailedResult(":field: must be a string")
-    }
-    words := 0
-    inWord := false
-    for _, ch := range s {
-        if ch == ' ' || ch == '\n' || ch == '\t' { inWord = false; continue }
-        if !inWord { words++; inWord = true }
-    }
-    if words < r.min {
-        return NewFailedResult(":field: must have at least :min: words")
-    }
-    return NewSuccessResult()
-}
-```
-
-### Adding translations
-
-Embed `translation.BaseTranslatableRule` and use its `Translate` function. The validator injects the current locale and translator before calling `Validate`.
-
-```go
-package rules
-
-import (
-    "github.com/behzadsh/go.validator/bag"
-    "github.com/behzadsh/go.validator/translation"
-)
-
-// MaxWords:value — ensures a string has at most :value words.
-type MaxWords struct {
-    translation.BaseTranslatableRule
-    max int
-}
-
-func (r *MaxWords) AddParams(params []string) { r.max = cast.ToInt(params[0]) }
-func (*MaxWords) MinRequiredParams() int { return 1 }
-
-func (r *MaxWords) Validate(selector string, value any, _ bag.InputBag) ValidationResult {
-    s, ok := value.(string)
-    if !ok {
-        return NewFailedResult(r.Translate(r.Locale, "validation.string", map[string]string{"field": selector}))
-    }
-    // ... count words into n ...
-    n := len(strings.Fields(s))
-    if n > r.max {
-        return NewFailedResult(r.Translate(r.Locale, "validation.maxWords", map[string]string{
-            "field": selector,
-            "max":   cast.ToString(r.max),
-        }))
-    }
-    return NewSuccessResult()
-}
-```
-
-You can provide translations by setting a custom translator (see "Translation and Localization" above) and handling keys like `validation.maxWords`.
-
-### Registering and using your rule
-
-```go
-package main
-
-import (
-    validation "github.com/behzadsh/go.validator"
-    "github.com/behzadsh/go.validator/rules"
-)
-
-func init() {
-    // Register custom rules once (e.g., app startup). Re-registering a name overrides the previous rule.
-    validation.Register("palindrome", &rules.Palindrome{})
-    validation.Register("minWords", &rules.MinWords{})
-}
-
-func main() {
-    data := map[string]any{"title": "able was I ere I saw Elba"}
-    res := validation.ValidateMap(data, validation.RulesMap{
-        "title": {"required", "palindrome", "minWords:2"},
-    })
-    if res.Failed() { /* handle errors */ }
-}
-```
-
-### Notes
-
-- If you declare `MinRequiredParams() > 0` and the user provides fewer parameters, validation will panic with a clear error.
-- If a rule name is not registered, validation will panic. Register custom rules before use.
-- Embedding `translation.BaseTranslatableRule` is optional but recommended for localized messages.
-
-## Validation Options
-
-### Stop on first failure
-
-By default, the validator evaluates all rules for each field and accumulates all errors. You can change this behavior to stop evaluating further rules for a field after the first failure.
-
-```go
-package main
-
-import (
-    validation "github.com/behzadsh/go.validator"
-)
-
-func init() {
-    // Enable once at app startup
-    validation.StopOnFirstFailure()
-}
-
-func main() {
-    data := map[string]any{"age": "abc"}
-    // Only the first failing rule for each field is reported
-    res := validation.ValidateMap(data, validation.RulesMap{
-        "age": {"required", "integer", "between:18,65"},
-    })
-    _ = res
-}
-```
-
-Notes:
-- This option stops rule evaluation per-field only; other fields are still validated.
-- The default is disabled. Calling `StopOnFirstFailure()` enables it globally for subsequent validations.
-
-## Available Rules
-
-The complete list of available rules can be found [here](https://github.com/behzadsh/go.validator/tree/main/rules.md).
+See `LICENSE`.

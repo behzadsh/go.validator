@@ -1,33 +1,46 @@
-# Makefile for go-validator
+# Colors for output
+GREEN  := \033[32m
+YELLOW := \033[33m
+CYAN   := \033[36m
+RESET  := \033[0m
 
-SHELL := /bin/bash
-GO ?= go
-PKG ?= ./...
-TEST_FLAGS ?= -race -count=1
-COVER_PROFILE ?= coverage.out
-BIN ?= go-validator
-GOLANGCI_LINT ?= golangci-lint
-LINT_VERSION ?= v1.61.0
+.DEFAULT_GOAL := help
 
-.PHONY: help lint tidy test coverage bench clean
+.PHONY: help
+help: ## Show this help message
+	@echo "$(GREEN)Go Validator Makefile$(RESET)"
+	@echo "Usage: make $(CYAN)<target>$(RESET)"
+	@awk 'BEGIN {FS = ":.*##";} \
+		/^[a-zA-Z0-9_-]+:.*?##/ { printf "  $(CYAN)%-15s$(RESET) %s\n", $$1, $$2 } \
+		/^##@/ { printf "\n$(YELLOW)%s$(RESET)\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 
-help: ## Show this help
-	@awk 'BEGIN {FS = ":.*##"}; /^[a-zA-Z0-9_.-]+:.*##/ {printf "\033[36m%-18s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+.PHONY: test test-coverage clean fmt lint tidy
 
-test: ## Run unit tests
-	$(GO) test $(TEST_FLAGS) $(PKG)
+test: ## Run tests
+	@echo "$(GREEN)Running tests (with race)...$(RESET)"
+	@go test -v -race ./...
 
-coverage: ## Run tests with coverage and generate reports
-	$(GO) test -race -covermode=atomic -coverprofile $(COVER_PROFILE) $(PKG)
-	$(GO) tool cover -func=$(COVER_PROFILE) | tail -n 1
-	@echo "HTML report: $(COVER_PROFILE).html"
-	$(GO) tool cover -html=$(COVER_PROFILE) -o $(COVER_PROFILE).html
+test-coverage: ## Run tests with coverage
+	@echo "$(GREEN)Running tests with coverage...$(RESET)"
+	@go test -coverprofile=coverage.out ./...
+	@echo "$(GREEN)Coverage file created: coverage.out$(RESET)"
 
-bench: ## Run benchmarks
-	$(GO) test -bench=. -benchmem $(PKG)
+clean: ## Clean coverage files
+	@echo "$(YELLOW)Cleaning coverage files...$(RESET)"
+	@rm -f coverage.out
+	@echo "$(GREEN)Clean complete$(RESET)"
 
-lint: ## Run golangci-lint
-	$(GOLANGCI_LINT) run ./...
+fmt: ## Format code using golangci-lint formatter
+	@echo "$(GREEN)Formatting code with golangci-lint...$(RESET)"
+	@golangci-lint fmt
+	@echo "$(GREEN)Code formatting complete$(RESET)"
 
-clean: ## Clean generated artifacts
-	rm -f $(COVER_PROFILE) $(COVER_PROFILE).html
+lint: ## Lint code using golangci-lint linter
+	@echo "$(GREEN)Linting code with golangci-lint...$(RESET)"
+	@golangci-lint run
+	@echo "$(GREEN)Linting complete$(RESET)"
+
+tidy: ## Run go mod tidy
+	@echo "$(GREEN)Running go mod tidy...$(RESET)"
+	@go mod tidy
+	@echo "$(GREEN)Go modules tidied$(RESET)"
