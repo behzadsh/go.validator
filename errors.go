@@ -4,9 +4,14 @@ import "errors"
 
 // General validation errors.
 var (
-	ErrValidationRequired   = errors.New("required validation failed")
-	ErrValidationRequiredIf = errors.New("required if validation failed")
-	ErrValidationNotEmpty   = errors.New("not empty validation failed")
+	ErrValidationRequired           = errors.New("required validation failed")
+	ErrValidationRequiredIf         = errors.New("required if validation failed")
+	ErrValidationNotEmpty           = errors.New("not empty validation failed")
+	ErrValidationRequiredUnless     = errors.New("required unless validation failed")
+	ErrValidationRequiredWith       = errors.New("required with validation failed")
+	ErrValidationRequiredWithAll    = errors.New("required with all validation failed")
+	ErrValidationRequiredWithout    = errors.New("required without validation failed")
+	ErrValidationRequiredWithoutAll = errors.New("required without all validation failed")
 )
 
 // Strings validation errors.
@@ -15,33 +20,80 @@ var (
 	ErrValidationAlphaDash  = errors.New("alpha dash validation failed")
 	ErrValidationAlphaNum   = errors.New("alpha num validation failed")
 	ErrValidationAlphaSpace = errors.New("alpha space validation failed")
-	ErrValidationURL        = errors.New("url validation failed")
-	ErrValidationLength     = errors.New("length validation failed")
-	ErrValidationMinLength  = errors.New("min length validation failed")
-	ErrValidationMaxLength  = errors.New("max length validation failed")
 	ErrValidationEmail      = errors.New("email validation failed")
 	ErrValidationEmailMX    = errors.New("email mx validation failed")
+	ErrValidationEndsWith   = errors.New("ends with validation failed")
+	ErrValidationLength     = errors.New("length validation failed")
+	ErrValidationLowercase  = errors.New("lowercase validation failed")
+	ErrValidationMaxLength  = errors.New("max length validation failed")
+	ErrValidationMinLength  = errors.New("min length validation failed")
+	ErrValidationNotRegex   = errors.New("not regex validation failed")
+	ErrValidationRegex      = errors.New("regex validation failed")
+	ErrValidationStartsWith = errors.New("starts with validation failed")
+	ErrValidationUppercase  = errors.New("uppercase validation failed")
+	ErrValidationURL        = errors.New("url validation failed")
+	ErrValidationUUID       = errors.New("uuid validation failed")
 )
 
 // Numbers validation errors.
 var (
-	ErrValidationNumeric = errors.New("numeric validation failed")
 	ErrValidationBetween = errors.New("between validation failed")
-	ErrValidationMin     = errors.New("min validation failed")
+	ErrValidationGT      = errors.New("gt validation failed")
+	ErrValidationGTE     = errors.New("gte validation failed")
+	ErrValidationInteger = errors.New("integer validation failed")
+	ErrValidationLT      = errors.New("lt validation failed")
+	ErrValidationLTE     = errors.New("lte validation failed")
 	ErrValidationMax     = errors.New("max validation failed")
+	ErrValidationMin     = errors.New("min validation failed")
+	ErrValidationNumeric = errors.New("numeric validation failed")
+)
+
+// Digit validation errors.
+var (
+	ErrValidationDigits        = errors.New("digits validation failed")
+	ErrValidationDigitsBetween = errors.New("digits between validation failed")
+	ErrValidationMaxDigits     = errors.New("max digits validation failed")
+	ErrValidationMinDigits     = errors.New("min digits validation failed")
 )
 
 // Date/Time validation errors.
 var (
-	ErrValidationDateTimeFormat = errors.New("datetime format validation failed")
-	ErrValidationAfter          = errors.New("after validation failed")
-	ErrValidationBefore         = errors.New("before validation failed")
+	ErrValidationAfter           = errors.New("after validation failed")
+	ErrValidationAfterField      = errors.New("after field validation failed")
+	ErrValidationAfterOrEqual    = errors.New("after or equal validation failed")
+	ErrValidationBefore          = errors.New("before validation failed")
+	ErrValidationBeforeField     = errors.New("before field validation failed")
+	ErrValidationBeforeOrEqual   = errors.New("before or equal validation failed")
+	ErrValidationDateTime        = errors.New("datetime validation failed")
+	ErrValidationDateTimeBetween = errors.New("datetime between validation failed")
+	ErrValidationDateTimeFormat  = errors.New("datetime format validation failed")
+	ErrValidationTimezone        = errors.New("timezone validation failed")
+)
+
+// Network validation errors.
+var (
+	ErrValidationIP         = errors.New("ip validation failed")
+	ErrValidationIPv4       = errors.New("ipv4 validation failed")
+	ErrValidationIPv6       = errors.New("ipv6 validation failed")
+	ErrValidationMACAddress = errors.New("mac address validation failed")
+)
+
+// Collection validation errors.
+var (
+	ErrValidationDistinct = errors.New("distinct validation failed")
 )
 
 // Generic validation errors.
 var (
 	ErrValidationIn    = errors.New("in validation failed")
 	ErrValidationNotIn = errors.New("not in validation failed")
+	ErrValidationNEQ   = errors.New("neq validation failed")
+)
+
+// Comparison validation errors.
+var (
+	ErrValidationSameAs    = errors.New("same as validation failed")
+	ErrValidationDifferent = errors.New("different validation failed")
 )
 
 // FieldError describes a single validation failure for a single field.

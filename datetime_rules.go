@@ -29,38 +29,6 @@ var timeFormats = []string{
 	time.StampNano,
 }
 
-// DateTimeFormat returns a Rule that validates the value is a string matching the given time layout.
-//
-// The layout uses Go's reference time: Mon Jan 2 15:04:05 MST 2006 (i.e. "2006-01-02" for ISO dates, time.RFC3339 for
-// full timestamps, etc.).
-//
-// Fails if:
-//   - value is not a string
-//   - the string does not match the layout (wrong format, wrong separators, out-of-range values)
-//
-// Examples:
-//
-//	validation.DateTimeFormat("2006-01-02").Validate("2024-03-15")           // pass
-//	validation.DateTimeFormat(time.RFC3339).Validate("2024-03-15T10:00:00Z") // pass
-//	validation.DateTimeFormat("2006-01-02").Validate("15/03/2024")           // fail — wrong format
-//	validation.DateTimeFormat("2006-01-02").Validate("not-a-date")           // fail
-func DateTimeFormat(layout string) Rule {
-	fn := func(value any) error {
-		str, ok := value.(string)
-		if !ok {
-			return ErrValidationDateTimeFormat
-		}
-
-		if _, err := time.Parse(layout, str); err != nil {
-			return ErrValidationDateTimeFormat
-		}
-
-		return nil
-	}
-
-	return RuleFunc(fn)
-}
-
 // After returns a Rule that validates the value is a date/time string occurring strictly after ct.
 //
 // The string is tried against a broad set of common formats (RFC3339, "2006-01-02", RFC1123, and many more) without
@@ -94,6 +62,81 @@ func After(ct time.Time) Rule {
 	}
 
 	return RuleFunc(fn)
+}
+
+// AfterField returns an InputRule that validates the value is a date/time string occurring strictly after the
+// date/time at the given field path in the input.
+//
+// Both the field under validation and the referenced field must be parseable date/time strings.
+// If the referenced field is absent or not a string, validation fails.
+//
+// Fails if:
+//   - value is not a string or cannot be parsed
+//   - the referenced field is absent, not a string, or cannot be parsed
+//   - the parsed time is equal to or before the referenced field's time
+//
+// Examples:
+//
+//	schema := validation.New().
+//		Field("end", validation.AfterField("start"))
+func AfterField(path string) InputRule {
+	return InputRuleFunc(func(value any, input *InputBag) error {
+		str, ok := value.(string)
+		if !ok {
+			return ErrValidationAfterField
+		}
+
+		t, ok := parseTime(str)
+		if !ok {
+			return ErrValidationAfterField
+		}
+
+		otherRaw, found := input.Lookup(path)
+		if !found {
+			return ErrValidationAfterField
+		}
+
+		otherStr, ok := otherRaw.(string)
+		if !ok {
+			return ErrValidationAfterField
+		}
+
+		other, ok := parseTime(otherStr)
+		if !ok || !t.After(other) {
+			return ErrValidationAfterField
+		}
+
+		return nil
+	})
+}
+
+// AfterOrEqual returns a Rule that validates the value is a date/time string occurring on or after ct.
+//
+// Fails if:
+//   - value is not a string
+//   - the string does not match any known date/time format
+//   - the parsed time is strictly before ct
+//
+// Examples:
+//
+//	deadline := time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)
+//	validation.AfterOrEqual(deadline).Validate("2024-01-01") // pass — equal
+//	validation.AfterOrEqual(deadline).Validate("2024-06-01") // pass — after
+//	validation.AfterOrEqual(deadline).Validate("2023-12-31") // fail — before
+func AfterOrEqual(ct time.Time) Rule {
+	return RuleFunc(func(value any) error {
+		str, ok := value.(string)
+		if !ok {
+			return ErrValidationAfterOrEqual
+		}
+
+		t, ok := parseTime(str)
+		if !ok || t.Before(ct) {
+			return ErrValidationAfterOrEqual
+		}
+
+		return nil
+	})
 }
 
 // Before returns a Rule that validates the value is a date/time string occurring strictly before ct.
@@ -130,6 +173,204 @@ func Before(ct time.Time) Rule {
 
 	return RuleFunc(fn)
 }
+
+// BeforeField returns an InputRule that validates the value is a date/time string occurring strictly before the
+// date/time at the given field path in the input.
+//
+// Both the field under validation and the referenced field must be parseable date/time strings.
+// If the referenced field is absent or not a string, validation fails.
+//
+// Fails if:
+//   - value is not a string or cannot be parsed
+//   - the referenced field is absent, not a string, or cannot be parsed
+//   - the parsed time is equal to or after the referenced field's time
+//
+// Examples:
+//
+//	schema := validation.New().
+//		Field("start", validation.BeforeField("end"))
+func BeforeField(path string) InputRule {
+	return InputRuleFunc(func(value any, input *InputBag) error {
+		str, ok := value.(string)
+		if !ok {
+			return ErrValidationBeforeField
+		}
+
+		t, ok := parseTime(str)
+		if !ok {
+			return ErrValidationBeforeField
+		}
+
+		otherRaw, found := input.Lookup(path)
+		if !found {
+			return ErrValidationBeforeField
+		}
+
+		otherStr, ok := otherRaw.(string)
+		if !ok {
+			return ErrValidationBeforeField
+		}
+
+		other, ok := parseTime(otherStr)
+		if !ok || !t.Before(other) {
+			return ErrValidationBeforeField
+		}
+
+		return nil
+	})
+}
+
+// BeforeOrEqual returns a Rule that validates the value is a date/time string occurring on or before ct.
+//
+// Fails if:
+//   - value is not a string
+//   - the string does not match any known date/time format
+//   - the parsed time is strictly after ct
+//
+// Examples:
+//
+//	expiry := time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC)
+//	validation.BeforeOrEqual(expiry).Validate("2025-01-01") // pass — equal
+//	validation.BeforeOrEqual(expiry).Validate("2024-06-01") // pass — before
+//	validation.BeforeOrEqual(expiry).Validate("2025-06-01") // fail — after
+func BeforeOrEqual(ct time.Time) Rule {
+	return RuleFunc(func(value any) error {
+		str, ok := value.(string)
+		if !ok {
+			return ErrValidationBeforeOrEqual
+		}
+
+		t, ok := parseTime(str)
+		if !ok || t.After(ct) {
+			return ErrValidationBeforeOrEqual
+		}
+
+		return nil
+	})
+}
+
+// DateTime is a Rule that validates the value is a recognisable date/time string.
+//
+// The string is tried against a broad set of common formats (the same set used by After and Before).
+// No specific layout is required; any of the supported formats will pass.
+//
+// Fails if:
+//   - value is not a string
+//   - the string does not match any known date/time format
+//
+// Examples:
+//
+//	validation.DateTime.Validate("2024-03-15")              // pass
+//	validation.DateTime.Validate("2024-03-15T10:00:00Z")    // pass
+//	validation.DateTime.Validate("not-a-date")              // fail
+var DateTime Rule = RuleFunc(
+	func(value any) error {
+		str, ok := value.(string)
+		if !ok {
+			return ErrValidationDateTime
+		}
+
+		if _, ok := parseTime(str); !ok {
+			return ErrValidationDateTime
+		}
+
+		return nil
+	},
+)
+
+// DateTimeBetween returns a Rule that validates the value is a date/time string occurring between min and max
+// (inclusive on both ends).
+//
+// Fails if:
+//   - value is not a string
+//   - the string does not match any known date/time format
+//   - the parsed time is before min or after max
+//
+// Examples:
+//
+//	start := time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC)
+//	end   := time.Date(2024, 12, 31, 0, 0, 0, 0, time.UTC)
+//	validation.DateTimeBetween(start, end).Validate("2024-06-01") // pass
+//	validation.DateTimeBetween(start, end).Validate("2024-01-01") // pass — equal to min
+//	validation.DateTimeBetween(start, end).Validate("2023-12-31") // fail — before min
+//	validation.DateTimeBetween(start, end).Validate("2025-01-01") // fail — after max
+func DateTimeBetween(min, max time.Time) Rule {
+	return RuleFunc(func(value any) error {
+		str, ok := value.(string)
+		if !ok {
+			return ErrValidationDateTimeBetween
+		}
+
+		t, ok := parseTime(str)
+		if !ok || t.Before(min) || t.After(max) {
+			return ErrValidationDateTimeBetween
+		}
+
+		return nil
+	})
+}
+
+// DateTimeFormat returns a Rule that validates the value is a string matching the given time layout.
+//
+// The layout uses Go's reference time: Mon Jan 2 15:04:05 MST 2006 (i.e. "2006-01-02" for ISO dates, time.RFC3339 for
+// full timestamps, etc.).
+//
+// Fails if:
+//   - value is not a string
+//   - the string does not match the layout (wrong format, wrong separators, out-of-range values)
+//
+// Examples:
+//
+//	validation.DateTimeFormat("2006-01-02").Validate("2024-03-15")           // pass
+//	validation.DateTimeFormat(time.RFC3339).Validate("2024-03-15T10:00:00Z") // pass
+//	validation.DateTimeFormat("2006-01-02").Validate("15/03/2024")           // fail — wrong format
+//	validation.DateTimeFormat("2006-01-02").Validate("not-a-date")           // fail
+func DateTimeFormat(layout string) Rule {
+	fn := func(value any) error {
+		str, ok := value.(string)
+		if !ok {
+			return ErrValidationDateTimeFormat
+		}
+
+		if _, err := time.Parse(layout, str); err != nil {
+			return ErrValidationDateTimeFormat
+		}
+
+		return nil
+	}
+
+	return RuleFunc(fn)
+}
+
+// Timezone is a Rule that validates the value is a valid IANA timezone name.
+//
+// Validation uses time.LoadLocation which recognises IANA names (e.g. "UTC", "America/New_York",
+// "Europe/London") as well as fixed-offset zones (e.g. "UTC+5").
+//
+// Fails if:
+//   - value is not a string
+//   - the string is not a valid IANA timezone name
+//
+// Examples:
+//
+//	validation.Timezone.Validate("UTC")               // pass
+//	validation.Timezone.Validate("America/New_York")  // pass
+//	validation.Timezone.Validate("Europe/London")     // pass
+//	validation.Timezone.Validate("InvalidZone")       // fail
+var Timezone Rule = RuleFunc(
+	func(value any) error {
+		str, ok := value.(string)
+		if !ok || str == "" {
+			return ErrValidationTimezone
+		}
+
+		if _, err := time.LoadLocation(str); err != nil {
+			return ErrValidationTimezone
+		}
+
+		return nil
+	},
+)
 
 func parseTime(str string) (time.Time, bool) {
 	for _, format := range timeFormats {

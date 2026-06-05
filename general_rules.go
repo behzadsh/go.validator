@@ -80,6 +80,146 @@ func RequiredIf(condition string) InputRule {
 	return InputRuleFunc(fn)
 }
 
+// RequiredUnless returns an InputRule that validates the value exists unless the given condition evaluates to true.
+//
+// It is the logical complement of RequiredIf: the field is required when the condition is FALSE.
+// The condition language is identical to RequiredIf (comparisons, &&, ||, !, exists(), len()).
+//
+// Returns RuleSyntaxError if the condition string is malformed.
+//
+// Examples:
+//
+//	validation.RequiredUnless(`type == "guest"`)
+//	validation.RequiredUnless(`role == "admin"`)
+func RequiredUnless(condition string) InputRule {
+	fn := func(value any, input *InputBag) error {
+		ok, err := evalCondition(condition, input)
+		if err != nil {
+			return RuleSyntaxError{Rule: "RequiredUnless", Err: err}
+		}
+
+		if !ok {
+			if value == nil {
+				return ErrValidationRequiredUnless
+			}
+			if s, isStr := value.(string); isStr && s == "" {
+				return ErrValidationRequiredUnless
+			}
+		}
+
+		return nil
+	}
+
+	return InputRuleFunc(fn)
+}
+
+// RequiredWith returns an InputRule that validates the value exists if any of the given fields are present in the input.
+//
+// The field under validation is optional unless at least one of the listed fields is present.
+//
+// Examples:
+//
+//	validation.RequiredWith("phone", "mobile")
+func RequiredWith(fields ...string) InputRule {
+	return InputRuleFunc(func(value any, input *InputBag) error {
+		for _, f := range fields {
+			if _, found := input.Lookup(f); found {
+				if value == nil {
+					return ErrValidationRequiredWith
+				}
+				if s, ok := value.(string); ok && s == "" {
+					return ErrValidationRequiredWith
+				}
+
+				return nil
+			}
+		}
+
+		return nil
+	})
+}
+
+// RequiredWithAll returns an InputRule that validates the value exists if all of the given fields are present in
+// the input.
+//
+// The field under validation is optional unless every listed field is present.
+//
+// Examples:
+//
+//	validation.RequiredWithAll("first_name", "last_name")
+func RequiredWithAll(fields ...string) InputRule {
+	return InputRuleFunc(func(value any, input *InputBag) error {
+		for _, f := range fields {
+			if _, found := input.Lookup(f); !found {
+				return nil
+			}
+		}
+
+		if value == nil {
+			return ErrValidationRequiredWithAll
+		}
+		if s, ok := value.(string); ok && s == "" {
+			return ErrValidationRequiredWithAll
+		}
+
+		return nil
+	})
+}
+
+// RequiredWithout returns an InputRule that validates the value exists if any of the given fields are absent from
+// the input.
+//
+// The field under validation is optional only when all listed fields are present.
+//
+// Examples:
+//
+//	validation.RequiredWithout("email", "phone")
+func RequiredWithout(fields ...string) InputRule {
+	return InputRuleFunc(func(value any, input *InputBag) error {
+		for _, f := range fields {
+			if _, found := input.Lookup(f); !found {
+				if value == nil {
+					return ErrValidationRequiredWithout
+				}
+				if s, ok := value.(string); ok && s == "" {
+					return ErrValidationRequiredWithout
+				}
+
+				return nil
+			}
+		}
+
+		return nil
+	})
+}
+
+// RequiredWithoutAll returns an InputRule that validates the value exists if all of the given fields are absent from
+// the input.
+//
+// The field under validation is optional as long as at least one of the listed fields is present.
+//
+// Examples:
+//
+//	validation.RequiredWithoutAll("email", "phone")
+func RequiredWithoutAll(fields ...string) InputRule {
+	return InputRuleFunc(func(value any, input *InputBag) error {
+		for _, f := range fields {
+			if _, found := input.Lookup(f); found {
+				return nil
+			}
+		}
+
+		if value == nil {
+			return ErrValidationRequiredWithoutAll
+		}
+		if s, ok := value.(string); ok && s == "" {
+			return ErrValidationRequiredWithoutAll
+		}
+
+		return nil
+	})
+}
+
 // NotEmpty is a Rule that validates the value is not an empty or zero value.
 //
 // Fails if:

@@ -73,3 +73,49 @@ func TestNotIn(t *testing.T) {
 		}
 	})
 }
+
+func TestNEQ(t *testing.T) {
+	t.Run("string", func(t *testing.T) {
+		rule := NEQ[string]("admin")
+		tests := []struct {
+			value   any
+			wantErr bool
+		}{
+			{"user", false},
+			{"superadmin", false},
+			{"admin", true},
+			{"", false},
+			{nil, true},
+			{42, true},
+		}
+		for _, tt := range tests {
+			err := rule.Validate(tt.value)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("NEQ[string](\"admin\").Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
+			}
+			if err != nil && !errors.Is(err, ErrValidationNEQ) {
+				t.Errorf("wrong error type: %v", err)
+			}
+		}
+	})
+
+	t.Run("int", func(t *testing.T) {
+		rule := NEQ[int](0)
+		tests := []struct {
+			value   any
+			wantErr bool
+		}{
+			{1, false},
+			{-1, false},
+			{0, true},
+			{float64(0), true},  // wrong type
+			{nil, true},
+		}
+		for _, tt := range tests {
+			err := rule.Validate(tt.value)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("NEQ[int](0).Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
+			}
+		}
+	})
+}

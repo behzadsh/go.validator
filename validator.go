@@ -29,8 +29,8 @@ type RuleFunc func(value any) error
 // Validate satisfies the Rule interface.
 func (f RuleFunc) Validate(value any) error { return f(value) }
 
-// InputRule is a Rule that also receives the full validated input so it can
-// reference other fields. Use this for cross-field rules such as SameAs.
+// InputRule is a Rule that also receives the full validated input so it can reference other fields. Use this for
+// cross-field rules such as SameAs.
 type InputRule interface {
 	Rule
 	ValidateWithInput(value any, input *InputBag) error

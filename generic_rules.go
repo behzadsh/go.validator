@@ -28,6 +28,31 @@ func In[T comparable](slice []T) Rule {
 	return RuleFunc(fn)
 }
 
+// NEQ returns a Rule that validates the value is not equal to v.
+//
+// Comparison is type-sensitive: a float64(1) does not equal an int(1).
+//
+// Fails if:
+//   - value cannot be type-asserted to T
+//   - value == v
+//
+// Examples:
+//
+//	validation.NEQ[string]("admin").Validate("user")  // pass
+//	validation.NEQ[string]("admin").Validate("admin") // fail
+//	validation.NEQ[int](0).Validate(1)               // pass
+//	validation.NEQ[int](0).Validate(0)               // fail
+func NEQ[T comparable](v T) Rule {
+	return RuleFunc(func(value any) error {
+		actual, ok := value.(T)
+		if !ok || actual == v {
+			return ErrValidationNEQ
+		}
+
+		return nil
+	})
+}
+
 // NotIn returns a Rule that validates the value is not present in the given slice.
 //
 // Like In, comparison uses ==. The value must be exactly of type T.

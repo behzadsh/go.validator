@@ -235,3 +235,193 @@ func TestEmailMX(t *testing.T) {
 		}
 	}
 }
+
+func TestUUID(t *testing.T) {
+	tests := []struct {
+		value   any
+		wantErr bool
+	}{
+		{"550e8400-e29b-41d4-a716-446655440000", false},
+		{"550E8400-E29B-41D4-A716-446655440000", false}, // uppercase
+		{"00000000-0000-0000-0000-000000000000", false},
+		{"not-a-uuid", true},
+		{"550e8400-e29b-41d4-a716", true},       // too short
+		{"550e8400e29b41d4a716446655440000", true}, // no dashes
+		{"", true},
+		{nil, true},
+		{42, true},
+	}
+	for _, tt := range tests {
+		err := UUID.Validate(tt.value)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("UUID.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
+		}
+		if err != nil && !errors.Is(err, ErrValidationUUID) {
+			t.Errorf("UUID.Validate(%v) wrong error: %v", tt.value, err)
+		}
+	}
+}
+
+func TestRegex(t *testing.T) {
+	tests := []struct {
+		value   any
+		pattern string
+		wantErr bool
+	}{
+		{"1234", `^\d{4}$`, false},
+		{"12345", `^\d{4}$`, true},
+		{"abcd", `^\d{4}$`, true},
+		{"hello", `^[a-z]+$`, false},
+		{"Hello", `^[a-z]+$`, true},
+		{"", `^\d{4}$`, true},
+		{nil, `^\d{4}$`, true},
+		{42, `^\d{4}$`, true},
+	}
+	for _, tt := range tests {
+		err := Regex(tt.pattern).Validate(tt.value)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("Regex(%q).Validate(%v) error = %v, wantErr %v", tt.pattern, tt.value, err, tt.wantErr)
+		}
+		if err != nil && !errors.Is(err, ErrValidationRegex) {
+			t.Errorf("Regex(%q).Validate(%v) wrong error: %v", tt.pattern, tt.value, err)
+		}
+	}
+}
+
+func TestRegexInvalidPattern(t *testing.T) {
+	err := Regex(`[invalid`).Validate("test")
+	if err == nil {
+		t.Fatal("expected error for invalid pattern, got nil")
+	}
+	var syntaxErr RuleSyntaxError
+	if !errors.As(err, &syntaxErr) {
+		t.Errorf("expected RuleSyntaxError, got %T: %v", err, err)
+	}
+}
+
+func TestNotRegex(t *testing.T) {
+	tests := []struct {
+		value   any
+		pattern string
+		wantErr bool
+	}{
+		{"nospaces", `\s`, false},
+		{"has spaces", `\s`, true},
+		{"hello", `\d`, false},
+		{"hello1", `\d`, true},
+		{"", `\s`, false},
+		{nil, `\s`, true},
+		{42, `\s`, true},
+	}
+	for _, tt := range tests {
+		err := NotRegex(tt.pattern).Validate(tt.value)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("NotRegex(%q).Validate(%v) error = %v, wantErr %v", tt.pattern, tt.value, err, tt.wantErr)
+		}
+		if err != nil && !errors.Is(err, ErrValidationNotRegex) {
+			t.Errorf("NotRegex(%q).Validate(%v) wrong error: %v", tt.pattern, tt.value, err)
+		}
+	}
+}
+
+func TestStartsWith(t *testing.T) {
+	tests := []struct {
+		value   any
+		prefix  string
+		wantErr bool
+	}{
+		{"SKU-001", "SKU-", false},
+		{"001-SKU", "SKU-", true},
+		{"SKU-", "SKU-", false},
+		{"", "SKU-", true},
+		{"", "", false},
+		{nil, "SKU-", true},
+		{42, "SKU-", true},
+	}
+	for _, tt := range tests {
+		err := StartsWith(tt.prefix).Validate(tt.value)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("StartsWith(%q).Validate(%v) error = %v, wantErr %v", tt.prefix, tt.value, err, tt.wantErr)
+		}
+		if err != nil && !errors.Is(err, ErrValidationStartsWith) {
+			t.Errorf("StartsWith(%q).Validate(%v) wrong error: %v", tt.prefix, tt.value, err)
+		}
+	}
+}
+
+func TestEndsWith(t *testing.T) {
+	tests := []struct {
+		value   any
+		suffix  string
+		wantErr bool
+	}{
+		{"main.go", ".go", false},
+		{"main.js", ".go", true},
+		{".go", ".go", false},
+		{"", ".go", true},
+		{"", "", false},
+		{nil, ".go", true},
+		{42, ".go", true},
+	}
+	for _, tt := range tests {
+		err := EndsWith(tt.suffix).Validate(tt.value)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("EndsWith(%q).Validate(%v) error = %v, wantErr %v", tt.suffix, tt.value, err, tt.wantErr)
+		}
+		if err != nil && !errors.Is(err, ErrValidationEndsWith) {
+			t.Errorf("EndsWith(%q).Validate(%v) wrong error: %v", tt.suffix, tt.value, err)
+		}
+	}
+}
+
+func TestLowercase(t *testing.T) {
+	tests := []struct {
+		value   any
+		wantErr bool
+	}{
+		{"hello", false},
+		{"hello world", false},
+		{"hello123", false},
+		{"Hello", true},
+		{"HELLO", true},
+		{"hEllo", true},
+		{"", false},
+		{nil, true},
+		{42, true},
+	}
+	for _, tt := range tests {
+		err := Lowercase.Validate(tt.value)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("Lowercase.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
+		}
+		if err != nil && !errors.Is(err, ErrValidationLowercase) {
+			t.Errorf("Lowercase.Validate(%v) wrong error: %v", tt.value, err)
+		}
+	}
+}
+
+func TestUppercase(t *testing.T) {
+	tests := []struct {
+		value   any
+		wantErr bool
+	}{
+		{"HELLO", false},
+		{"HELLO WORLD", false},
+		{"HELLO123", false},
+		{"Hello", true},
+		{"hello", true},
+		{"HELLo", true},
+		{"", false},
+		{nil, true},
+		{42, true},
+	}
+	for _, tt := range tests {
+		err := Uppercase.Validate(tt.value)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("Uppercase.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
+		}
+		if err != nil && !errors.Is(err, ErrValidationUppercase) {
+			t.Errorf("Uppercase.Validate(%v) wrong error: %v", tt.value, err)
+		}
+	}
+}

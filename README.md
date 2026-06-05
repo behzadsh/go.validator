@@ -32,7 +32,7 @@ Three types are all you need to know:
 
 ### Absence model
 
-Only `Required` and `RequiredIf` fail when a field is absent or empty. Every other built-in rule returns `nil` for a missing value. Combine `Required` with another rule to enforce both presence and shape:
+Only the `Required*` and `NotEmpty` rules fail when a field is absent or empty. Every other built-in rule returns `nil` for a missing value. Combine `Required` with another rule to enforce both presence and shape:
 
 ```go
 .Field("email", validation.Required, validation.Email)
@@ -112,56 +112,23 @@ A `nil` `*struct` is treated as if every field were absent. Required fields will
 
 ## Built-in rules
 
-### General
+See **[RULES.md](RULES.md)** for the complete rule reference with signatures, fail conditions, and examples.
 
-| Rule | Description |
+Quick overview by category:
+
+| Category | Rules |
 |---|---|
-| `Required` | Fails when value is `nil` or `""`. |
-| `RequiredIf(condition)` | Fails when value is `nil` or `""` and the condition expression evaluates to true. |
-| `NotEmpty` | Fails when value is `nil` or the zero value for its type (`0`, `false`, `""`, etc.). |
+| General | `Required`, `RequiredIf`, `RequiredUnless`, `RequiredWith`, `RequiredWithAll`, `RequiredWithout`, `RequiredWithoutAll`, `NotEmpty` |
+| String | `Alpha`, `AlphaDash`, `AlphaNum`, `AlphaSpace`, `Email`, `EmailMX`, `URL`, `UUID`, `Regex`, `NotRegex`, `StartsWith`, `EndsWith`, `Lowercase`, `Uppercase`, `Length`, `MinLength`, `MaxLength` |
+| Number | `Numeric`, `Integer`, `Min`, `Max`, `GT`, `GTE`, `LT`, `LTE`, `Between` |
+| Digit | `Digits`, `MinDigits`, `MaxDigits`, `DigitsBetween` |
+| DateTime | `DateTime`, `DateTimeFormat`, `After`, `AfterOrEqual`, `AfterField`, `Before`, `BeforeOrEqual`, `BeforeField`, `DateTimeBetween`, `Timezone` |
+| Network | `IP`, `IPv4`, `IPv6`, `MACAddress` |
+| Collection | `Distinct` |
+| Generic | `In`, `NotIn`, `NEQ` |
+| Comparison | `SameAs`, `Different` |
 
-### String
-
-| Rule | Description |
-|---|---|
-| `Alpha` | Value must be a string containing only Unicode letters. |
-| `AlphaDash` | Value must be a string containing only Unicode letters, digits, underscores, and dashes. |
-| `AlphaNum` | Value must be a string containing only Unicode letters and digits. |
-| `AlphaSpace` | Value must be a string containing only Unicode letters and whitespace. |
-| `Email` | Value must be a well-formed email address. No DNS lookup. |
-| `EmailMX` | Value must be a well-formed email address whose domain has at least one MX record. |
-| `URL` | Value must parse as a valid absolute URL; scheme-less URLs are accepted as http. |
-| `Length(n)` | String rune count must be exactly `n`. |
-| `MinLength(n)` | String rune count must be at least `n`. |
-| `MaxLength(n)` | String rune count must be at most `n`. |
-
-### Numeric
-
-| Rule | Description |
-|---|---|
-| `Numeric` | Value must be any numeric type or a string that parses as a float64. |
-| `Min[T](n)` | Value must be at least `n`. |
-| `Max[T](n)` | Value must be at most `n`. |
-| `Between[T](min, max)` | Value must be between `min` and `max` inclusive. |
-
-### Date / time
-
-| Rule | Description |
-|---|---|
-| `DateTimeFormat(layout)` | Value must be a string matching the given Go time layout. |
-| `After(t)` | Value must be a date/time string strictly after `t`. |
-| `Before(t)` | Value must be a date/time string strictly before `t`. |
-
-`After` and `Before` accept a broad set of common date/time formats (RFC3339, `2006-01-02`, RFC1123, and many more) without requiring a layout to be specified.
-
-### Generic
-
-| Rule | Description |
-|---|---|
-| `In[T](slice)` | Value must equal one of the given slice elements. |
-| `NotIn[T](slice)` | Value must not equal any of the given slice elements. |
-
-Every rule except `Required`, `RequiredIf`, and `NotEmpty` returns `nil` for a missing value.
+Every rule except `Required`, `RequiredIf`, `RequiredUnless`, `RequiredWith*`, and `NotEmpty` returns `nil` for a missing value.
 
 ## RequiredIf
 
@@ -204,7 +171,7 @@ schema := validation.New().
 For rules that need to read other fields, implement `InputRule` or use `InputRuleFunc`:
 
 ```go
-sameAs := func(otherPath string) validation.InputRule {
+mustMatchField := func(otherPath string) validation.InputRule {
     return validation.InputRuleFunc(func(value any, input *validation.InputBag) error {
         other, _ := input.Lookup(otherPath)
         if value != other {
@@ -215,8 +182,10 @@ sameAs := func(otherPath string) validation.InputRule {
 }
 
 schema := validation.New().
-    Field("password_confirm", validation.Required, sameAs("password"))
+    Field("password_confirm", validation.Required, mustMatchField("password"))
 ```
+
+The built-in `SameAs` and `Different` rules cover the most common cross-field comparison patterns.
 
 Rules are values: build them once at startup and reuse across validations and goroutines.
 

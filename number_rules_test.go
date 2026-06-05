@@ -141,3 +141,129 @@ func TestMax(t *testing.T) {
 		}
 	})
 }
+
+func TestGT(t *testing.T) {
+	rule := GT[int](18)
+	tests := []struct {
+		value   any
+		wantErr bool
+	}{
+		{19, false},
+		{100, false},
+		{18, true},  // equal fails
+		{17, true},
+		{float64(19), true},
+		{nil, true},
+	}
+	for _, tt := range tests {
+		err := rule.Validate(tt.value)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("GT[int](18).Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
+		}
+		if err != nil && !errors.Is(err, ErrValidationGT) {
+			t.Errorf("wrong error type: %v", err)
+		}
+	}
+}
+
+func TestGTE(t *testing.T) {
+	rule := GTE[int](18)
+	tests := []struct {
+		value   any
+		wantErr bool
+	}{
+		{18, false},  // equal passes
+		{19, false},
+		{17, true},
+		{float64(18), true},
+		{nil, true},
+	}
+	for _, tt := range tests {
+		err := rule.Validate(tt.value)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("GTE[int](18).Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
+		}
+		if err != nil && !errors.Is(err, ErrValidationGTE) {
+			t.Errorf("wrong error type: %v", err)
+		}
+	}
+}
+
+func TestLT(t *testing.T) {
+	rule := LT[int](100)
+	tests := []struct {
+		value   any
+		wantErr bool
+	}{
+		{99, false},
+		{0, false},
+		{100, true},  // equal fails
+		{101, true},
+		{float64(99), true},
+		{nil, true},
+	}
+	for _, tt := range tests {
+		err := rule.Validate(tt.value)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("LT[int](100).Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
+		}
+		if err != nil && !errors.Is(err, ErrValidationLT) {
+			t.Errorf("wrong error type: %v", err)
+		}
+	}
+}
+
+func TestLTE(t *testing.T) {
+	rule := LTE[int](100)
+	tests := []struct {
+		value   any
+		wantErr bool
+	}{
+		{100, false},  // equal passes
+		{99, false},
+		{101, true},
+		{float64(100), true},
+		{nil, true},
+	}
+	for _, tt := range tests {
+		err := rule.Validate(tt.value)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("LTE[int](100).Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
+		}
+		if err != nil && !errors.Is(err, ErrValidationLTE) {
+			t.Errorf("wrong error type: %v", err)
+		}
+	}
+}
+
+func TestInteger(t *testing.T) {
+	tests := []struct {
+		value   any
+		wantErr bool
+	}{
+		{42, false},
+		{int8(1), false},
+		{int16(2), false},
+		{int32(3), false},
+		{int64(4), false},
+		{uint(5), false},
+		{uint8(6), false},
+		{uint16(7), false},
+		{uint32(8), false},
+		{uint64(9), false},
+		{nil, false},       // absent field passes
+		{3.14, true},       // float64
+		{"42", true},       // string
+		{true, true},       // bool
+		{float32(1.0), true},
+	}
+	for _, tt := range tests {
+		err := Integer.Validate(tt.value)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("Integer.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
+		}
+		if err != nil && !errors.Is(err, ErrValidationInteger) {
+			t.Errorf("wrong error type: %v", err)
+		}
+	}
+}
