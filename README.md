@@ -20,7 +20,7 @@ if res := schema.Validate(input); res.HasErrors() {
 go get github.com/behzadsh/go.validator/v2
 ```
 
-Requires Go 1.21 or later. Zero third-party dependencies.
+Requires Go 1.21 or later.
 
 ## Concepts
 

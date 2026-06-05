@@ -1,6 +1,8 @@
 package validation
 
 import (
+	"errors"
+	"math"
 	"reflect"
 	"strconv"
 )
@@ -54,14 +56,16 @@ func Between[T number](minV, maxV T) Rule {
 //	validation.GT[int](18).Validate(18)  // fail — equal
 //	validation.GT[int](18).Validate(17)  // fail
 func GT[T number](v T) Rule {
-	return RuleFunc(func(value any) error {
-		actual, ok := value.(T)
-		if !ok || actual <= v {
-			return ErrValidationGT
-		}
+	return RuleFunc(
+		func(value any) error {
+			actual, ok := value.(T)
+			if !ok || actual <= v {
+				return ErrValidationGT
+			}
 
-		return nil
-	})
+			return nil
+		},
+	)
 }
 
 // GTE returns a Rule that validates the value is greater than or equal to v.
@@ -78,14 +82,16 @@ func GT[T number](v T) Rule {
 //	validation.GTE[int](18).Validate(19)  // pass
 //	validation.GTE[int](18).Validate(17)  // fail
 func GTE[T number](v T) Rule {
-	return RuleFunc(func(value any) error {
-		actual, ok := value.(T)
-		if !ok || actual < v {
-			return ErrValidationGTE
-		}
+	return RuleFunc(
+		func(value any) error {
+			actual, ok := value.(T)
+			if !ok || actual < v {
+				return ErrValidationGTE
+			}
 
-		return nil
-	})
+			return nil
+		},
+	)
 }
 
 // Integer is a Rule that validates the value is an integer type.
@@ -122,6 +128,64 @@ var Integer Rule = RuleFunc(
 	},
 )
 
+// Latitude is a Rule that validates the value is a valid latitude (−90 to 90 inclusive).
+//
+// Accepts any numeric type or float64 (the default JSON number type), nil passes.
+//
+// Fails if:
+//   - value is not a numeric type
+//   - value < -90 or value > 90
+//
+// Examples:
+//
+//	validation.Latitude.Validate(45.0)    // pass
+//	validation.Latitude.Validate(-90.0)   // pass — inclusive
+//	validation.Latitude.Validate(90.1)    // fail
+//	validation.Latitude.Validate("45.0")  // fail — string not accepted
+var Latitude Rule = RuleFunc(
+	func(value any) error {
+		if value == nil {
+			return nil
+		}
+
+		fv, ok := condToFloat(value)
+		if !ok || fv < -90 || fv > 90 {
+			return ErrValidationLatitude
+		}
+
+		return nil
+	},
+)
+
+// Longitude is a Rule that validates the value is a valid longitude (−180 to 180 inclusive).
+//
+// Accepts any numeric type or float64 (the default JSON number type), nil passes.
+//
+// Fails if:
+//   - value is not a numeric type
+//   - value < -180 or value > 180
+//
+// Examples:
+//
+//	validation.Longitude.Validate(120.5)   // pass
+//	validation.Longitude.Validate(-180.0)  // pass — inclusive
+//	validation.Longitude.Validate(180.1)   // fail
+//	validation.Longitude.Validate("120.5") // fail — string not accepted
+var Longitude Rule = RuleFunc(
+	func(value any) error {
+		if value == nil {
+			return nil
+		}
+
+		fv, ok := condToFloat(value)
+		if !ok || fv < -180 || fv > 180 {
+			return ErrValidationLongitude
+		}
+
+		return nil
+	},
+)
+
 // LT returns a Rule that validates the value is strictly less than v.
 //
 // Unlike Max (which uses <=), LT uses <, so equal values fail.
@@ -136,14 +200,16 @@ var Integer Rule = RuleFunc(
 //	validation.LT[int](100).Validate(100)  // fail — equal
 //	validation.LT[int](100).Validate(101)  // fail
 func LT[T number](v T) Rule {
-	return RuleFunc(func(value any) error {
-		actual, ok := value.(T)
-		if !ok || actual >= v {
-			return ErrValidationLT
-		}
+	return RuleFunc(
+		func(value any) error {
+			actual, ok := value.(T)
+			if !ok || actual >= v {
+				return ErrValidationLT
+			}
 
-		return nil
-	})
+			return nil
+		},
+	)
 }
 
 // LTE returns a Rule that validates the value is less than or equal to v.
@@ -160,14 +226,16 @@ func LT[T number](v T) Rule {
 //	validation.LTE[int](100).Validate(99)   // pass
 //	validation.LTE[int](100).Validate(101)  // fail
 func LTE[T number](v T) Rule {
-	return RuleFunc(func(value any) error {
-		actual, ok := value.(T)
-		if !ok || actual > v {
-			return ErrValidationLTE
-		}
+	return RuleFunc(
+		func(value any) error {
+			actual, ok := value.(T)
+			if !ok || actual > v {
+				return ErrValidationLTE
+			}
 
-		return nil
-	})
+			return nil
+		},
+	)
 }
 
 // Max returns a Rule that validates the value is at most maxV.
@@ -224,6 +292,104 @@ func Min[T number](minV T) Rule {
 	return RuleFunc(fn)
 }
 
+// MultipleOf returns a Rule that validates the value is a multiple of n.
+//
+// Accepts any numeric type; comparison is done in float64, n must not be zero.
+// If n is zero, Schema.Validate returns a RuleSyntaxError.
+//
+// Fails if:
+//   - value is nil
+//   - value is not a numeric type
+//   - value is not evenly divisible by n
+//
+// Examples:
+//
+//	validation.MultipleOf[int](3).Validate(9)          // pass
+//	validation.MultipleOf[int](3).Validate(float64(9)) // pass — JSON number accepted
+//	validation.MultipleOf[int](3).Validate(8)          // fail
+func MultipleOf[T number](n T) Rule {
+	return RuleFunc(
+		func(value any) error {
+			if float64(n) == 0 {
+				return RuleSyntaxError{Rule: "MultipleOf", Err: errors.New("divisor must not be zero")}
+			}
+
+			if value == nil {
+				return ErrValidationMultipleOf
+			}
+
+			fv, ok := condToFloat(value)
+			if !ok {
+				return ErrValidationMultipleOf
+			}
+
+			if math.Mod(fv, float64(n)) != 0 {
+				return ErrValidationMultipleOf
+			}
+
+			return nil
+		},
+	)
+}
+
+// Negative is a Rule that validates the value is strictly less than zero.
+//
+// Accepts any numeric type, nil passes.
+//
+// Fails if:
+//   - value is not a numeric type
+//   - value >= 0
+//
+// Examples:
+//
+//	validation.Negative.Validate(-1)   // pass
+//	validation.Negative.Validate(-0.5) // pass
+//	validation.Negative.Validate(0)    // fail — zero is not negative
+//	validation.Negative.Validate(1)    // fail
+var Negative Rule = RuleFunc(
+	func(value any) error {
+		if value == nil {
+			return nil
+		}
+
+		fv, ok := condToFloat(value)
+		if !ok || fv >= 0 {
+			return ErrValidationNegative
+		}
+
+		return nil
+	},
+)
+
+// NonNegative is a Rule that validates the value is greater than or equal to zero.
+//
+// Accepts any numeric type, nil passes.
+//
+// Fails if:
+//   - value is not a numeric type
+//   - value < 0
+//
+// Examples:
+//
+//	validation.NonNegative.Validate(0)    // pass — zero is non-negative
+//	validation.NonNegative.Validate(5)    // pass
+//	validation.NonNegative.Validate(-1)   // fail
+//	validation.NonNegative.Validate(-0.1) // fail
+var NonNegative Rule = RuleFunc(
+	func(value any) error {
+		if value == nil {
+			return nil
+		}
+
+		fv, ok := condToFloat(value)
+		if !ok || fv < 0 {
+			return ErrValidationNonNegative
+		}
+
+		return nil
+	},
+)
+
 // Numeric is a Rule that validate the value is a number, or it can be converted to a number.
 //
 // Accepted types: int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, float32, float64, complex64,
@@ -259,5 +425,65 @@ var Numeric Rule = RuleFunc(
 		default:
 			return ErrValidationNumeric
 		}
+	},
+)
+
+// Port is a Rule that validates the value is a valid TCP/UDP port number (1–65535).
+//
+// Accepts any numeric type. Fractional values (e.g. float64(80.5)) fail, nil passes.
+//
+// Fails if:
+//   - value is not a numeric type
+//   - value is fractional
+//   - value < 1 or value > 65535
+//
+// Examples:
+//
+//	validation.Port.Validate(80)             // pass
+//	validation.Port.Validate(float64(8080))  // pass — JSON number accepted
+//	validation.Port.Validate(0)              // fail — port 0 is reserved
+//	validation.Port.Validate(65536)          // fail
+//	validation.Port.Validate(80.5)           // fail — fractional
+var Port Rule = RuleFunc(
+	func(value any) error {
+		if value == nil {
+			return nil
+		}
+
+		fv, ok := condToFloat(value)
+		if !ok || fv != math.Trunc(fv) || fv < 1 || fv > 65535 {
+			return ErrValidationPort
+		}
+
+		return nil
+	},
+)
+
+// Positive is a Rule that validates the value is strictly greater than zero.
+//
+// Accepts any numeric type, nil passes.
+//
+// Fails if:
+//   - value is not a numeric type
+//   - value <= 0
+//
+// Examples:
+//
+//	validation.Positive.Validate(1)    // pass
+//	validation.Positive.Validate(0.1)  // pass
+//	validation.Positive.Validate(0)    // fail — zero is not positive
+//	validation.Positive.Validate(-1)   // fail
+var Positive Rule = RuleFunc(
+	func(value any) error {
+		if value == nil {
+			return nil
+		}
+
+		fv, ok := condToFloat(value)
+		if !ok || fv <= 0 {
+			return ErrValidationPositive
+		}
+
+		return nil
 	},
 )

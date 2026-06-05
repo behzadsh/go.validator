@@ -45,3 +45,134 @@ var Distinct Rule = RuleFunc(
 		return nil
 	},
 )
+
+// Each returns a Rule that applies the given rules to every element of a slice or array.
+//
+// Non-slice/array values and nil pass (the rule is irrelevant for scalars). Validation stops at the first failing
+// element and returns ErrValidationEach; the index and inner error are not propagated.
+//
+// Fails if:
+//   - any element fails any of the given rules
+//
+// Examples:
+//
+//	validation.Each(validation.MinLength(2)).Validate([]string{"ab", "cd"}) // pass
+//	validation.Each(validation.MinLength(2)).Validate([]string{"ab", "x"})  // fail — "x" fails
+//	validation.Each(validation.Positive).Validate([]int{1, 2, 3})           // pass
+//	validation.Each(validation.Positive).Validate([]int{1, -1, 3})          // fail
+func Each(rules ...Rule) Rule {
+	return InputRuleFunc(func(value any, input *InputBag) error {
+		if value == nil {
+			return nil
+		}
+
+		rv := reflect.ValueOf(value)
+		if rv.Kind() != reflect.Slice && rv.Kind() != reflect.Array {
+			return nil
+		}
+
+		for i := 0; i < rv.Len(); i++ {
+			elem := rv.Index(i).Interface()
+			for _, r := range rules {
+				if err := applyRule(r, elem, input); err != nil {
+					return ErrValidationEach
+				}
+			}
+		}
+
+		return nil
+	})
+}
+
+// MaxSize returns a Rule that validates a slice or array has at most n elements.
+//
+// Non-slice/array values and nil pass.
+//
+// Fails if:
+//   - value is a slice/array with more than n elements
+//
+// Examples:
+//
+//	validation.MaxSize(3).Validate([]int{1, 2, 3})    // pass — exactly 3
+//	validation.MaxSize(3).Validate([]int{1, 2, 3, 4}) // fail — 4 elements
+//	validation.MaxSize(3).Validate(nil)                // pass
+func MaxSize(n int) Rule {
+	return RuleFunc(func(value any) error {
+		if value == nil {
+			return nil
+		}
+
+		rv := reflect.ValueOf(value)
+		if rv.Kind() != reflect.Slice && rv.Kind() != reflect.Array {
+			return nil
+		}
+
+		if rv.Len() > n {
+			return ErrValidationMaxSize
+		}
+
+		return nil
+	})
+}
+
+// MinSize returns a Rule that validates a slice or array has at least n elements.
+//
+// Non-slice/array values and nil pass.
+//
+// Fails if:
+//   - value is a slice/array with fewer than n elements
+//
+// Examples:
+//
+//	validation.MinSize(2).Validate([]int{1, 2})    // pass — exactly 2
+//	validation.MinSize(2).Validate([]int{1})        // fail — only 1 element
+//	validation.MinSize(2).Validate(nil)             // pass
+func MinSize(n int) Rule {
+	return RuleFunc(func(value any) error {
+		if value == nil {
+			return nil
+		}
+
+		rv := reflect.ValueOf(value)
+		if rv.Kind() != reflect.Slice && rv.Kind() != reflect.Array {
+			return nil
+		}
+
+		if rv.Len() < n {
+			return ErrValidationMinSize
+		}
+
+		return nil
+	})
+}
+
+// Size returns a Rule that validates a slice or array has exactly n elements.
+//
+// Non-slice/array values and nil pass.
+//
+// Fails if:
+//   - value is a slice/array whose length is not exactly n
+//
+// Examples:
+//
+//	validation.Size(3).Validate([]int{1, 2, 3}) // pass
+//	validation.Size(3).Validate([]int{1, 2})    // fail — 2 elements
+//	validation.Size(3).Validate(nil)             // pass
+func Size(n int) Rule {
+	return RuleFunc(func(value any) error {
+		if value == nil {
+			return nil
+		}
+
+		rv := reflect.ValueOf(value)
+		if rv.Kind() != reflect.Slice && rv.Kind() != reflect.Array {
+			return nil
+		}
+
+		if rv.Len() != n {
+			return ErrValidationSize
+		}
+
+		return nil
+	})
+}

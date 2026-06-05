@@ -92,34 +92,6 @@ func TestAlphaSpace(t *testing.T) {
 	}
 }
 
-func TestURL(t *testing.T) {
-	tests := []struct {
-		value   any
-		wantErr bool
-	}{
-		{"https://example.com", false},
-		{"http://example.com", false},
-		{"http://example.com/path?q=1", false},
-		{"example.com", false},
-		{"example.com/path", false},
-		{"localhost", false},
-		{"http://localhost:8080", false},
-		{"http://127.0.0.1", false},
-		{"example.com:8080", false},
-		{"http://[::1]:8080", false},
-		{"not a url", true},
-		{"", true},
-		{"http://", true},
-		{42, true},
-		{nil, true},
-	}
-	for _, tt := range tests {
-		err := URL.Validate(tt.value)
-		if (err != nil) != tt.wantErr {
-			t.Errorf("URL.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
-		}
-	}
-}
 
 func TestLength(t *testing.T) {
 	tests := []struct {
@@ -422,6 +394,276 @@ func TestUppercase(t *testing.T) {
 		}
 		if err != nil && !errors.Is(err, ErrValidationUppercase) {
 			t.Errorf("Uppercase.Validate(%v) wrong error: %v", tt.value, err)
+		}
+	}
+}
+
+func TestASCII(t *testing.T) {
+	tests := []struct {
+		value   any
+		wantErr bool
+	}{
+		{"hello", false},
+		{"hello world", false},
+		{"abc123!@#", false},
+		{"\t\n\r", false},
+		{"café", true},
+		{"Ünïcödé", true},
+		{"", false},
+		{nil, true},
+		{42, true},
+	}
+	for _, tt := range tests {
+		err := ASCII.Validate(tt.value)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("ASCII.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
+		}
+		if err != nil && !errors.Is(err, ErrValidationASCII) {
+			t.Errorf("ASCII.Validate(%v) wrong error: %v", tt.value, err)
+		}
+	}
+}
+
+func TestBase64(t *testing.T) {
+	tests := []struct {
+		value   any
+		wantErr bool
+	}{
+		{"aGVsbG8=", false},      // "hello"
+		{"dGVzdA==", false},      // "test"
+		{"", false},              // empty is valid base64
+		{"aGVsbG8", true},        // missing padding
+		{"not-base64!", true},
+		{"aGVsbG8===", true},     // bad padding
+		{nil, true},
+		{42, true},
+	}
+	for _, tt := range tests {
+		err := Base64.Validate(tt.value)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("Base64.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
+		}
+		if err != nil && !errors.Is(err, ErrValidationBase64) {
+			t.Errorf("Base64.Validate(%v) wrong error: %v", tt.value, err)
+		}
+	}
+}
+
+func TestContains(t *testing.T) {
+	tests := []struct {
+		value   any
+		wantErr bool
+	}{
+		{"hello world", false},
+		{"hello", false},
+		{"world", true},
+		{"", true},
+		{nil, true},
+		{42, true},
+	}
+	for _, tt := range tests {
+		err := Contains("hello").Validate(tt.value)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("Contains(\"hello\").Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
+		}
+		if err != nil && !errors.Is(err, ErrValidationContains) {
+			t.Errorf("Contains.Validate(%v) wrong error: %v", tt.value, err)
+		}
+	}
+}
+
+func TestCreditCard(t *testing.T) {
+	tests := []struct {
+		value   any
+		wantErr bool
+	}{
+		{"4111111111111111", false},       // Visa test
+		{"4111-1111-1111-1111", false},    // dashes stripped
+		{"4111 1111 1111 1111", false},    // spaces stripped
+		{"5500005555555559", false},       // Mastercard test
+		{"378282246310005", false},        // Amex test (15 digits)
+		{"1234567890123456", true},        // invalid Luhn
+		{"411111111111111", true},         // too short (15 chars but bad Luhn)
+		{"", true},
+		{"not-a-card", true},
+		{nil, true},
+		{4111111111111111, true},          // not a string
+	}
+	for _, tt := range tests {
+		err := CreditCard.Validate(tt.value)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("CreditCard.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
+		}
+		if err != nil && !errors.Is(err, ErrValidationCreditCard) {
+			t.Errorf("CreditCard.Validate(%v) wrong error: %v", tt.value, err)
+		}
+	}
+}
+
+func TestHexColor(t *testing.T) {
+	tests := []struct {
+		value   any
+		wantErr bool
+	}{
+		{"#fff", false},
+		{"#FFF", false},
+		{"#FF5733", false},
+		{"#aabbcc", false},
+		{"FF5733", true},  // missing #
+		{"#GGG", true},    // invalid hex digits
+		{"#12345", true},  // 5 digits
+		{"#1234567", true}, // 7 digits
+		{"", true},
+		{nil, true},
+		{42, true},
+	}
+	for _, tt := range tests {
+		err := HexColor.Validate(tt.value)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("HexColor.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
+		}
+		if err != nil && !errors.Is(err, ErrValidationHexColor) {
+			t.Errorf("HexColor.Validate(%v) wrong error: %v", tt.value, err)
+		}
+	}
+}
+
+func TestJSON(t *testing.T) {
+	tests := []struct {
+		value   any
+		wantErr bool
+	}{
+		{`{"key":"value"}`, false},
+		{`[1,2,3]`, false},
+		{`null`, false},
+		{`"hello"`, false},
+		{`123`, false},
+		{`true`, false},
+		{`false`, false},
+		{`{invalid}`, true},
+		{``, true},
+		{`{`, true},
+		{nil, true},
+		{42, true},
+	}
+	for _, tt := range tests {
+		err := JSON.Validate(tt.value)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("JSON.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
+		}
+		if err != nil && !errors.Is(err, ErrValidationJSON) {
+			t.Errorf("JSON.Validate(%v) wrong error: %v", tt.value, err)
+		}
+	}
+}
+
+func TestJWT(t *testing.T) {
+	tests := []struct {
+		value   any
+		wantErr bool
+	}{
+		{"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIn0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c", false},
+		{"eyJ.eyJ.sig", false},
+		{"a.b.c", false},
+		{"notajwt", true},
+		{"a.b", true},      // only two segments
+		{"a.b.c.d", true},  // four segments
+		{"", true},
+		{nil, true},
+		{42, true},
+	}
+	for _, tt := range tests {
+		err := JWT.Validate(tt.value)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("JWT.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
+		}
+		if err != nil && !errors.Is(err, ErrValidationJWT) {
+			t.Errorf("JWT.Validate(%v) wrong error: %v", tt.value, err)
+		}
+	}
+}
+
+func TestPhoneE164(t *testing.T) {
+	tests := []struct {
+		value   any
+		wantErr bool
+	}{
+		{"+14155552671", false},
+		{"+441234567890", false},
+		{"+1", true},                // too short (only 1 digit after +)
+		{"14155552671", true},       // missing +
+		{"+0123456789", true},       // country code starts with 0
+		{"+1234567890123456", true}, // too long (16 digits)
+		{"", true},
+		{nil, true},
+		{42, true},
+	}
+	for _, tt := range tests {
+		err := PhoneE164.Validate(tt.value)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("PhoneE164.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
+		}
+		if err != nil && !errors.Is(err, ErrValidationPhoneE164) {
+			t.Errorf("PhoneE164.Validate(%v) wrong error: %v", tt.value, err)
+		}
+	}
+}
+
+func TestSemver(t *testing.T) {
+	tests := []struct {
+		value   any
+		wantErr bool
+	}{
+		{"1.0.0", false},
+		{"0.0.1", false},
+		{"v1.0.0", false},                      // v prefix accepted
+		{"v2.1.3-alpha.1", false},
+		{"2.1.3-alpha.1", false},
+		{"1.0.0+build.123", false},             // build metadata accepted
+		{"1.0.0-beta.1+exp.sha.5114f85", false},
+		{"1.0", true},         // missing patch
+		{"1.0.0.0", true},     // extra component
+		{"01.0.0", true},      // leading zero
+		{"", true},
+		{nil, true},
+		{42, true},
+	}
+	for _, tt := range tests {
+		err := Semver.Validate(tt.value)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("Semver.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
+		}
+		if err != nil && !errors.Is(err, ErrValidationSemver) {
+			t.Errorf("Semver.Validate(%v) wrong error: %v", tt.value, err)
+		}
+	}
+}
+
+func TestSlug(t *testing.T) {
+	tests := []struct {
+		value   any
+		wantErr bool
+	}{
+		{"hello", false},
+		{"hello-world", false},
+		{"my-post-123", false},
+		{"abc", false},
+		{"Hello-World", true},    // uppercase
+		{"-leading", true},       // leading hyphen
+		{"trailing-", true},      // trailing hyphen
+		{"double--dash", true},   // consecutive hyphens
+		{"hello world", true},    // space
+		{"", true},
+		{nil, true},
+		{42, true},
+	}
+	for _, tt := range tests {
+		err := Slug.Validate(tt.value)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("Slug.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
+		}
+		if err != nil && !errors.Is(err, ErrValidationSlug) {
+			t.Errorf("Slug.Validate(%v) wrong error: %v", tt.value, err)
 		}
 	}
 }

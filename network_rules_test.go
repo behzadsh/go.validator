@@ -5,6 +5,66 @@ import (
 	"testing"
 )
 
+func TestURL(t *testing.T) {
+	tests := []struct {
+		value   any
+		wantErr bool
+	}{
+		{"https://example.com", false},
+		{"http://example.com", false},
+		{"http://example.com/path?q=1", false},
+		{"example.com", false},
+		{"example.com/path", false},
+		{"localhost", false},
+		{"http://localhost:8080", false},
+		{"http://127.0.0.1", false},
+		{"example.com:8080", false},
+		{"http://[::1]:8080", false},
+		{"not a url", true},
+		{"", true},
+		{"http://", true},
+		{42, true},
+		{nil, true},
+	}
+	for _, tt := range tests {
+		err := URL.Validate(tt.value)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("URL.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
+		}
+		if err != nil && !errors.Is(err, ErrValidationURL) {
+			t.Errorf("URL.Validate(%v) wrong error: %v", tt.value, err)
+		}
+	}
+}
+
+func TestCIDR(t *testing.T) {
+	tests := []struct {
+		value   any
+		wantErr bool
+	}{
+		{"192.168.0.0/24", false},
+		{"10.0.0.0/8", false},
+		{"0.0.0.0/0", false},
+		{"2001:db8::/32", false},
+		{"::/0", false},
+		{"192.168.0.1", true},  // no prefix length
+		{"192.168.0.0/33", true}, // prefix too long
+		{"not-cidr", true},
+		{"", true},
+		{nil, true},
+		{42, true},
+	}
+	for _, tt := range tests {
+		err := CIDR.Validate(tt.value)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("CIDR.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
+		}
+		if err != nil && !errors.Is(err, ErrValidationCIDR) {
+			t.Errorf("CIDR.Validate(%v) wrong error: %v", tt.value, err)
+		}
+	}
+}
+
 func TestMACAddress(t *testing.T) {
 	tests := []struct {
 		value   any

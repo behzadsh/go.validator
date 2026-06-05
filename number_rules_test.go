@@ -267,3 +267,197 @@ func TestInteger(t *testing.T) {
 		}
 	}
 }
+
+func TestPositive(t *testing.T) {
+	tests := []struct {
+		value   any
+		wantErr bool
+	}{
+		{1, false},
+		{0.1, false},
+		{float64(5), false},
+		{uint(3), false},
+		{0, true},
+		{-1, true},
+		{-0.1, true},
+		{nil, false},
+		{"5", true},
+		{true, true},
+	}
+	for _, tt := range tests {
+		err := Positive.Validate(tt.value)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("Positive.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
+		}
+		if err != nil && !errors.Is(err, ErrValidationPositive) {
+			t.Errorf("wrong error type: %v", err)
+		}
+	}
+}
+
+func TestNegative(t *testing.T) {
+	tests := []struct {
+		value   any
+		wantErr bool
+	}{
+		{-1, false},
+		{-0.1, false},
+		{float64(-5), false},
+		{0, true},
+		{1, true},
+		{uint(0), true},
+		{nil, false},
+		{"5", true},
+	}
+	for _, tt := range tests {
+		err := Negative.Validate(tt.value)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("Negative.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
+		}
+		if err != nil && !errors.Is(err, ErrValidationNegative) {
+			t.Errorf("wrong error type: %v", err)
+		}
+	}
+}
+
+func TestNonNegative(t *testing.T) {
+	tests := []struct {
+		value   any
+		wantErr bool
+	}{
+		{0, false},
+		{1, false},
+		{0.0, false},
+		{float64(5), false},
+		{uint(0), false},
+		{-1, true},
+		{-0.1, true},
+		{nil, false},
+		{"0", true},
+	}
+	for _, tt := range tests {
+		err := NonNegative.Validate(tt.value)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("NonNegative.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
+		}
+		if err != nil && !errors.Is(err, ErrValidationNonNegative) {
+			t.Errorf("wrong error type: %v", err)
+		}
+	}
+}
+
+func TestMultipleOf(t *testing.T) {
+	t.Run("int divisor", func(t *testing.T) {
+		rule := MultipleOf[int](3)
+		tests := []struct {
+			value   any
+			wantErr bool
+		}{
+			{9, false},
+			{0, false},
+			{-6, false},
+			{float64(9), false}, // JSON number
+			{8, true},
+			{nil, true},
+			{"9", true},
+		}
+		for _, tt := range tests {
+			err := rule.Validate(tt.value)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("MultipleOf[int](3).Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
+			}
+		}
+	})
+
+	t.Run("zero divisor returns syntax error", func(t *testing.T) {
+		rule := MultipleOf[int](0)
+		err := rule.Validate(9)
+		if err == nil {
+			t.Error("expected error for zero divisor")
+		}
+		var rse RuleSyntaxError
+		if !errors.As(err, &rse) {
+			t.Errorf("expected RuleSyntaxError, got %T", err)
+		}
+	})
+}
+
+func TestPort(t *testing.T) {
+	tests := []struct {
+		value   any
+		wantErr bool
+	}{
+		{80, false},
+		{443, false},
+		{1, false},
+		{65535, false},
+		{float64(8080), false}, // JSON number
+		{0, true},
+		{65536, true},
+		{-1, true},
+		{80.5, true},     // fractional
+		{nil, false},
+		{"80", true},
+	}
+	for _, tt := range tests {
+		err := Port.Validate(tt.value)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("Port.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
+		}
+		if err != nil && !errors.Is(err, ErrValidationPort) {
+			t.Errorf("wrong error type: %v", err)
+		}
+	}
+}
+
+func TestLatitude(t *testing.T) {
+	tests := []struct {
+		value   any
+		wantErr bool
+	}{
+		{0.0, false},
+		{45.0, false},
+		{-90.0, false},
+		{90.0, false},
+		{float64(45), false},
+		{90.1, true},
+		{-90.1, true},
+		{nil, false},
+		{"45", true},
+	}
+	for _, tt := range tests {
+		err := Latitude.Validate(tt.value)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("Latitude.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
+		}
+		if err != nil && !errors.Is(err, ErrValidationLatitude) {
+			t.Errorf("wrong error type: %v", err)
+		}
+	}
+}
+
+func TestLongitude(t *testing.T) {
+	tests := []struct {
+		value   any
+		wantErr bool
+	}{
+		{0.0, false},
+		{120.5, false},
+		{-180.0, false},
+		{180.0, false},
+		{float64(120), false},
+		{180.1, true},
+		{-180.1, true},
+		{nil, false},
+		{"120", true},
+	}
+	for _, tt := range tests {
+		err := Longitude.Validate(tt.value)
+		if (err != nil) != tt.wantErr {
+			t.Errorf("Longitude.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
+		}
+		if err != nil && !errors.Is(err, ErrValidationLongitude) {
+			t.Errorf("wrong error type: %v", err)
+		}
+	}
+}

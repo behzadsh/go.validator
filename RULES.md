@@ -23,18 +23,27 @@
 - [AlphaDash](#alphadash)
 - [AlphaNum](#alphanum)
 - [AlphaSpace](#alphaspace)
+- [ASCII](#ascii)
+- [Base64](#base64)
+- [Contains](#contains)
+- [CreditCard](#creditcard)
 - [Email](#email)
 - [EmailMX](#emailmx)
 - [EndsWith](#endswith)
+- [HexColor](#hexcolor)
+- [JSON](#json)
+- [JWT](#jwt)
 - [Length](#length)
 - [Lowercase](#lowercase)
 - [MaxLength](#maxlength)
 - [MinLength](#minlength)
 - [NotRegex](#notregex)
+- [PhoneE164](#phonee164)
 - [Regex](#regex)
+- [Semver](#semver)
+- [Slug](#slug)
 - [StartsWith](#startswith)
 - [Uppercase](#uppercase)
-- [URL](#url)
 - [UUID](#uuid)
 
 </details>
@@ -46,11 +55,18 @@
 - [GT](#gt)
 - [GTE](#gte)
 - [Integer](#integer)
+- [Latitude](#latitude)
+- [Longitude](#longitude)
 - [LT](#lt)
 - [LTE](#lte)
 - [Max](#max)
 - [Min](#min)
+- [MultipleOf](#multipleof)
+- [Negative](#negative)
+- [NonNegative](#nonnegative)
 - [Numeric](#numeric)
+- [Port](#port)
+- [Positive](#positive)
 
 </details>
 
@@ -83,10 +99,12 @@
 <details>
 <summary>Network</summary>
 
+- [CIDR](#cidr)
 - [IP](#ip)
 - [IPv4](#ipv4)
 - [IPv6](#ipv6)
 - [MACAddress](#macaddress)
+- [URL](#url)
 
 </details>
 
@@ -94,6 +112,10 @@
 <summary>Collection</summary>
 
 - [Distinct](#distinct)
+- [Each](#each)
+- [MaxSize](#maxsize)
+- [MinSize](#minsize)
+- [Size](#size)
 
 </details>
 
@@ -111,6 +133,16 @@
 
 - [Different](#different)
 - [SameAs](#sameas)
+
+</details>
+
+<details>
+<summary>Logical</summary>
+
+- [Any](#any)
+- [Not](#not)
+- [Unless](#unless)
+- [When](#when)
 
 </details>
 
@@ -251,6 +283,166 @@ validation.New().
 ---
 
 ## String
+
+<a id="ascii"></a>
+### ASCII
+
+```go
+var ASCII Rule
+```
+
+Fails if the value is not a string or contains any byte with value > 127.
+
+```go
+validation.New().Field("code", validation.ASCII)
+// "hello" → pass, "café" → fail
+```
+
+---
+
+<a id="base64"></a>
+### Base64
+
+```go
+var Base64 Rule
+```
+
+Fails if the value is not a string or is not valid standard base64 (RFC 4648, with `=` padding). URL-safe base64 (`-_`) is not accepted. Empty string passes.
+
+```go
+validation.New().Field("data", validation.Base64)
+// "aGVsbG8=" → pass, "aGVsbG8" → fail (missing padding)
+```
+
+---
+
+<a id="contains"></a>
+### Contains
+
+```go
+func Contains(sub string) Rule
+```
+
+Fails if the value is not a string or does not contain `sub`.
+
+```go
+validation.New().Field("bio", validation.Contains("@"))
+// "hello@world" → pass, "hello" → fail
+```
+
+---
+
+<a id="creditcard"></a>
+### CreditCard
+
+```go
+var CreditCard Rule
+```
+
+Validates a credit card number using the Luhn algorithm. Spaces and dashes are stripped before validation. Accepted length after stripping: 13–19 digits.
+
+```go
+validation.New().Field("card", validation.CreditCard)
+// "4111111111111111" → pass, "4111-1111-1111-1111" → pass
+```
+
+---
+
+<a id="hexcolor"></a>
+### HexColor
+
+```go
+var HexColor Rule
+```
+
+Fails if the value is not a string or does not match `#RGB` or `#RRGGBB` (case-insensitive).
+
+```go
+validation.New().Field("color", validation.HexColor)
+// "#fff" → pass, "#FF5733" → pass, "FF5733" → fail (missing #)
+```
+
+---
+
+<a id="json"></a>
+### JSON
+
+```go
+var JSON Rule
+```
+
+Fails if the value is not a string or is not valid JSON. Accepts any JSON value (object, array, string, number, boolean, null). Empty string fails.
+
+```go
+validation.New().Field("payload", validation.JSON)
+// `{"key":"val"}` → pass, `null` → pass, `{bad}` → fail
+```
+
+---
+
+<a id="jwt"></a>
+### JWT
+
+```go
+var JWT Rule
+```
+
+Fails if the value is not a string or does not match the JWT compact serialization format (`header.payload.signature` — three base64url segments separated by dots, no padding).
+
+```go
+validation.New().Field("token", validation.JWT)
+// "eyJ.eyJ.sig" → pass, "notajwt" → fail
+```
+
+---
+
+<a id="phonee164"></a>
+### PhoneE164
+
+```go
+var PhoneE164 Rule
+```
+
+Fails if the value is not a string or does not match E.164 format: `+` followed by a non-zero country code digit and 1–14 more digits (2–15 total digits).
+
+```go
+validation.New().Field("phone", validation.PhoneE164)
+// "+14155552671" → pass, "14155552671" → fail (missing +)
+```
+
+---
+
+<a id="semver"></a>
+### Semver
+
+```go
+var Semver Rule
+```
+
+Fails if the value is not a string or is not a valid semantic version per semver.org. Supports pre-release (`-alpha.1`) and build metadata (`+001`). Leading zeros in numeric identifiers are rejected.
+
+```go
+validation.New().Field("version", validation.Semver)
+// "1.0.0" → pass, "2.1.3-alpha.1" → pass, "01.0.0" → fail
+```
+
+---
+
+<a id="slug"></a>
+### Slug
+
+```go
+var Slug Rule
+```
+
+Fails if the value is not a string or contains anything other than lowercase ASCII letters, digits, and single hyphens (not at start or end, not consecutive).
+
+```go
+validation.New().Field("handle", validation.Slug)
+// "hello-world" → pass, "-leading" → fail, "double--dash" → fail
+```
+
+---
 
 <a id="alpha"></a>
 ### Alpha
@@ -489,22 +681,6 @@ validation.New().Field("country_code", validation.Uppercase)
 
 ---
 
-<a id="url"></a>
-### URL
-
-```go
-var URL Rule
-```
-
-Validates an absolute URL (`https://...`, `http://...`) or a scheme-less URL where `http` is inferred. Rejects bare paths without a host.
-
-```go
-validation.New().Field("website", validation.URL)
-// "https://example.com" → pass, "not a url" → fail
-```
-
----
-
 <a id="uuid"></a>
 ### UUID
 
@@ -663,6 +839,118 @@ Accepts any Go numeric type or a string parseable as a `float64`. Rejects boolea
 ```go
 validation.New().Field("price", validation.Numeric)
 // 42, 3.14, "99.5" → pass, "abc" → fail
+```
+
+---
+
+<a id="latitude"></a>
+### Latitude
+
+```go
+var Latitude Rule
+```
+
+Fails if the value is not a numeric type or falls outside `[-90, 90]` (inclusive). Accepts any numeric kind including `float64` (the default JSON number type). `nil` passes.
+
+```go
+validation.New().Field("lat", validation.Latitude)
+// 45.0 → pass, -90.0 → pass, 90.1 → fail
+```
+
+---
+
+<a id="longitude"></a>
+### Longitude
+
+```go
+var Longitude Rule
+```
+
+Fails if the value is not a numeric type or falls outside `[-180, 180]` (inclusive). Accepts any numeric kind. `nil` passes.
+
+```go
+validation.New().Field("lng", validation.Longitude)
+// 120.5 → pass, -180.0 → pass, 180.1 → fail
+```
+
+---
+
+<a id="multipleof"></a>
+### MultipleOf
+
+```go
+func MultipleOf[T number](n T) Rule
+```
+
+Fails if the value is not a numeric type or is not evenly divisible by `n`. Accepts any numeric kind; comparison is done in `float64`. `n` must not be zero — a zero divisor causes a `RuleSyntaxError`.
+
+```go
+validation.New().Field("quantity", validation.MultipleOf[int](5))
+// 10 → pass, float64(15) → pass, 7 → fail
+```
+
+---
+
+<a id="negative"></a>
+### Negative
+
+```go
+var Negative Rule
+```
+
+Fails if the value is not a numeric type or is `>= 0`. `nil` passes.
+
+```go
+validation.New().Field("offset", validation.Negative)
+// -1 → pass, -0.5 → pass, 0 → fail
+```
+
+---
+
+<a id="nonnegative"></a>
+### NonNegative
+
+```go
+var NonNegative Rule
+```
+
+Fails if the value is not a numeric type or is `< 0`. `nil` passes.
+
+```go
+validation.New().Field("count", validation.NonNegative)
+// 0 → pass, 5 → pass, -1 → fail
+```
+
+---
+
+<a id="port"></a>
+### Port
+
+```go
+var Port Rule
+```
+
+Fails if the value is not a numeric type, is fractional, or falls outside `[1, 65535]`. Accepts `float64` (the default JSON number type). `nil` passes.
+
+```go
+validation.New().Field("port", validation.Port)
+// 80 → pass, float64(8080) → pass, 0 → fail, 65536 → fail
+```
+
+---
+
+<a id="positive"></a>
+### Positive
+
+```go
+var Positive Rule
+```
+
+Fails if the value is not a numeric type or is `<= 0`. `nil` passes.
+
+```go
+validation.New().Field("price", validation.Positive)
+// 1 → pass, 0.1 → pass, 0 → fail, -1 → fail
 ```
 
 ---
@@ -903,6 +1191,22 @@ validation.New().Field("tz", validation.Timezone)
 
 ## Network
 
+<a id="cidr"></a>
+### CIDR
+
+```go
+var CIDR Rule
+```
+
+Fails if the value is not a string or cannot be parsed as a valid CIDR block (IPv4 or IPv6).
+
+```go
+validation.New().Field("subnet", validation.CIDR)
+// "192.168.0.0/24" → pass, "2001:db8::/32" → pass, "192.168.0.1" → fail
+```
+
+---
+
 <a id="ip"></a>
 ### IP
 
@@ -967,6 +1271,22 @@ validation.New().Field("mac", validation.MACAddress)
 
 ---
 
+<a id="url"></a>
+### URL
+
+```go
+var URL Rule
+```
+
+Validates an absolute URL (`https://...`, `http://...`) or a scheme-less URL where `http` is inferred. Rejects bare paths without a host.
+
+```go
+validation.New().Field("website", validation.URL)
+// "https://example.com" → pass, "not a url" → fail
+```
+
+---
+
 ## Collection
 
 <a id="distinct"></a>
@@ -981,6 +1301,70 @@ Fails if the value is a slice or array containing duplicate elements. Non-slice 
 ```go
 validation.New().Field("tags", validation.Distinct)
 // []string{"a","b","c"} → pass, []int{1,2,1} → fail
+```
+
+---
+
+<a id="each"></a>
+### Each
+
+```go
+func Each(rules ...Rule) Rule
+```
+
+Applies the given rules to every element of a slice or array. Non-slice/array values and `nil` pass. Stops at the first failing element and returns `ErrValidationEach`.
+
+```go
+validation.New().Field("emails", validation.Each(validation.Email))
+// []string{"a@b.com","c@d.com"} → pass, []string{"a@b.com","bad"} → fail
+```
+
+---
+
+<a id="maxsize"></a>
+### MaxSize
+
+```go
+func MaxSize(n int) Rule
+```
+
+Fails if the value is a slice or array with more than `n` elements. Non-slice/array values and `nil` pass.
+
+```go
+validation.New().Field("tags", validation.MaxSize(5))
+// []string{"a","b"} → pass, []string{"a","b","c","d","e","f"} → fail
+```
+
+---
+
+<a id="minsize"></a>
+### MinSize
+
+```go
+func MinSize(n int) Rule
+```
+
+Fails if the value is a slice or array with fewer than `n` elements. Non-slice/array values and `nil` pass.
+
+```go
+validation.New().Field("items", validation.MinSize(1))
+// []int{1} → pass, []int{} → fail
+```
+
+---
+
+<a id="size"></a>
+### Size
+
+```go
+func Size(n int) Rule
+```
+
+Fails if the value is a slice or array whose length is not exactly `n`. Non-slice/array values and `nil` pass.
+
+```go
+validation.New().Field("coords", validation.Size(2))
+// []float64{1.0, 2.0} → pass, []float64{1.0} → fail
 ```
 
 ---
@@ -1066,3 +1450,68 @@ Fails if the value does not equal the value at `path` in the input. If the refer
 validation.New().
     Field("password_confirm", validation.Required, validation.SameAs("password"))
 ```
+
+---
+
+## Logical
+
+<a id="any"></a>
+### Any
+
+```go
+func Any(rules ...Rule) Rule
+```
+
+Passes when at least one of the given rules passes. All rules are tried in order; the first pass short-circuits. If every rule fails, returns `ErrValidationAny`. Inner errors are not propagated.
+
+```go
+validation.New().Field("contact", validation.Required, validation.Any(validation.Email, validation.PhoneE164))
+// "user@example.com" → pass, "+14155552671" → pass, "notvalid" → fail
+```
+
+---
+
+<a id="not"></a>
+### Not
+
+```go
+func Not(r Rule) Rule
+```
+
+Inverts the result of the given rule. Passes when the inner rule fails; fails (returning `ErrValidationNot`) when the inner rule passes.
+
+```go
+validation.New().Field("contact", validation.Not(validation.Email))
+// "not-an-email" → pass, "user@example.com" → fail
+```
+
+---
+
+<a id="unless"></a>
+### Unless
+
+```go
+func Unless(condition string, rules ...Rule) InputRule
+```
+
+Applies the given rules only when the condition evaluates to `false`. The condition language is identical to `RequiredIf`. Returns `RuleSyntaxError` for a malformed condition. Inner rule errors are propagated directly.
+
+```go
+validation.New().
+    Field("reason", validation.Unless(`status == "approved"`, validation.MinLength(10)))
+```
+
+---
+
+<a id="when"></a>
+### When
+
+```go
+func When(condition string, rules ...Rule) InputRule
+```
+
+Applies the given rules only when the condition evaluates to `true`. The condition language is identical to `RequiredIf`. Returns `RuleSyntaxError` for a malformed condition. Inner rule errors are propagated directly.
+
+```go
+validation.New().
+    Field("vat", validation.When(`plan == "paid"`, validation.Regex(`^[A-Z]{2}\d{9}$`)))

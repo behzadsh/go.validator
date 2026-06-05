@@ -20,32 +20,48 @@ var (
 	ErrValidationAlphaDash  = errors.New("alpha dash validation failed")
 	ErrValidationAlphaNum   = errors.New("alpha num validation failed")
 	ErrValidationAlphaSpace = errors.New("alpha space validation failed")
+	ErrValidationASCII      = errors.New("ascii validation failed")
+	ErrValidationBase64     = errors.New("base64 validation failed")
+	ErrValidationContains   = errors.New("contains validation failed")
+	ErrValidationCreditCard = errors.New("credit card validation failed")
 	ErrValidationEmail      = errors.New("email validation failed")
 	ErrValidationEmailMX    = errors.New("email mx validation failed")
 	ErrValidationEndsWith   = errors.New("ends with validation failed")
+	ErrValidationHexColor   = errors.New("hex color validation failed")
+	ErrValidationJSON       = errors.New("json validation failed")
+	ErrValidationJWT        = errors.New("jwt validation failed")
 	ErrValidationLength     = errors.New("length validation failed")
 	ErrValidationLowercase  = errors.New("lowercase validation failed")
 	ErrValidationMaxLength  = errors.New("max length validation failed")
 	ErrValidationMinLength  = errors.New("min length validation failed")
 	ErrValidationNotRegex   = errors.New("not regex validation failed")
+	ErrValidationPhoneE164  = errors.New("phone e164 validation failed")
 	ErrValidationRegex      = errors.New("regex validation failed")
+	ErrValidationSemver     = errors.New("semver validation failed")
+	ErrValidationSlug       = errors.New("slug validation failed")
 	ErrValidationStartsWith = errors.New("starts with validation failed")
 	ErrValidationUppercase  = errors.New("uppercase validation failed")
-	ErrValidationURL        = errors.New("url validation failed")
 	ErrValidationUUID       = errors.New("uuid validation failed")
 )
 
 // Numbers validation errors.
 var (
-	ErrValidationBetween = errors.New("between validation failed")
-	ErrValidationGT      = errors.New("gt validation failed")
-	ErrValidationGTE     = errors.New("gte validation failed")
-	ErrValidationInteger = errors.New("integer validation failed")
-	ErrValidationLT      = errors.New("lt validation failed")
-	ErrValidationLTE     = errors.New("lte validation failed")
-	ErrValidationMax     = errors.New("max validation failed")
-	ErrValidationMin     = errors.New("min validation failed")
-	ErrValidationNumeric = errors.New("numeric validation failed")
+	ErrValidationBetween     = errors.New("between validation failed")
+	ErrValidationGT          = errors.New("gt validation failed")
+	ErrValidationGTE         = errors.New("gte validation failed")
+	ErrValidationInteger     = errors.New("integer validation failed")
+	ErrValidationLatitude    = errors.New("latitude validation failed")
+	ErrValidationLongitude   = errors.New("longitude validation failed")
+	ErrValidationLT          = errors.New("lt validation failed")
+	ErrValidationLTE         = errors.New("lte validation failed")
+	ErrValidationMax         = errors.New("max validation failed")
+	ErrValidationMin         = errors.New("min validation failed")
+	ErrValidationMultipleOf  = errors.New("multiple of validation failed")
+	ErrValidationNegative    = errors.New("negative validation failed")
+	ErrValidationNonNegative = errors.New("non negative validation failed")
+	ErrValidationNumeric     = errors.New("numeric validation failed")
+	ErrValidationPort        = errors.New("port validation failed")
+	ErrValidationPositive    = errors.New("positive validation failed")
 )
 
 // Digit validation errors.
@@ -72,15 +88,27 @@ var (
 
 // Network validation errors.
 var (
+	ErrValidationCIDR       = errors.New("cidr validation failed")
 	ErrValidationIP         = errors.New("ip validation failed")
 	ErrValidationIPv4       = errors.New("ipv4 validation failed")
 	ErrValidationIPv6       = errors.New("ipv6 validation failed")
 	ErrValidationMACAddress = errors.New("mac address validation failed")
+	ErrValidationURL        = errors.New("url validation failed")
 )
 
 // Collection validation errors.
 var (
 	ErrValidationDistinct = errors.New("distinct validation failed")
+	ErrValidationEach     = errors.New("each validation failed")
+	ErrValidationMaxSize  = errors.New("max size validation failed")
+	ErrValidationMinSize  = errors.New("min size validation failed")
+	ErrValidationSize     = errors.New("size validation failed")
+)
+
+// Logical validation errors.
+var (
+	ErrValidationAny = errors.New("any validation failed")
+	ErrValidationNot = errors.New("not validation failed")
 )
 
 // Generic validation errors.
