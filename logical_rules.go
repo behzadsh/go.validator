@@ -14,15 +14,17 @@ package validation
 //	validation.Any(validation.Email, validation.PhoneE164).Validate("+14155552671")      // pass
 //	validation.Any(validation.Email, validation.PhoneE164).Validate("notvalid")          // fail
 func Any(rules ...Rule) Rule {
-	return InputRuleFunc(func(value any, input *InputBag) error {
-		for _, r := range rules {
-			if err := applyRule(r, value, input); err == nil {
-				return nil
+	return InputRuleFunc(
+		func(value any, input *InputBag) error {
+			for _, r := range rules {
+				if err := applyRule(r, value, input); err == nil {
+					return nil
+				}
 			}
-		}
 
-		return ErrValidationAny
-	})
+			return ErrValidationAny
+		},
+	)
 }
 
 // Not returns a Rule that inverts the result of the given rule.
@@ -38,13 +40,15 @@ func Any(rules ...Rule) Rule {
 //	validation.Not(validation.Email).Validate("user@example.com") // fail
 //	validation.Not(validation.UUID).Validate("not-a-uuid")    // pass
 func Not(r Rule) Rule {
-	return InputRuleFunc(func(value any, input *InputBag) error {
-		if err := applyRule(r, value, input); err != nil {
-			return nil
-		}
+	return InputRuleFunc(
+		func(value any, input *InputBag) error {
+			if err := applyRule(r, value, input); err != nil {
+				return nil
+			}
 
-		return ErrValidationNot
-	})
+			return ErrValidationNot
+		},
+	)
 }
 
 // Unless returns an InputRule that applies the given rules only when the condition evaluates to false.
@@ -60,24 +64,26 @@ func Not(r Rule) Rule {
 //	validation.Unless(`status == "approved"`, validation.MinLength(10))
 //	validation.Unless(`exists(override)`, validation.Required)
 func Unless(condition string, rules ...Rule) InputRule {
-	return InputRuleFunc(func(value any, input *InputBag) error {
-		ok, err := evalCondition(condition, input)
-		if err != nil {
-			return RuleSyntaxError{Rule: "Unless", Err: err}
-		}
-
-		if ok {
-			return nil
-		}
-
-		for _, r := range rules {
-			if err := applyRule(r, value, input); err != nil {
-				return err
+	return InputRuleFunc(
+		func(value any, input *InputBag) error {
+			ok, err := evalCondition(condition, input)
+			if err != nil {
+				return RuleSyntaxError{Rule: "Unless", Err: err}
 			}
-		}
 
-		return nil
-	})
+			if ok {
+				return nil
+			}
+
+			for _, r := range rules {
+				if err := applyRule(r, value, input); err != nil {
+					return err
+				}
+			}
+
+			return nil
+		},
+	)
 }
 
 // When returns an InputRule that applies the given rules only when the condition evaluates to true.
@@ -92,24 +98,26 @@ func Unless(condition string, rules ...Rule) InputRule {
 //	validation.When(`plan == "paid"`, validation.Regex(`^[A-Z]{2}\d{9}$`), validation.MaxLength(12))
 //	validation.When(`country == "US"`, validation.Regex(`^\d{10}$`))
 func When(condition string, rules ...Rule) InputRule {
-	return InputRuleFunc(func(value any, input *InputBag) error {
-		ok, err := evalCondition(condition, input)
-		if err != nil {
-			return RuleSyntaxError{Rule: "When", Err: err}
-		}
-
-		if !ok {
-			return nil
-		}
-
-		for _, r := range rules {
-			if err := applyRule(r, value, input); err != nil {
-				return err
+	return InputRuleFunc(
+		func(value any, input *InputBag) error {
+			ok, err := evalCondition(condition, input)
+			if err != nil {
+				return RuleSyntaxError{Rule: "When", Err: err}
 			}
-		}
 
-		return nil
-	})
+			if !ok {
+				return nil
+			}
+
+			for _, r := range rules {
+				if err := applyRule(r, value, input); err != nil {
+					return err
+				}
+			}
+
+			return nil
+		},
+	)
 }
 
 // applyRule dispatches a Rule, routing cross-field rules through ValidateWithInput when an InputBag is available.

@@ -13,14 +13,14 @@ func TestDigits(t *testing.T) {
 	}{
 		{"1234", 4, false},
 		{"0000", 4, false},
-		{"12345", 4, true},   // too many
-		{"123", 4, true},     // too few
-		{"-123", 4, true},    // sign character
-		{"12.3", 4, true},    // decimal point
-		{"abcd", 4, true},    // letters
+		{"12345", 4, true}, // too many
+		{"123", 4, true},   // too few
+		{"-123", 4, true},  // sign character
+		{"12.3", 4, true},  // decimal point
+		{"abcd", 4, true},  // letters
 		{"", 4, true},
 		{nil, 4, true},
-		{1234, 4, true},      // non-string
+		{1234, 4, true}, // non-string
 	}
 	for _, tt := range tests {
 		err := Digits(tt.n).Validate(tt.value)
@@ -40,9 +40,9 @@ func TestMinDigits(t *testing.T) {
 		wantErr bool
 	}{
 		{"1234", 4, false},
-		{"12345", 4, false},  // more is fine
-		{"123", 4, true},     // too few
-		{"-1234", 4, true},   // sign character
+		{"12345", 4, false}, // more is fine
+		{"123", 4, true},    // too few
+		{"-1234", 4, true},  // sign character
 		{"", 1, true},
 		{nil, 4, true},
 		{1234, 4, true},
@@ -102,7 +102,14 @@ func TestDigitsBetween(t *testing.T) {
 	for _, tt := range tests {
 		err := DigitsBetween(tt.min, tt.max).Validate(tt.value)
 		if (err != nil) != tt.wantErr {
-			t.Errorf("DigitsBetween(%d,%d).Validate(%v) error = %v, wantErr %v", tt.min, tt.max, tt.value, err, tt.wantErr)
+			t.Errorf(
+				"DigitsBetween(%d,%d).Validate(%v) error = %v, wantErr %v",
+				tt.min,
+				tt.max,
+				tt.value,
+				err,
+				tt.wantErr,
+			)
 		}
 		if err != nil && !errors.Is(err, ErrValidationDigitsBetween) {
 			t.Errorf("wrong error type: %v", err)

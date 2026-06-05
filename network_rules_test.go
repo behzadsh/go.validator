@@ -47,7 +47,7 @@ func TestCIDR(t *testing.T) {
 		{"0.0.0.0/0", false},
 		{"2001:db8::/32", false},
 		{"::/0", false},
-		{"192.168.0.1", true},  // no prefix length
+		{"192.168.0.1", true},    // no prefix length
 		{"192.168.0.0/33", true}, // prefix too long
 		{"not-cidr", true},
 		{"", true},
@@ -129,8 +129,8 @@ func TestIPv4(t *testing.T) {
 		{"192.168.1.1", false},
 		{"0.0.0.0", false},
 		{"255.255.255.255", false},
-		{"::1", true},           // IPv6 fails
-		{"2001:db8::1", true},   // IPv6 fails
+		{"::1", true},         // IPv6 fails
+		{"2001:db8::1", true}, // IPv6 fails
 		{"999.0.0.1", true},
 		{"not-an-ip", true},
 		{"", true},
@@ -156,8 +156,8 @@ func TestIPv6(t *testing.T) {
 		{"::1", false},
 		{"2001:db8::1", false},
 		{"fe80::1", false},
-		{"192.168.1.1", true},  // IPv4 fails
-		{"0.0.0.0", true},      // IPv4 fails
+		{"192.168.1.1", true}, // IPv4 fails
+		{"0.0.0.0", true},     // IPv4 fails
 		{"not-an-ip", true},
 		{"", true},
 		{nil, true},

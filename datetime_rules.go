@@ -80,34 +80,36 @@ func After(ct time.Time) Rule {
 //	schema := validation.New().
 //		Field("end", validation.AfterField("start"))
 func AfterField(path string) InputRule {
-	return InputRuleFunc(func(value any, input *InputBag) error {
-		str, ok := value.(string)
-		if !ok {
-			return ErrValidationAfterField
-		}
+	return InputRuleFunc(
+		func(value any, input *InputBag) error {
+			str, ok := value.(string)
+			if !ok {
+				return ErrValidationAfterField
+			}
 
-		t, ok := parseTime(str)
-		if !ok {
-			return ErrValidationAfterField
-		}
+			t, ok := parseTime(str)
+			if !ok {
+				return ErrValidationAfterField
+			}
 
-		otherRaw, found := input.Lookup(path)
-		if !found {
-			return ErrValidationAfterField
-		}
+			otherRaw, found := input.Lookup(path)
+			if !found {
+				return ErrValidationAfterField
+			}
 
-		otherStr, ok := otherRaw.(string)
-		if !ok {
-			return ErrValidationAfterField
-		}
+			otherStr, ok := otherRaw.(string)
+			if !ok {
+				return ErrValidationAfterField
+			}
 
-		other, ok := parseTime(otherStr)
-		if !ok || !t.After(other) {
-			return ErrValidationAfterField
-		}
+			other, ok := parseTime(otherStr)
+			if !ok || !t.After(other) {
+				return ErrValidationAfterField
+			}
 
-		return nil
-	})
+			return nil
+		},
+	)
 }
 
 // AfterOrEqual returns a Rule that validates the value is a date/time string occurring on or after ct.
@@ -124,19 +126,21 @@ func AfterField(path string) InputRule {
 //	validation.AfterOrEqual(deadline).Validate("2024-06-01") // pass — after
 //	validation.AfterOrEqual(deadline).Validate("2023-12-31") // fail — before
 func AfterOrEqual(ct time.Time) Rule {
-	return RuleFunc(func(value any) error {
-		str, ok := value.(string)
-		if !ok {
-			return ErrValidationAfterOrEqual
-		}
+	return RuleFunc(
+		func(value any) error {
+			str, ok := value.(string)
+			if !ok {
+				return ErrValidationAfterOrEqual
+			}
 
-		t, ok := parseTime(str)
-		if !ok || t.Before(ct) {
-			return ErrValidationAfterOrEqual
-		}
+			t, ok := parseTime(str)
+			if !ok || t.Before(ct) {
+				return ErrValidationAfterOrEqual
+			}
 
-		return nil
-	})
+			return nil
+		},
+	)
 }
 
 // Before returns a Rule that validates the value is a date/time string occurring strictly before ct.
@@ -190,34 +194,36 @@ func Before(ct time.Time) Rule {
 //	schema := validation.New().
 //		Field("start", validation.BeforeField("end"))
 func BeforeField(path string) InputRule {
-	return InputRuleFunc(func(value any, input *InputBag) error {
-		str, ok := value.(string)
-		if !ok {
-			return ErrValidationBeforeField
-		}
+	return InputRuleFunc(
+		func(value any, input *InputBag) error {
+			str, ok := value.(string)
+			if !ok {
+				return ErrValidationBeforeField
+			}
 
-		t, ok := parseTime(str)
-		if !ok {
-			return ErrValidationBeforeField
-		}
+			t, ok := parseTime(str)
+			if !ok {
+				return ErrValidationBeforeField
+			}
 
-		otherRaw, found := input.Lookup(path)
-		if !found {
-			return ErrValidationBeforeField
-		}
+			otherRaw, found := input.Lookup(path)
+			if !found {
+				return ErrValidationBeforeField
+			}
 
-		otherStr, ok := otherRaw.(string)
-		if !ok {
-			return ErrValidationBeforeField
-		}
+			otherStr, ok := otherRaw.(string)
+			if !ok {
+				return ErrValidationBeforeField
+			}
 
-		other, ok := parseTime(otherStr)
-		if !ok || !t.Before(other) {
-			return ErrValidationBeforeField
-		}
+			other, ok := parseTime(otherStr)
+			if !ok || !t.Before(other) {
+				return ErrValidationBeforeField
+			}
 
-		return nil
-	})
+			return nil
+		},
+	)
 }
 
 // BeforeOrEqual returns a Rule that validates the value is a date/time string occurring on or before ct.
@@ -234,22 +240,24 @@ func BeforeField(path string) InputRule {
 //	validation.BeforeOrEqual(expiry).Validate("2024-06-01") // pass — before
 //	validation.BeforeOrEqual(expiry).Validate("2025-06-01") // fail — after
 func BeforeOrEqual(ct time.Time) Rule {
-	return RuleFunc(func(value any) error {
-		str, ok := value.(string)
-		if !ok {
-			return ErrValidationBeforeOrEqual
-		}
+	return RuleFunc(
+		func(value any) error {
+			str, ok := value.(string)
+			if !ok {
+				return ErrValidationBeforeOrEqual
+			}
 
-		t, ok := parseTime(str)
-		if !ok || t.After(ct) {
-			return ErrValidationBeforeOrEqual
-		}
+			t, ok := parseTime(str)
+			if !ok || t.After(ct) {
+				return ErrValidationBeforeOrEqual
+			}
 
-		return nil
-	})
+			return nil
+		},
+	)
 }
 
-// DateTime is a Rule that validates the value is a recognisable date/time string.
+// DateTime is a Rule that validates the value is a recognizable date/time string.
 //
 // The string is tried against a broad set of common formats (the same set used by After and Before).
 // No specific layout is required; any of the supported formats will pass.
@@ -294,20 +302,22 @@ var DateTime Rule = RuleFunc(
 //	validation.DateTimeBetween(start, end).Validate("2024-01-01") // pass — equal to min
 //	validation.DateTimeBetween(start, end).Validate("2023-12-31") // fail — before min
 //	validation.DateTimeBetween(start, end).Validate("2025-01-01") // fail — after max
-func DateTimeBetween(min, max time.Time) Rule {
-	return RuleFunc(func(value any) error {
-		str, ok := value.(string)
-		if !ok {
-			return ErrValidationDateTimeBetween
-		}
+func DateTimeBetween(minV, maxV time.Time) Rule {
+	return RuleFunc(
+		func(value any) error {
+			str, ok := value.(string)
+			if !ok {
+				return ErrValidationDateTimeBetween
+			}
 
-		t, ok := parseTime(str)
-		if !ok || t.Before(min) || t.After(max) {
-			return ErrValidationDateTimeBetween
-		}
+			t, ok := parseTime(str)
+			if !ok || t.Before(minV) || t.After(maxV) {
+				return ErrValidationDateTimeBetween
+			}
 
-		return nil
-	})
+			return nil
+		},
+	)
 }
 
 // DateTimeFormat returns a Rule that validates the value is a string matching the given time layout.
@@ -344,7 +354,7 @@ func DateTimeFormat(layout string) Rule {
 
 // Timezone is a Rule that validates the value is a valid IANA timezone name.
 //
-// Validation uses time.LoadLocation which recognises IANA names (e.g. "UTC", "America/New_York",
+// Validation uses time.LoadLocation which recognizes IANA names (e.g. "UTC", "America/New_York",
 // "Europe/London") as well as fixed-offset zones (e.g. "UTC+5").
 //
 // Fails if:

@@ -14,14 +14,16 @@ package validation
 //	schema := validation.New().
 //		Field("password_confirm", validation.Required, validation.SameAs("password"))
 func SameAs(path string) InputRule {
-	return InputRuleFunc(func(value any, input *InputBag) error {
-		other, found := input.Lookup(path)
-		if !found || value != other {
-			return ErrValidationSameAs
-		}
+	return InputRuleFunc(
+		func(value any, input *InputBag) error {
+			other, found := input.Lookup(path)
+			if !found || value != other {
+				return ErrValidationSameAs
+			}
 
-		return nil
-	})
+			return nil
+		},
+	)
 }
 
 // Different returns an InputRule that validates the value is not equal to the value at the given field path.
@@ -37,12 +39,14 @@ func SameAs(path string) InputRule {
 //	schema := validation.New().
 //		Field("new_password", validation.Required, validation.Different("old_password"))
 func Different(path string) InputRule {
-	return InputRuleFunc(func(value any, input *InputBag) error {
-		other, found := input.Lookup(path)
-		if found && value == other {
-			return ErrValidationDifferent
-		}
+	return InputRuleFunc(
+		func(value any, input *InputBag) error {
+			other, found := input.Lookup(path)
+			if found && value == other {
+				return ErrValidationDifferent
+			}
 
-		return nil
-	})
+			return nil
+		},
+	)
 }

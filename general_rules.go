@@ -121,22 +121,24 @@ func RequiredUnless(condition string) InputRule {
 //
 //	validation.RequiredWith("phone", "mobile")
 func RequiredWith(fields ...string) InputRule {
-	return InputRuleFunc(func(value any, input *InputBag) error {
-		for _, f := range fields {
-			if _, found := input.Lookup(f); found {
-				if value == nil {
-					return ErrValidationRequiredWith
-				}
-				if s, ok := value.(string); ok && s == "" {
-					return ErrValidationRequiredWith
-				}
+	return InputRuleFunc(
+		func(value any, input *InputBag) error {
+			for _, f := range fields {
+				if _, found := input.Lookup(f); found {
+					if value == nil {
+						return ErrValidationRequiredWith
+					}
+					if s, ok := value.(string); ok && s == "" {
+						return ErrValidationRequiredWith
+					}
 
-				return nil
+					return nil
+				}
 			}
-		}
 
-		return nil
-	})
+			return nil
+		},
+	)
 }
 
 // RequiredWithAll returns an InputRule that validates the value exists if all of the given fields are present in
@@ -148,22 +150,24 @@ func RequiredWith(fields ...string) InputRule {
 //
 //	validation.RequiredWithAll("first_name", "last_name")
 func RequiredWithAll(fields ...string) InputRule {
-	return InputRuleFunc(func(value any, input *InputBag) error {
-		for _, f := range fields {
-			if _, found := input.Lookup(f); !found {
-				return nil
+	return InputRuleFunc(
+		func(value any, input *InputBag) error {
+			for _, f := range fields {
+				if _, found := input.Lookup(f); !found {
+					return nil
+				}
 			}
-		}
 
-		if value == nil {
-			return ErrValidationRequiredWithAll
-		}
-		if s, ok := value.(string); ok && s == "" {
-			return ErrValidationRequiredWithAll
-		}
+			if value == nil {
+				return ErrValidationRequiredWithAll
+			}
+			if s, ok := value.(string); ok && s == "" {
+				return ErrValidationRequiredWithAll
+			}
 
-		return nil
-	})
+			return nil
+		},
+	)
 }
 
 // RequiredWithout returns an InputRule that validates the value exists if any of the given fields are absent from
@@ -175,22 +179,24 @@ func RequiredWithAll(fields ...string) InputRule {
 //
 //	validation.RequiredWithout("email", "phone")
 func RequiredWithout(fields ...string) InputRule {
-	return InputRuleFunc(func(value any, input *InputBag) error {
-		for _, f := range fields {
-			if _, found := input.Lookup(f); !found {
-				if value == nil {
-					return ErrValidationRequiredWithout
-				}
-				if s, ok := value.(string); ok && s == "" {
-					return ErrValidationRequiredWithout
-				}
+	return InputRuleFunc(
+		func(value any, input *InputBag) error {
+			for _, f := range fields {
+				if _, found := input.Lookup(f); !found {
+					if value == nil {
+						return ErrValidationRequiredWithout
+					}
+					if s, ok := value.(string); ok && s == "" {
+						return ErrValidationRequiredWithout
+					}
 
-				return nil
+					return nil
+				}
 			}
-		}
 
-		return nil
-	})
+			return nil
+		},
+	)
 }
 
 // RequiredWithoutAll returns an InputRule that validates the value exists if all of the given fields are absent from
@@ -202,22 +208,24 @@ func RequiredWithout(fields ...string) InputRule {
 //
 //	validation.RequiredWithoutAll("email", "phone")
 func RequiredWithoutAll(fields ...string) InputRule {
-	return InputRuleFunc(func(value any, input *InputBag) error {
-		for _, f := range fields {
-			if _, found := input.Lookup(f); found {
-				return nil
+	return InputRuleFunc(
+		func(value any, input *InputBag) error {
+			for _, f := range fields {
+				if _, found := input.Lookup(f); found {
+					return nil
+				}
 			}
-		}
 
-		if value == nil {
-			return ErrValidationRequiredWithoutAll
-		}
-		if s, ok := value.(string); ok && s == "" {
-			return ErrValidationRequiredWithoutAll
-		}
+			if value == nil {
+				return ErrValidationRequiredWithoutAll
+			}
+			if s, ok := value.(string); ok && s == "" {
+				return ErrValidationRequiredWithoutAll
+			}
 
-		return nil
-	})
+			return nil
+		},
+	)
 }
 
 // NotEmpty is a Rule that validates the value is not an empty or zero value.

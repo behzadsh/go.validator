@@ -61,27 +61,29 @@ var Distinct Rule = RuleFunc(
 //	validation.Each(validation.Positive).Validate([]int{1, 2, 3})           // pass
 //	validation.Each(validation.Positive).Validate([]int{1, -1, 3})          // fail
 func Each(rules ...Rule) Rule {
-	return InputRuleFunc(func(value any, input *InputBag) error {
-		if value == nil {
-			return nil
-		}
+	return InputRuleFunc(
+		func(value any, input *InputBag) error {
+			if value == nil {
+				return nil
+			}
 
-		rv := reflect.ValueOf(value)
-		if rv.Kind() != reflect.Slice && rv.Kind() != reflect.Array {
-			return nil
-		}
+			rv := reflect.ValueOf(value)
+			if rv.Kind() != reflect.Slice && rv.Kind() != reflect.Array {
+				return nil
+			}
 
-		for i := 0; i < rv.Len(); i++ {
-			elem := rv.Index(i).Interface()
-			for _, r := range rules {
-				if err := applyRule(r, elem, input); err != nil {
-					return ErrValidationEach
+			for i := 0; i < rv.Len(); i++ {
+				elem := rv.Index(i).Interface()
+				for _, r := range rules {
+					if err := applyRule(r, elem, input); err != nil {
+						return ErrValidationEach
+					}
 				}
 			}
-		}
 
-		return nil
-	})
+			return nil
+		},
+	)
 }
 
 // MaxSize returns a Rule that validates a slice or array has at most n elements.
@@ -97,22 +99,24 @@ func Each(rules ...Rule) Rule {
 //	validation.MaxSize(3).Validate([]int{1, 2, 3, 4}) // fail — 4 elements
 //	validation.MaxSize(3).Validate(nil)                // pass
 func MaxSize(n int) Rule {
-	return RuleFunc(func(value any) error {
-		if value == nil {
+	return RuleFunc(
+		func(value any) error {
+			if value == nil {
+				return nil
+			}
+
+			rv := reflect.ValueOf(value)
+			if rv.Kind() != reflect.Slice && rv.Kind() != reflect.Array {
+				return nil
+			}
+
+			if rv.Len() > n {
+				return ErrValidationMaxSize
+			}
+
 			return nil
-		}
-
-		rv := reflect.ValueOf(value)
-		if rv.Kind() != reflect.Slice && rv.Kind() != reflect.Array {
-			return nil
-		}
-
-		if rv.Len() > n {
-			return ErrValidationMaxSize
-		}
-
-		return nil
-	})
+		},
+	)
 }
 
 // MinSize returns a Rule that validates a slice or array has at least n elements.
@@ -128,22 +132,24 @@ func MaxSize(n int) Rule {
 //	validation.MinSize(2).Validate([]int{1})        // fail — only 1 element
 //	validation.MinSize(2).Validate(nil)             // pass
 func MinSize(n int) Rule {
-	return RuleFunc(func(value any) error {
-		if value == nil {
+	return RuleFunc(
+		func(value any) error {
+			if value == nil {
+				return nil
+			}
+
+			rv := reflect.ValueOf(value)
+			if rv.Kind() != reflect.Slice && rv.Kind() != reflect.Array {
+				return nil
+			}
+
+			if rv.Len() < n {
+				return ErrValidationMinSize
+			}
+
 			return nil
-		}
-
-		rv := reflect.ValueOf(value)
-		if rv.Kind() != reflect.Slice && rv.Kind() != reflect.Array {
-			return nil
-		}
-
-		if rv.Len() < n {
-			return ErrValidationMinSize
-		}
-
-		return nil
-	})
+		},
+	)
 }
 
 // Size returns a Rule that validates a slice or array has exactly n elements.
@@ -159,20 +165,22 @@ func MinSize(n int) Rule {
 //	validation.Size(3).Validate([]int{1, 2})    // fail — 2 elements
 //	validation.Size(3).Validate(nil)             // pass
 func Size(n int) Rule {
-	return RuleFunc(func(value any) error {
-		if value == nil {
+	return RuleFunc(
+		func(value any) error {
+			if value == nil {
+				return nil
+			}
+
+			rv := reflect.ValueOf(value)
+			if rv.Kind() != reflect.Slice && rv.Kind() != reflect.Array {
+				return nil
+			}
+
+			if rv.Len() != n {
+				return ErrValidationSize
+			}
+
 			return nil
-		}
-
-		rv := reflect.ValueOf(value)
-		if rv.Kind() != reflect.Slice && rv.Kind() != reflect.Array {
-			return nil
-		}
-
-		if rv.Len() != n {
-			return ErrValidationSize
-		}
-
-		return nil
-	})
+		},
+	)
 }

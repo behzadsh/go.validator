@@ -47,16 +47,24 @@ func TestSameAs(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			bag := NewInputBag(tt.input)
-			err := rule.ValidateWithInput(tt.value, bag)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("SameAs(%q).ValidateWithInput(%v) error = %v, wantErr %v", "password", tt.value, err, tt.wantErr)
-			}
-			if err != nil && !errors.Is(err, ErrValidationSameAs) {
-				t.Errorf("wrong error type: %v", err)
-			}
-		})
+		t.Run(
+			tt.name, func(t *testing.T) {
+				bag := NewInputBag(tt.input)
+				err := rule.ValidateWithInput(tt.value, bag)
+				if (err != nil) != tt.wantErr {
+					t.Errorf(
+						"SameAs(%q).ValidateWithInput(%v) error = %v, wantErr %v",
+						"password",
+						tt.value,
+						err,
+						tt.wantErr,
+					)
+				}
+				if err != nil && !errors.Is(err, ErrValidationSameAs) {
+					t.Errorf("wrong error type: %v", err)
+				}
+			},
+		)
 	}
 }
 
@@ -96,15 +104,23 @@ func TestDifferent(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			bag := NewInputBag(tt.input)
-			err := rule.ValidateWithInput(tt.value, bag)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Different(%q).ValidateWithInput(%v) error = %v, wantErr %v", "old_password", tt.value, err, tt.wantErr)
-			}
-			if err != nil && !errors.Is(err, ErrValidationDifferent) {
-				t.Errorf("wrong error type: %v", err)
-			}
-		})
+		t.Run(
+			tt.name, func(t *testing.T) {
+				bag := NewInputBag(tt.input)
+				err := rule.ValidateWithInput(tt.value, bag)
+				if (err != nil) != tt.wantErr {
+					t.Errorf(
+						"Different(%q).ValidateWithInput(%v) error = %v, wantErr %v",
+						"old_password",
+						tt.value,
+						err,
+						tt.wantErr,
+					)
+				}
+				if err != nil && !errors.Is(err, ErrValidationDifferent) {
+					t.Errorf("wrong error type: %v", err)
+				}
+			},
+		)
 	}
 }

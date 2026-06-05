@@ -85,24 +85,32 @@ func TestRequiredIf(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			rule := RequiredIf(tt.condition)
-			bag := NewInputBag(tt.input)
-			err := rule.ValidateWithInput(tt.value, bag)
+		t.Run(
+			tt.name, func(t *testing.T) {
+				rule := RequiredIf(tt.condition)
+				bag := NewInputBag(tt.input)
+				err := rule.ValidateWithInput(tt.value, bag)
 
-			if (err != nil) != tt.wantErr {
-				t.Fatalf("RequiredIf(%q).ValidateWithInput(%v) error = %v, wantErr %v", tt.condition, tt.value, err, tt.wantErr)
-			}
-			if tt.wantIs != nil && !errors.Is(err, tt.wantIs) {
-				t.Errorf("error = %v, want errors.Is %v", err, tt.wantIs)
-			}
-			if tt.condition == "unknown(field)" && err != nil {
-				var syntaxErr RuleSyntaxError
-				if !errors.As(err, &syntaxErr) {
-					t.Errorf("expected RuleSyntaxError, got %T: %v", err, err)
+				if (err != nil) != tt.wantErr {
+					t.Fatalf(
+						"RequiredIf(%q).ValidateWithInput(%v) error = %v, wantErr %v",
+						tt.condition,
+						tt.value,
+						err,
+						tt.wantErr,
+					)
 				}
-			}
-		})
+				if tt.wantIs != nil && !errors.Is(err, tt.wantIs) {
+					t.Errorf("error = %v, want errors.Is %v", err, tt.wantIs)
+				}
+				if tt.condition == "unknown(field)" && err != nil {
+					var syntaxErr RuleSyntaxError
+					if !errors.As(err, &syntaxErr) {
+						t.Errorf("expected RuleSyntaxError, got %T: %v", err, err)
+					}
+				}
+			},
+		)
 	}
 }
 
@@ -147,18 +155,20 @@ func TestRequiredUnless(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			rule := RequiredUnless(tt.condition)
-			bag := NewInputBag(tt.input)
-			err := rule.ValidateWithInput(tt.value, bag)
+		t.Run(
+			tt.name, func(t *testing.T) {
+				rule := RequiredUnless(tt.condition)
+				bag := NewInputBag(tt.input)
+				err := rule.ValidateWithInput(tt.value, bag)
 
-			if (err != nil) != tt.wantErr {
-				t.Fatalf("error = %v, wantErr %v", err, tt.wantErr)
-			}
-			if tt.wantIs != nil && !errors.Is(err, tt.wantIs) {
-				t.Errorf("error = %v, want errors.Is %v", err, tt.wantIs)
-			}
-		})
+				if (err != nil) != tt.wantErr {
+					t.Fatalf("error = %v, wantErr %v", err, tt.wantErr)
+				}
+				if tt.wantIs != nil && !errors.Is(err, tt.wantIs) {
+					t.Errorf("error = %v, want errors.Is %v", err, tt.wantIs)
+				}
+			},
+		)
 	}
 }
 
@@ -176,16 +186,18 @@ func TestRequiredWith(t *testing.T) {
 		{"second present, value nil → fail", []string{"email", "phone"}, nil, map[string]any{"phone": "123"}, true},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			bag := NewInputBag(tt.input)
-			err := RequiredWith(tt.fields...).ValidateWithInput(tt.value, bag)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("error = %v, wantErr %v", err, tt.wantErr)
-			}
-			if err != nil && !errors.Is(err, ErrValidationRequiredWith) {
-				t.Errorf("wrong error type: %v", err)
-			}
-		})
+		t.Run(
+			tt.name, func(t *testing.T) {
+				bag := NewInputBag(tt.input)
+				err := RequiredWith(tt.fields...).ValidateWithInput(tt.value, bag)
+				if (err != nil) != tt.wantErr {
+					t.Errorf("error = %v, wantErr %v", err, tt.wantErr)
+				}
+				if err != nil && !errors.Is(err, ErrValidationRequiredWith) {
+					t.Errorf("wrong error type: %v", err)
+				}
+			},
+		)
 	}
 }
 
@@ -203,16 +215,18 @@ func TestRequiredWithAll(t *testing.T) {
 		{"none present, value nil → pass", []string{"a", "b"}, nil, map[string]any{}, false},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			bag := NewInputBag(tt.input)
-			err := RequiredWithAll(tt.fields...).ValidateWithInput(tt.value, bag)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("error = %v, wantErr %v", err, tt.wantErr)
-			}
-			if err != nil && !errors.Is(err, ErrValidationRequiredWithAll) {
-				t.Errorf("wrong error type: %v", err)
-			}
-		})
+		t.Run(
+			tt.name, func(t *testing.T) {
+				bag := NewInputBag(tt.input)
+				err := RequiredWithAll(tt.fields...).ValidateWithInput(tt.value, bag)
+				if (err != nil) != tt.wantErr {
+					t.Errorf("error = %v, wantErr %v", err, tt.wantErr)
+				}
+				if err != nil && !errors.Is(err, ErrValidationRequiredWithAll) {
+					t.Errorf("wrong error type: %v", err)
+				}
+			},
+		)
 	}
 }
 
@@ -225,21 +239,35 @@ func TestRequiredWithout(t *testing.T) {
 		wantErr bool
 	}{
 		{"one absent, value nil → fail", []string{"email", "phone"}, nil, map[string]any{"email": "a@b.com"}, true},
-		{"one absent, value present → pass", []string{"email", "phone"}, "val", map[string]any{"email": "a@b.com"}, false},
-		{"all present, value nil → pass", []string{"email", "phone"}, nil, map[string]any{"email": "a@b.com", "phone": "123"}, false},
+		{
+			"one absent, value present → pass",
+			[]string{"email", "phone"},
+			"val",
+			map[string]any{"email": "a@b.com"},
+			false,
+		},
+		{
+			"all present, value nil → pass",
+			[]string{"email", "phone"},
+			nil,
+			map[string]any{"email": "a@b.com", "phone": "123"},
+			false,
+		},
 		{"all absent, value nil → fail", []string{"email", "phone"}, nil, map[string]any{}, true},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			bag := NewInputBag(tt.input)
-			err := RequiredWithout(tt.fields...).ValidateWithInput(tt.value, bag)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("error = %v, wantErr %v", err, tt.wantErr)
-			}
-			if err != nil && !errors.Is(err, ErrValidationRequiredWithout) {
-				t.Errorf("wrong error type: %v", err)
-			}
-		})
+		t.Run(
+			tt.name, func(t *testing.T) {
+				bag := NewInputBag(tt.input)
+				err := RequiredWithout(tt.fields...).ValidateWithInput(tt.value, bag)
+				if (err != nil) != tt.wantErr {
+					t.Errorf("error = %v, wantErr %v", err, tt.wantErr)
+				}
+				if err != nil && !errors.Is(err, ErrValidationRequiredWithout) {
+					t.Errorf("wrong error type: %v", err)
+				}
+			},
+		)
 	}
 }
 
@@ -254,19 +282,27 @@ func TestRequiredWithoutAll(t *testing.T) {
 		{"all absent, value nil → fail", []string{"email", "phone"}, nil, map[string]any{}, true},
 		{"all absent, value present → pass", []string{"email", "phone"}, "val", map[string]any{}, false},
 		{"one present, value nil → pass", []string{"email", "phone"}, nil, map[string]any{"email": "a@b.com"}, false},
-		{"all present, value nil → pass", []string{"email", "phone"}, nil, map[string]any{"email": "a@b.com", "phone": "123"}, false},
+		{
+			"all present, value nil → pass",
+			[]string{"email", "phone"},
+			nil,
+			map[string]any{"email": "a@b.com", "phone": "123"},
+			false,
+		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			bag := NewInputBag(tt.input)
-			err := RequiredWithoutAll(tt.fields...).ValidateWithInput(tt.value, bag)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("error = %v, wantErr %v", err, tt.wantErr)
-			}
-			if err != nil && !errors.Is(err, ErrValidationRequiredWithoutAll) {
-				t.Errorf("wrong error type: %v", err)
-			}
-		})
+		t.Run(
+			tt.name, func(t *testing.T) {
+				bag := NewInputBag(tt.input)
+				err := RequiredWithoutAll(tt.fields...).ValidateWithInput(tt.value, bag)
+				if (err != nil) != tt.wantErr {
+					t.Errorf("error = %v, wantErr %v", err, tt.wantErr)
+				}
+				if err != nil && !errors.Is(err, ErrValidationRequiredWithoutAll) {
+					t.Errorf("wrong error type: %v", err)
+				}
+			},
+		)
 	}
 }
 

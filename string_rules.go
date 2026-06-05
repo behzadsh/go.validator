@@ -616,14 +616,16 @@ func Regex(pattern string) Rule {
 //	validation.Semver.Validate("1.0.0+build.123")     // pass
 //	validation.Semver.Validate("1.0")                 // fail — missing patch
 //	validation.Semver.Validate("01.0.0")              // fail — leading zero
-var Semver Rule = RuleFunc(func(value any) error {
-	str, ok := value.(string)
-	if !ok || !regexSemver.MatchString(str) {
-		return ErrValidationSemver
-	}
+var Semver Rule = RuleFunc(
+	func(value any) error {
+		str, ok := value.(string)
+		if !ok || !regexSemver.MatchString(str) {
+			return ErrValidationSemver
+		}
 
-	return nil
-})
+		return nil
+	},
+)
 
 // Slug is a Rule that validates the value is a URL-friendly slug.
 //
@@ -754,4 +756,3 @@ func isEmail(str string) bool {
 
 	return true
 }
-

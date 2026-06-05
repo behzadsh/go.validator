@@ -22,14 +22,16 @@ import (
 func Digits(n int) Rule {
 	re := regexp.MustCompile(fmt.Sprintf(`^\d{%d}$`, n))
 
-	return RuleFunc(func(value any) error {
-		str, ok := value.(string)
-		if !ok || !re.MatchString(str) {
-			return ErrValidationDigits
-		}
+	return RuleFunc(
+		func(value any) error {
+			str, ok := value.(string)
+			if !ok || !re.MatchString(str) {
+				return ErrValidationDigits
+			}
 
-		return nil
-	})
+			return nil
+		},
+	)
 }
 
 // DigitsBetween returns a Rule that validates the value is a string with between min and max digit characters
@@ -45,17 +47,19 @@ func Digits(n int) Rule {
 //	validation.DigitsBetween(4, 6).Validate("123456") // pass
 //	validation.DigitsBetween(4, 6).Validate("123")    // fail — too few
 //	validation.DigitsBetween(4, 6).Validate("1234567") // fail — too many
-func DigitsBetween(min, max int) Rule {
-	re := regexp.MustCompile(fmt.Sprintf(`^\d{%d,%d}$`, min, max))
+func DigitsBetween(minV, maxV int) Rule {
+	re := regexp.MustCompile(fmt.Sprintf(`^\d{%d,%d}$`, minV, maxV))
 
-	return RuleFunc(func(value any) error {
-		str, ok := value.(string)
-		if !ok || !re.MatchString(str) {
-			return ErrValidationDigitsBetween
-		}
+	return RuleFunc(
+		func(value any) error {
+			str, ok := value.(string)
+			if !ok || !re.MatchString(str) {
+				return ErrValidationDigitsBetween
+			}
 
-		return nil
-	})
+			return nil
+		},
+	)
 }
 
 // MaxDigits returns a Rule that validates the value is a string with at most n digit characters (0–9).
@@ -72,14 +76,16 @@ func DigitsBetween(min, max int) Rule {
 func MaxDigits(n int) Rule {
 	re := regexp.MustCompile(fmt.Sprintf(`^\d{1,%d}$`, n))
 
-	return RuleFunc(func(value any) error {
-		str, ok := value.(string)
-		if !ok || !re.MatchString(str) {
-			return ErrValidationMaxDigits
-		}
+	return RuleFunc(
+		func(value any) error {
+			str, ok := value.(string)
+			if !ok || !re.MatchString(str) {
+				return ErrValidationMaxDigits
+			}
 
-		return nil
-	})
+			return nil
+		},
+	)
 }
 
 // MinDigits returns a Rule that validates the value is a string with at least n digit characters (0–9).
@@ -96,12 +102,14 @@ func MaxDigits(n int) Rule {
 func MinDigits(n int) Rule {
 	re := regexp.MustCompile(fmt.Sprintf(`^\d{%d,}$`, n))
 
-	return RuleFunc(func(value any) error {
-		str, ok := value.(string)
-		if !ok || !re.MatchString(str) {
-			return ErrValidationMinDigits
-		}
+	return RuleFunc(
+		func(value any) error {
+			str, ok := value.(string)
+			if !ok || !re.MatchString(str) {
+				return ErrValidationMinDigits
+			}
 
-		return nil
-	})
+			return nil
+		},
+	)
 }

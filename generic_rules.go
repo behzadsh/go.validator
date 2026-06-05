@@ -1,5 +1,7 @@
 package validation
 
+import "slices"
+
 // In returns a Rule that validates the value is present in the given slice.
 //
 // Comparison uses ==, so T must be a comparable type. The value must be exactly f type T; a float64 does not match an
@@ -18,7 +20,7 @@ package validation
 func In[T comparable](slice []T) Rule {
 	fn := func(value any) error {
 		v, ok := value.(T)
-		if !ok || !contains(slice, v) {
+		if !ok || !slices.Contains(slice, v) {
 			return ErrValidationIn
 		}
 
@@ -43,14 +45,16 @@ func In[T comparable](slice []T) Rule {
 //	validation.NEQ[int](0).Validate(1)               // pass
 //	validation.NEQ[int](0).Validate(0)               // fail
 func NEQ[T comparable](v T) Rule {
-	return RuleFunc(func(value any) error {
-		actual, ok := value.(T)
-		if !ok || actual == v {
-			return ErrValidationNEQ
-		}
+	return RuleFunc(
+		func(value any) error {
+			actual, ok := value.(T)
+			if !ok || actual == v {
+				return ErrValidationNEQ
+			}
 
-		return nil
-	})
+			return nil
+		},
+	)
 }
 
 // NotIn returns a Rule that validates the value is not present in the given slice.
@@ -70,7 +74,7 @@ func NEQ[T comparable](v T) Rule {
 func NotIn[T comparable](slice []T) Rule {
 	fn := func(value any) error {
 		v, ok := value.(T)
-		if !ok || contains(slice, v) {
+		if !ok || slices.Contains(slice, v) {
 			return ErrValidationNotIn
 		}
 
@@ -78,14 +82,4 @@ func NotIn[T comparable](slice []T) Rule {
 	}
 
 	return RuleFunc(fn)
-}
-
-func contains[T comparable](slice []T, value T) bool {
-	for _, v := range slice {
-		if value == v {
-			return true
-		}
-	}
-
-	return false
 }

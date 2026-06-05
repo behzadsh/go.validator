@@ -35,23 +35,25 @@ func TestCondTokenize(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.input, func(t *testing.T) {
-			toks, err := condTokenize(tt.input)
-			if (err != nil) != tt.wantErr {
-				t.Fatalf("condTokenize(%q) error = %v, wantErr %v", tt.input, err, tt.wantErr)
-			}
-			if tt.wantErr {
-				return
-			}
-			if len(toks) != len(tt.wantKinds) {
-				t.Fatalf("got %d tokens, want %d: %v", len(toks), len(tt.wantKinds), toks)
-			}
-			for i, kind := range tt.wantKinds {
-				if toks[i].kind != kind {
-					t.Errorf("token[%d] kind = %v, want %v", i, toks[i].kind, kind)
+		t.Run(
+			tt.input, func(t *testing.T) {
+				toks, err := condTokenize(tt.input)
+				if (err != nil) != tt.wantErr {
+					t.Fatalf("condTokenize(%q) error = %v, wantErr %v", tt.input, err, tt.wantErr)
 				}
-			}
-		})
+				if tt.wantErr {
+					return
+				}
+				if len(toks) != len(tt.wantKinds) {
+					t.Fatalf("got %d tokens, want %d: %v", len(toks), len(tt.wantKinds), toks)
+				}
+				for i, kind := range tt.wantKinds {
+					if toks[i].kind != kind {
+						t.Errorf("token[%d] kind = %v, want %v", i, toks[i].kind, kind)
+					}
+				}
+			},
+		)
 	}
 }
 
@@ -288,16 +290,18 @@ func TestEvalCondition(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			bag := NewInputBag(tt.input)
-			got, err := evalCondition(tt.condition, bag)
-			if (err != nil) != tt.wantErr {
-				t.Fatalf("evalCondition(%q) error = %v, wantErr %v", tt.condition, err, tt.wantErr)
-			}
-			if !tt.wantErr && got != tt.want {
-				t.Errorf("evalCondition(%q) = %v, want %v", tt.condition, got, tt.want)
-			}
-		})
+		t.Run(
+			tt.name, func(t *testing.T) {
+				bag := NewInputBag(tt.input)
+				got, err := evalCondition(tt.condition, bag)
+				if (err != nil) != tt.wantErr {
+					t.Fatalf("evalCondition(%q) error = %v, wantErr %v", tt.condition, err, tt.wantErr)
+				}
+				if !tt.wantErr && got != tt.want {
+					t.Errorf("evalCondition(%q) = %v, want %v", tt.condition, got, tt.want)
+				}
+			},
+		)
 	}
 }
 

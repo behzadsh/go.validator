@@ -18,18 +18,20 @@ import (
 //	validation.CIDR.Validate("2001:db8::/32")   // pass — IPv6
 //	validation.CIDR.Validate("192.168.0.1")     // fail — no prefix length
 //	validation.CIDR.Validate("not-cidr")        // fail
-var CIDR Rule = RuleFunc(func(value any) error {
-	str, ok := value.(string)
-	if !ok {
-		return ErrValidationCIDR
-	}
+var CIDR Rule = RuleFunc(
+	func(value any) error {
+		str, ok := value.(string)
+		if !ok {
+			return ErrValidationCIDR
+		}
 
-	if _, _, err := net.ParseCIDR(str); err != nil {
-		return ErrValidationCIDR
-	}
+		if _, _, err := net.ParseCIDR(str); err != nil {
+			return ErrValidationCIDR
+		}
 
-	return nil
-})
+		return nil
+	},
+)
 
 // IP is a Rule that validates the value is a valid IP address (v4 or v6).
 //

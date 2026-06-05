@@ -81,7 +81,7 @@ func TestInputBagLookup_Struct(t *testing.T) {
 		{"profile.email", "bob@example.com", true},
 		{"profile.address.city", "Paris", true},
 		{"profile.NoTag", "visible", true},
-		{"profile.Hidden", nil, false},  // json:"-" hides the field
+		{"profile.Hidden", nil, false}, // json:"-" hides the field
 		{"missing", nil, false},
 	}
 
@@ -104,30 +104,36 @@ func TestInputBagLookup_PointerStruct(t *testing.T) {
 		Inner *Inner `json:"inner"`
 	}
 
-	t.Run("non-nil pointer", func(t *testing.T) {
-		bag := NewInputBag(&Outer{Inner: &Inner{Val: "x"}})
-		val, found := bag.Lookup("inner.val")
-		if !found || val != "x" {
-			t.Errorf("Lookup(inner.val) = %v, %v; want x, true", val, found)
-		}
-	})
+	t.Run(
+		"non-nil pointer", func(t *testing.T) {
+			bag := NewInputBag(&Outer{Inner: &Inner{Val: "x"}})
+			val, found := bag.Lookup("inner.val")
+			if !found || val != "x" {
+				t.Errorf("Lookup(inner.val) = %v, %v; want x, true", val, found)
+			}
+		},
+	)
 
-	t.Run("nil outer pointer", func(t *testing.T) {
-		var o *Outer
-		bag := NewInputBag(o)
-		_, found := bag.Lookup("inner.val")
-		if found {
-			t.Error("Lookup on nil *struct should return false")
-		}
-	})
+	t.Run(
+		"nil outer pointer", func(t *testing.T) {
+			var o *Outer
+			bag := NewInputBag(o)
+			_, found := bag.Lookup("inner.val")
+			if found {
+				t.Error("Lookup on nil *struct should return false")
+			}
+		},
+	)
 
-	t.Run("nil inner pointer", func(t *testing.T) {
-		bag := NewInputBag(&Outer{Inner: nil})
-		_, found := bag.Lookup("inner.val")
-		if found {
-			t.Error("Lookup through nil inner pointer should return false")
-		}
-	})
+	t.Run(
+		"nil inner pointer", func(t *testing.T) {
+			bag := NewInputBag(&Outer{Inner: nil})
+			_, found := bag.Lookup("inner.val")
+			if found {
+				t.Error("Lookup through nil inner pointer should return false")
+			}
+		},
+	)
 }
 
 func TestInputBagLookup_EmbeddedStruct(t *testing.T) {

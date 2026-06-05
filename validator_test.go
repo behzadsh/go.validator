@@ -12,53 +12,59 @@ func TestSchemaValidate_Map(t *testing.T) {
 		Field("email", Required, Email).
 		Field("age", Min[int](18))
 
-	t.Run("valid input", func(t *testing.T) {
-		input := map[string]any{
-			"name":  "Alice",
-			"email": "alice@example.com",
-			"age":   25,
-		}
-		res, err := schema.Validate(input)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if res.HasErrors() {
-			t.Errorf("expected no errors, got: %v", res.Errors())
-		}
-	})
+	t.Run(
+		"valid input", func(t *testing.T) {
+			input := map[string]any{
+				"name":  "Alice",
+				"email": "alice@example.com",
+				"age":   25,
+			}
+			res, err := schema.Validate(input)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if res.HasErrors() {
+				t.Errorf("expected no errors, got: %v", res.Errors())
+			}
+		},
+	)
 
-	t.Run("missing required fields", func(t *testing.T) {
-		input := map[string]any{}
-		res, err := schema.Validate(input)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if !res.HasErrors() {
-			t.Fatal("expected errors")
-		}
-		if len(res.For("name")) == 0 {
-			t.Error("expected error for name")
-		}
-		if len(res.For("email")) == 0 {
-			t.Error("expected error for email")
-		}
-	})
+	t.Run(
+		"missing required fields", func(t *testing.T) {
+			input := map[string]any{}
+			res, err := schema.Validate(input)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !res.HasErrors() {
+				t.Fatal("expected errors")
+			}
+			if len(res.For("name")) == 0 {
+				t.Error("expected error for name")
+			}
+			if len(res.For("email")) == 0 {
+				t.Error("expected error for email")
+			}
+		},
+	)
 
-	t.Run("invalid email", func(t *testing.T) {
-		input := map[string]any{
-			"name":  "Alice",
-			"email": "not-an-email",
-			"age":   25,
-		}
-		res, err := schema.Validate(input)
-		if err != nil {
-			t.Fatal(err)
-		}
-		emailErrs := res.For("email")
-		if len(emailErrs) == 0 {
-			t.Error("expected email error")
-		}
-	})
+	t.Run(
+		"invalid email", func(t *testing.T) {
+			input := map[string]any{
+				"name":  "Alice",
+				"email": "not-an-email",
+				"age":   25,
+			}
+			res, err := schema.Validate(input)
+			if err != nil {
+				t.Fatal(err)
+			}
+			emailErrs := res.For("email")
+			if len(emailErrs) == 0 {
+				t.Error("expected email error")
+			}
+		},
+	)
 }
 
 func TestSchemaValidate_Struct(t *testing.T) {
@@ -71,52 +77,60 @@ func TestSchemaValidate_Struct(t *testing.T) {
 		Field("name", Required).
 		Field("email", Required, Email)
 
-	t.Run("valid struct", func(t *testing.T) {
-		res, err := schema.Validate(User{Name: "Bob", Email: "bob@example.com"})
-		if err != nil {
-			t.Fatal(err)
-		}
-		if res.HasErrors() {
-			t.Errorf("unexpected errors: %v", res.Errors())
-		}
-	})
+	t.Run(
+		"valid struct", func(t *testing.T) {
+			res, err := schema.Validate(User{Name: "Bob", Email: "bob@example.com"})
+			if err != nil {
+				t.Fatal(err)
+			}
+			if res.HasErrors() {
+				t.Errorf("unexpected errors: %v", res.Errors())
+			}
+		},
+	)
 
-	t.Run("empty struct", func(t *testing.T) {
-		res, err := schema.Validate(User{})
-		if err != nil {
-			t.Fatal(err)
-		}
-		if !res.HasErrors() {
-			t.Fatal("expected errors")
-		}
-		if len(res.For("name")) == 0 {
-			t.Error("expected error for name")
-		}
-		if len(res.For("email")) == 0 {
-			t.Error("expected error for email")
-		}
-	})
+	t.Run(
+		"empty struct", func(t *testing.T) {
+			res, err := schema.Validate(User{})
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !res.HasErrors() {
+				t.Fatal("expected errors")
+			}
+			if len(res.For("name")) == 0 {
+				t.Error("expected error for name")
+			}
+			if len(res.For("email")) == 0 {
+				t.Error("expected error for email")
+			}
+		},
+	)
 
-	t.Run("pointer to struct", func(t *testing.T) {
-		res, err := schema.Validate(&User{Name: "Carol", Email: "carol@example.com"})
-		if err != nil {
-			t.Fatal(err)
-		}
-		if res.HasErrors() {
-			t.Errorf("unexpected errors: %v", res.Errors())
-		}
-	})
+	t.Run(
+		"pointer to struct", func(t *testing.T) {
+			res, err := schema.Validate(&User{Name: "Carol", Email: "carol@example.com"})
+			if err != nil {
+				t.Fatal(err)
+			}
+			if res.HasErrors() {
+				t.Errorf("unexpected errors: %v", res.Errors())
+			}
+		},
+	)
 
-	t.Run("nil pointer to struct", func(t *testing.T) {
-		var u *User
-		res, err := schema.Validate(u)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if !res.HasErrors() {
-			t.Fatal("expected errors for nil struct pointer")
-		}
-	})
+	t.Run(
+		"nil pointer to struct", func(t *testing.T) {
+			var u *User
+			res, err := schema.Validate(u)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !res.HasErrors() {
+				t.Fatal("expected errors for nil struct pointer")
+			}
+		},
+	)
 }
 
 func TestSchemaValidate_MultiError(t *testing.T) {
@@ -138,28 +152,32 @@ func TestSchemaValidate_NestedPath(t *testing.T) {
 	schema := New().
 		Field("profile.email", Required, Email)
 
-	t.Run("valid nested", func(t *testing.T) {
-		input := map[string]any{
-			"profile": map[string]any{"email": "user@example.com"},
-		}
-		res, err := schema.Validate(input)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if res.HasErrors() {
-			t.Errorf("unexpected errors: %v", res.Errors())
-		}
-	})
+	t.Run(
+		"valid nested", func(t *testing.T) {
+			input := map[string]any{
+				"profile": map[string]any{"email": "user@example.com"},
+			}
+			res, err := schema.Validate(input)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if res.HasErrors() {
+				t.Errorf("unexpected errors: %v", res.Errors())
+			}
+		},
+	)
 
-	t.Run("missing nested", func(t *testing.T) {
-		res, err := schema.Validate(map[string]any{})
-		if err != nil {
-			t.Fatal(err)
-		}
-		if len(res.For("profile.email")) == 0 {
-			t.Error("expected error for profile.email")
-		}
-	})
+	t.Run(
+		"missing nested", func(t *testing.T) {
+			res, err := schema.Validate(map[string]any{})
+			if err != nil {
+				t.Fatal(err)
+			}
+			if len(res.For("profile.email")) == 0 {
+				t.Error("expected error for profile.email")
+			}
+		},
+	)
 }
 
 func TestResult_For(t *testing.T) {

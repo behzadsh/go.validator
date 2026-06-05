@@ -6,9 +6,7 @@ import (
 	"time"
 )
 
-var (
-	tRef = time.Date(2023, 6, 15, 12, 0, 0, 0, time.UTC)
-)
+var tRef = time.Date(2023, 6, 15, 12, 0, 0, 0, time.UTC)
 
 func TestDateTimeFormat(t *testing.T) {
 	tests := []struct {
@@ -43,7 +41,7 @@ func TestAfter(t *testing.T) {
 	}{
 		{"2024-01-01", false},
 		{"2023-06-16", false},
-		{"2023-06-15", true},    // equal, not after
+		{"2023-06-15", true}, // equal, not after
 		{"2022-01-01", true},
 		{"not a date", true},
 		{"", true},
@@ -69,7 +67,7 @@ func TestBefore(t *testing.T) {
 	}{
 		{"2022-01-01", false},
 		{"2023-06-14", false},
-		{"2023-06-15T12:00:00Z", true},  // exact equal, not before
+		{"2023-06-15T12:00:00Z", true}, // exact equal, not before
 		{"2024-01-01", true},
 		{"not a date", true},
 		{"", true},
@@ -138,9 +136,9 @@ func TestAfterOrEqual(t *testing.T) {
 		wantErr bool
 	}{
 		{"2024-01-01", false},
-		{"2023-06-15T12:00:00Z", false},  // exactly equal to tRef passes
-		{"2022-01-01", true},             // before fails
-		{"2023-06-15", true},             // midnight < noon tRef → before
+		{"2023-06-15T12:00:00Z", false}, // exactly equal to tRef passes
+		{"2022-01-01", true},            // before fails
+		{"2023-06-15", true},            // midnight < noon tRef → before
 		{"not a date", true},
 		{nil, true},
 		{42, true},
@@ -163,8 +161,8 @@ func TestBeforeOrEqual(t *testing.T) {
 		wantErr bool
 	}{
 		{"2022-01-01", false},
-		{"2023-06-15", false},              // equal passes
-		{"2024-01-01", true},               // after fails
+		{"2023-06-15", false}, // equal passes
+		{"2024-01-01", true},  // after fails
 		{"not a date", true},
 		{nil, true},
 		{42, true},
@@ -189,10 +187,10 @@ func TestDateTimeBetween(t *testing.T) {
 		wantErr bool
 	}{
 		{"2024-06-15", false},
-		{"2024-01-01", false},   // equal to min
-		{"2024-12-31", false},   // equal to max
-		{"2023-12-31", true},    // before min
-		{"2025-01-01", true},    // after max
+		{"2024-01-01", false}, // equal to min
+		{"2024-12-31", false}, // equal to max
+		{"2023-12-31", true},  // before min
+		{"2025-01-01", true},  // after max
 		{"not a date", true},
 		{nil, true},
 		{42, true},
@@ -211,73 +209,89 @@ func TestDateTimeBetween(t *testing.T) {
 func TestAfterField(t *testing.T) {
 	rule := AfterField("start")
 
-	t.Run("pass: end after start", func(t *testing.T) {
-		bag := NewInputBag(map[string]any{"start": "2024-01-01", "end": "2024-06-01"})
-		if err := rule.ValidateWithInput("2024-06-01", bag); err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-	})
+	t.Run(
+		"pass: end after start", func(t *testing.T) {
+			bag := NewInputBag(map[string]any{"start": "2024-01-01", "end": "2024-06-01"})
+			if err := rule.ValidateWithInput("2024-06-01", bag); err != nil {
+				t.Errorf("unexpected error: %v", err)
+			}
+		},
+	)
 
-	t.Run("fail: end equal to start", func(t *testing.T) {
-		bag := NewInputBag(map[string]any{"start": "2024-01-01"})
-		err := rule.ValidateWithInput("2024-01-01", bag)
-		if err == nil {
-			t.Error("expected error for equal times")
-		}
-		if !errors.Is(err, ErrValidationAfterField) {
-			t.Errorf("wrong error type: %v", err)
-		}
-	})
+	t.Run(
+		"fail: end equal to start", func(t *testing.T) {
+			bag := NewInputBag(map[string]any{"start": "2024-01-01"})
+			err := rule.ValidateWithInput("2024-01-01", bag)
+			if err == nil {
+				t.Error("expected error for equal times")
+			}
+			if !errors.Is(err, ErrValidationAfterField) {
+				t.Errorf("wrong error type: %v", err)
+			}
+		},
+	)
 
-	t.Run("fail: end before start", func(t *testing.T) {
-		bag := NewInputBag(map[string]any{"start": "2024-06-01"})
-		if err := rule.ValidateWithInput("2024-01-01", bag); err == nil {
-			t.Error("expected error")
-		}
-	})
+	t.Run(
+		"fail: end before start", func(t *testing.T) {
+			bag := NewInputBag(map[string]any{"start": "2024-06-01"})
+			if err := rule.ValidateWithInput("2024-01-01", bag); err == nil {
+				t.Error("expected error")
+			}
+		},
+	)
 
-	t.Run("fail: start field absent", func(t *testing.T) {
-		bag := NewInputBag(map[string]any{})
-		if err := rule.ValidateWithInput("2024-01-01", bag); err == nil {
-			t.Error("expected error for absent field")
-		}
-	})
+	t.Run(
+		"fail: start field absent", func(t *testing.T) {
+			bag := NewInputBag(map[string]any{})
+			if err := rule.ValidateWithInput("2024-01-01", bag); err == nil {
+				t.Error("expected error for absent field")
+			}
+		},
+	)
 
-	t.Run("fail: non-string value", func(t *testing.T) {
-		bag := NewInputBag(map[string]any{"start": "2024-01-01"})
-		if err := rule.ValidateWithInput(42, bag); err == nil {
-			t.Error("expected error")
-		}
-	})
+	t.Run(
+		"fail: non-string value", func(t *testing.T) {
+			bag := NewInputBag(map[string]any{"start": "2024-01-01"})
+			if err := rule.ValidateWithInput(42, bag); err == nil {
+				t.Error("expected error")
+			}
+		},
+	)
 }
 
 func TestBeforeField(t *testing.T) {
 	rule := BeforeField("end")
 
-	t.Run("pass: start before end", func(t *testing.T) {
-		bag := NewInputBag(map[string]any{"end": "2024-06-01"})
-		if err := rule.ValidateWithInput("2024-01-01", bag); err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-	})
+	t.Run(
+		"pass: start before end", func(t *testing.T) {
+			bag := NewInputBag(map[string]any{"end": "2024-06-01"})
+			if err := rule.ValidateWithInput("2024-01-01", bag); err != nil {
+				t.Errorf("unexpected error: %v", err)
+			}
+		},
+	)
 
-	t.Run("fail: start equal to end", func(t *testing.T) {
-		bag := NewInputBag(map[string]any{"end": "2024-01-01"})
-		err := rule.ValidateWithInput("2024-01-01", bag)
-		if err == nil {
-			t.Error("expected error for equal times")
-		}
-		if !errors.Is(err, ErrValidationBeforeField) {
-			t.Errorf("wrong error type: %v", err)
-		}
-	})
+	t.Run(
+		"fail: start equal to end", func(t *testing.T) {
+			bag := NewInputBag(map[string]any{"end": "2024-01-01"})
+			err := rule.ValidateWithInput("2024-01-01", bag)
+			if err == nil {
+				t.Error("expected error for equal times")
+			}
+			if !errors.Is(err, ErrValidationBeforeField) {
+				t.Errorf("wrong error type: %v", err)
+			}
+		},
+	)
 
-	t.Run("fail: start after end", func(t *testing.T) {
-		bag := NewInputBag(map[string]any{"end": "2024-01-01"})
-		if err := rule.ValidateWithInput("2024-06-01", bag); err == nil {
-			t.Error("expected error")
-		}
-	})
+	t.Run(
+		"fail: start after end", func(t *testing.T) {
+			bag := NewInputBag(map[string]any{"end": "2024-01-01"})
+			if err := rule.ValidateWithInput("2024-06-01", bag); err == nil {
+				t.Error("expected error")
+			}
+		},
+	)
 }
 
 func TestTimezone(t *testing.T) {

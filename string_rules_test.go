@@ -92,7 +92,6 @@ func TestAlphaSpace(t *testing.T) {
 	}
 }
 
-
 func TestLength(t *testing.T) {
 	tests := []struct {
 		value   any
@@ -217,7 +216,7 @@ func TestUUID(t *testing.T) {
 		{"550E8400-E29B-41D4-A716-446655440000", false}, // uppercase
 		{"00000000-0000-0000-0000-000000000000", false},
 		{"not-a-uuid", true},
-		{"550e8400-e29b-41d4-a716", true},       // too short
+		{"550e8400-e29b-41d4-a716", true},          // too short
 		{"550e8400e29b41d4a716446655440000", true}, // no dashes
 		{"", true},
 		{nil, true},
@@ -429,12 +428,12 @@ func TestBase64(t *testing.T) {
 		value   any
 		wantErr bool
 	}{
-		{"aGVsbG8=", false},      // "hello"
-		{"dGVzdA==", false},      // "test"
-		{"", false},              // empty is valid base64
-		{"aGVsbG8", true},        // missing padding
+		{"aGVsbG8=", false}, // "hello"
+		{"dGVzdA==", false}, // "test"
+		{"", false},         // empty is valid base64
+		{"aGVsbG8", true},   // missing padding
 		{"not-base64!", true},
-		{"aGVsbG8===", true},     // bad padding
+		{"aGVsbG8===", true}, // bad padding
 		{nil, true},
 		{42, true},
 	}
@@ -477,17 +476,17 @@ func TestCreditCard(t *testing.T) {
 		value   any
 		wantErr bool
 	}{
-		{"4111111111111111", false},       // Visa test
-		{"4111-1111-1111-1111", false},    // dashes stripped
-		{"4111 1111 1111 1111", false},    // spaces stripped
-		{"5500005555555559", false},       // Mastercard test
-		{"378282246310005", false},        // Amex test (15 digits)
-		{"1234567890123456", true},        // invalid Luhn
-		{"411111111111111", true},         // too short (15 chars but bad Luhn)
+		{"4111111111111111", false},    // Visa test
+		{"4111-1111-1111-1111", false}, // dashes stripped
+		{"4111 1111 1111 1111", false}, // spaces stripped
+		{"5500005555555559", false},    // Mastercard test
+		{"378282246310005", false},     // Amex test (15 digits)
+		{"1234567890123456", true},     // invalid Luhn
+		{"411111111111111", true},      // too short (15 chars but bad Luhn)
 		{"", true},
 		{"not-a-card", true},
 		{nil, true},
-		{4111111111111111, true},          // not a string
+		{4111111111111111, true}, // not a string
 	}
 	for _, tt := range tests {
 		err := CreditCard.Validate(tt.value)
@@ -509,9 +508,9 @@ func TestHexColor(t *testing.T) {
 		{"#FFF", false},
 		{"#FF5733", false},
 		{"#aabbcc", false},
-		{"FF5733", true},  // missing #
-		{"#GGG", true},    // invalid hex digits
-		{"#12345", true},  // 5 digits
+		{"FF5733", true},   // missing #
+		{"#GGG", true},     // invalid hex digits
+		{"#12345", true},   // 5 digits
 		{"#1234567", true}, // 7 digits
 		{"", true},
 		{nil, true},
@@ -566,8 +565,8 @@ func TestJWT(t *testing.T) {
 		{"eyJ.eyJ.sig", false},
 		{"a.b.c", false},
 		{"notajwt", true},
-		{"a.b", true},      // only two segments
-		{"a.b.c.d", true},  // four segments
+		{"a.b", true},     // only two segments
+		{"a.b.c.d", true}, // four segments
 		{"", true},
 		{nil, true},
 		{42, true},
@@ -616,14 +615,14 @@ func TestSemver(t *testing.T) {
 	}{
 		{"1.0.0", false},
 		{"0.0.1", false},
-		{"v1.0.0", false},                      // v prefix accepted
+		{"v1.0.0", false}, // v prefix accepted
 		{"v2.1.3-alpha.1", false},
 		{"2.1.3-alpha.1", false},
-		{"1.0.0+build.123", false},             // build metadata accepted
+		{"1.0.0+build.123", false}, // build metadata accepted
 		{"1.0.0-beta.1+exp.sha.5114f85", false},
-		{"1.0", true},         // missing patch
-		{"1.0.0.0", true},     // extra component
-		{"01.0.0", true},      // leading zero
+		{"1.0", true},     // missing patch
+		{"1.0.0.0", true}, // extra component
+		{"01.0.0", true},  // leading zero
 		{"", true},
 		{nil, true},
 		{42, true},
@@ -648,11 +647,11 @@ func TestSlug(t *testing.T) {
 		{"hello-world", false},
 		{"my-post-123", false},
 		{"abc", false},
-		{"Hello-World", true},    // uppercase
-		{"-leading", true},       // leading hyphen
-		{"trailing-", true},      // trailing hyphen
-		{"double--dash", true},   // consecutive hyphens
-		{"hello world", true},    // space
+		{"Hello-World", true},  // uppercase
+		{"-leading", true},     // leading hyphen
+		{"trailing-", true},    // trailing hyphen
+		{"double--dash", true}, // consecutive hyphens
+		{"hello world", true},  // space
 		{"", true},
 		{nil, true},
 		{42, true},

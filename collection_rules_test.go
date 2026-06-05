@@ -22,15 +22,17 @@ func TestDistinct(t *testing.T) {
 		{"scalar passes", 42, false},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			err := Distinct.Validate(tt.value)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Distinct.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
-			}
-			if err != nil && !errors.Is(err, ErrValidationDistinct) {
-				t.Errorf("wrong error type: %v", err)
-			}
-		})
+		t.Run(
+			tt.name, func(t *testing.T) {
+				err := Distinct.Validate(tt.value)
+				if (err != nil) != tt.wantErr {
+					t.Errorf("Distinct.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
+				}
+				if err != nil && !errors.Is(err, ErrValidationDistinct) {
+					t.Errorf("wrong error type: %v", err)
+				}
+			},
+		)
 	}
 }
 
@@ -106,43 +108,53 @@ func TestSize(t *testing.T) {
 }
 
 func TestEach(t *testing.T) {
-	t.Run("all pass", func(t *testing.T) {
-		err := Each(MinLength(2)).Validate([]string{"ab", "cd", "ef"})
-		if err != nil {
-			t.Errorf("expected nil, got %v", err)
-		}
-	})
+	t.Run(
+		"all pass", func(t *testing.T) {
+			err := Each(MinLength(2)).Validate([]string{"ab", "cd", "ef"})
+			if err != nil {
+				t.Errorf("expected nil, got %v", err)
+			}
+		},
+	)
 
-	t.Run("one fails", func(t *testing.T) {
-		err := Each(MinLength(2)).Validate([]string{"ab", "x", "cd"})
-		if err == nil {
-			t.Error("expected error, got nil")
-		}
-		if !errors.Is(err, ErrValidationEach) {
-			t.Errorf("wrong error type: %v", err)
-		}
-	})
+	t.Run(
+		"one fails", func(t *testing.T) {
+			err := Each(MinLength(2)).Validate([]string{"ab", "x", "cd"})
+			if err == nil {
+				t.Error("expected error, got nil")
+			}
+			if !errors.Is(err, ErrValidationEach) {
+				t.Errorf("wrong error type: %v", err)
+			}
+		},
+	)
 
-	t.Run("nil passes", func(t *testing.T) {
-		err := Each(MinLength(2)).Validate(nil)
-		if err != nil {
-			t.Errorf("expected nil, got %v", err)
-		}
-	})
+	t.Run(
+		"nil passes", func(t *testing.T) {
+			err := Each(MinLength(2)).Validate(nil)
+			if err != nil {
+				t.Errorf("expected nil, got %v", err)
+			}
+		},
+	)
 
-	t.Run("non-slice passes", func(t *testing.T) {
-		err := Each(MinLength(2)).Validate("not-a-slice")
-		if err != nil {
-			t.Errorf("expected nil, got %v", err)
-		}
-	})
+	t.Run(
+		"non-slice passes", func(t *testing.T) {
+			err := Each(MinLength(2)).Validate("not-a-slice")
+			if err != nil {
+				t.Errorf("expected nil, got %v", err)
+			}
+		},
+	)
 
-	t.Run("empty slice passes", func(t *testing.T) {
-		err := Each(MinLength(2)).Validate([]string{})
-		if err != nil {
-			t.Errorf("expected nil, got %v", err)
-		}
-	})
+	t.Run(
+		"empty slice passes", func(t *testing.T) {
+			err := Each(MinLength(2)).Validate([]string{})
+			if err != nil {
+				t.Errorf("expected nil, got %v", err)
+			}
+		},
+	)
 }
 
 func TestEach_WithInputRule(t *testing.T) {
@@ -150,17 +162,21 @@ func TestEach_WithInputRule(t *testing.T) {
 	schema := New().
 		Field("items", Each(MinLength(2), Lowercase))
 
-	t.Run("all valid", func(t *testing.T) {
-		res, _ := schema.Validate(map[string]any{"items": []string{"ab", "cd"}})
-		if res.HasErrors() {
-			t.Errorf("expected no errors, got %v", res.Errors())
-		}
-	})
+	t.Run(
+		"all valid", func(t *testing.T) {
+			res, _ := schema.Validate(map[string]any{"items": []string{"ab", "cd"}})
+			if res.HasErrors() {
+				t.Errorf("expected no errors, got %v", res.Errors())
+			}
+		},
+	)
 
-	t.Run("element fails rule", func(t *testing.T) {
-		res, _ := schema.Validate(map[string]any{"items": []string{"ab", "X"}})
-		if !res.HasErrors() {
-			t.Error("expected errors, got none")
-		}
-	})
+	t.Run(
+		"element fails rule", func(t *testing.T) {
+			res, _ := schema.Validate(map[string]any{"items": []string{"ab", "X"}})
+			if !res.HasErrors() {
+				t.Error("expected errors, got none")
+			}
+		},
+	)
 }

@@ -20,15 +20,17 @@ func TestNot(t *testing.T) {
 		{"not alpha: alpha string fails", Not(Alpha), "hello", true},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			err := tt.rule.Validate(tt.value)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Not.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
-			}
-			if err != nil && !errors.Is(err, ErrValidationNot) {
-				t.Errorf("Not.Validate(%v) wrong error: %v", tt.value, err)
-			}
-		})
+		t.Run(
+			tt.name, func(t *testing.T) {
+				err := tt.rule.Validate(tt.value)
+				if (err != nil) != tt.wantErr {
+					t.Errorf("Not.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
+				}
+				if err != nil && !errors.Is(err, ErrValidationNot) {
+					t.Errorf("Not.Validate(%v) wrong error: %v", tt.value, err)
+				}
+			},
+		)
 	}
 }
 
@@ -38,25 +40,33 @@ func TestNot_WithInputRule(t *testing.T) {
 		Field("password", Required).
 		Field("new_password", Not(SameAs("password")))
 
-	t.Run("different values pass", func(t *testing.T) {
-		res, _ := schema.Validate(map[string]any{
-			"password":     "old",
-			"new_password": "new",
-		})
-		if res.HasErrors() {
-			t.Errorf("expected no errors, got %v", res.Errors())
-		}
-	})
+	t.Run(
+		"different values pass", func(t *testing.T) {
+			res, _ := schema.Validate(
+				map[string]any{
+					"password":     "old",
+					"new_password": "new",
+				},
+			)
+			if res.HasErrors() {
+				t.Errorf("expected no errors, got %v", res.Errors())
+			}
+		},
+	)
 
-	t.Run("same values fail", func(t *testing.T) {
-		res, _ := schema.Validate(map[string]any{
-			"password":     "same",
-			"new_password": "same",
-		})
-		if !res.HasErrors() {
-			t.Error("expected errors, got none")
-		}
-	})
+	t.Run(
+		"same values fail", func(t *testing.T) {
+			res, _ := schema.Validate(
+				map[string]any{
+					"password":     "same",
+					"new_password": "same",
+				},
+			)
+			if !res.HasErrors() {
+				t.Error("expected errors, got none")
+			}
+		},
+	)
 }
 
 func TestAny(t *testing.T) {
@@ -72,15 +82,17 @@ func TestAny(t *testing.T) {
 		{"nil fails", nil, true},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			err := rule.Validate(tt.value)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Any.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
-			}
-			if err != nil && !errors.Is(err, ErrValidationAny) {
-				t.Errorf("Any.Validate(%v) wrong error: %v", tt.value, err)
-			}
-		})
+		t.Run(
+			tt.name, func(t *testing.T) {
+				err := rule.Validate(tt.value)
+				if (err != nil) != tt.wantErr {
+					t.Errorf("Any.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
+				}
+				if err != nil && !errors.Is(err, ErrValidationAny) {
+					t.Errorf("Any.Validate(%v) wrong error: %v", tt.value, err)
+				}
+			},
+		)
 	}
 }
 
@@ -90,26 +102,32 @@ func TestAny_WithInputRule(t *testing.T) {
 		Field("a", Required).
 		Field("b", Any(SameAs("a"), MinLength(10)))
 
-	t.Run("same as a passes", func(t *testing.T) {
-		res, _ := schema.Validate(map[string]any{"a": "hello", "b": "hello"})
-		if res.HasErrors() {
-			t.Errorf("expected no errors, got %v", res.Errors())
-		}
-	})
+	t.Run(
+		"same as a passes", func(t *testing.T) {
+			res, _ := schema.Validate(map[string]any{"a": "hello", "b": "hello"})
+			if res.HasErrors() {
+				t.Errorf("expected no errors, got %v", res.Errors())
+			}
+		},
+	)
 
-	t.Run("long enough passes", func(t *testing.T) {
-		res, _ := schema.Validate(map[string]any{"a": "hello", "b": "verylongvalue"})
-		if res.HasErrors() {
-			t.Errorf("expected no errors, got %v", res.Errors())
-		}
-	})
+	t.Run(
+		"long enough passes", func(t *testing.T) {
+			res, _ := schema.Validate(map[string]any{"a": "hello", "b": "verylongvalue"})
+			if res.HasErrors() {
+				t.Errorf("expected no errors, got %v", res.Errors())
+			}
+		},
+	)
 
-	t.Run("neither passes fails", func(t *testing.T) {
-		res, _ := schema.Validate(map[string]any{"a": "hello", "b": "other"})
-		if !res.HasErrors() {
-			t.Error("expected errors, got none")
-		}
-	})
+	t.Run(
+		"neither passes fails", func(t *testing.T) {
+			res, _ := schema.Validate(map[string]any{"a": "hello", "b": "other"})
+			if !res.HasErrors() {
+				t.Error("expected errors, got none")
+			}
+		},
+	)
 }
 
 func TestWhen(t *testing.T) {
@@ -117,26 +135,32 @@ func TestWhen(t *testing.T) {
 		Field("plan", Required).
 		Field("vat", When(`plan == "paid"`, MinLength(5)))
 
-	t.Run("condition true: rule applied", func(t *testing.T) {
-		res, _ := schema.Validate(map[string]any{"plan": "paid", "vat": "AB"})
-		if !res.HasErrors() {
-			t.Error("expected errors, got none")
-		}
-	})
+	t.Run(
+		"condition true: rule applied", func(t *testing.T) {
+			res, _ := schema.Validate(map[string]any{"plan": "paid", "vat": "AB"})
+			if !res.HasErrors() {
+				t.Error("expected errors, got none")
+			}
+		},
+	)
 
-	t.Run("condition true: rule passes", func(t *testing.T) {
-		res, _ := schema.Validate(map[string]any{"plan": "paid", "vat": "AB123"})
-		if res.HasErrors() {
-			t.Errorf("expected no errors, got %v", res.Errors())
-		}
-	})
+	t.Run(
+		"condition true: rule passes", func(t *testing.T) {
+			res, _ := schema.Validate(map[string]any{"plan": "paid", "vat": "AB123"})
+			if res.HasErrors() {
+				t.Errorf("expected no errors, got %v", res.Errors())
+			}
+		},
+	)
 
-	t.Run("condition false: rule skipped", func(t *testing.T) {
-		res, _ := schema.Validate(map[string]any{"plan": "free", "vat": "X"})
-		if res.HasErrors() {
-			t.Errorf("expected no errors, got %v", res.Errors())
-		}
-	})
+	t.Run(
+		"condition false: rule skipped", func(t *testing.T) {
+			res, _ := schema.Validate(map[string]any{"plan": "free", "vat": "X"})
+			if res.HasErrors() {
+				t.Errorf("expected no errors, got %v", res.Errors())
+			}
+		},
+	)
 }
 
 func TestWhen_InvalidCondition(t *testing.T) {
@@ -160,24 +184,30 @@ func TestUnless(t *testing.T) {
 		Field("status", Required).
 		Field("reason", Unless(`status == "approved"`, MinLength(5)))
 
-	t.Run("condition false: rule applied", func(t *testing.T) {
-		res, _ := schema.Validate(map[string]any{"status": "pending", "reason": "no"})
-		if !res.HasErrors() {
-			t.Error("expected errors, got none")
-		}
-	})
+	t.Run(
+		"condition false: rule applied", func(t *testing.T) {
+			res, _ := schema.Validate(map[string]any{"status": "pending", "reason": "no"})
+			if !res.HasErrors() {
+				t.Error("expected errors, got none")
+			}
+		},
+	)
 
-	t.Run("condition false: rule passes", func(t *testing.T) {
-		res, _ := schema.Validate(map[string]any{"status": "pending", "reason": "under review"})
-		if res.HasErrors() {
-			t.Errorf("expected no errors, got %v", res.Errors())
-		}
-	})
+	t.Run(
+		"condition false: rule passes", func(t *testing.T) {
+			res, _ := schema.Validate(map[string]any{"status": "pending", "reason": "under review"})
+			if res.HasErrors() {
+				t.Errorf("expected no errors, got %v", res.Errors())
+			}
+		},
+	)
 
-	t.Run("condition true: rule skipped", func(t *testing.T) {
-		res, _ := schema.Validate(map[string]any{"status": "approved", "reason": "no"})
-		if res.HasErrors() {
-			t.Errorf("expected no errors, got %v", res.Errors())
-		}
-	})
+	t.Run(
+		"condition true: rule skipped", func(t *testing.T) {
+			res, _ := schema.Validate(map[string]any{"status": "approved", "reason": "no"})
+			if res.HasErrors() {
+				t.Errorf("expected no errors, got %v", res.Errors())
+			}
+		},
+	)
 }
