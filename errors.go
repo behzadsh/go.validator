@@ -1,137 +1,406 @@
 package validation
 
-import "errors"
+import "time"
 
-// General validation errors.
-var (
-	ErrValidationRequired           = errors.New("required validation failed")
-	ErrValidationRequiredIf         = errors.New("required if validation failed")
-	ErrValidationNotEmpty           = errors.New("not empty validation failed")
-	ErrValidationRequiredUnless     = errors.New("required unless validation failed")
-	ErrValidationRequiredWith       = errors.New("required with validation failed")
-	ErrValidationRequiredWithAll    = errors.New("required with all validation failed")
-	ErrValidationRequiredWithout    = errors.New("required without validation failed")
-	ErrValidationRequiredWithoutAll = errors.New("required without all validation failed")
-)
+// Error is implemented by every validation-failure error returned by the rules in this package.
+// Code returns a stable snake_case key suitable for i18n catalog lookups.
+// Params returns rule-specific parameters (e.g. {"length": 5} for MinLength(5), or nil for parameter-less rules).
+// Custom rules may implement this interface to expose Code and Params on FieldError.
+type Error interface {
+	error
+	Code() string
+	Params() map[string]any
+}
 
-// Strings validation errors.
-var (
-	ErrValidationAlpha      = errors.New("alpha validation failed")
-	ErrValidationAlphaDash  = errors.New("alpha dash validation failed")
-	ErrValidationAlphaNum   = errors.New("alpha num validation failed")
-	ErrValidationAlphaSpace = errors.New("alpha space validation failed")
-	ErrValidationASCII      = errors.New("ascii validation failed")
-	ErrValidationBase64     = errors.New("base64 validation failed")
-	ErrValidationContains   = errors.New("contains validation failed")
-	ErrValidationCreditCard = errors.New("credit card validation failed")
-	ErrValidationEmail      = errors.New("email validation failed")
-	ErrValidationEmailMX    = errors.New("email mx validation failed")
-	ErrValidationEndsWith   = errors.New("ends with validation failed")
-	ErrValidationHexColor   = errors.New("hex color validation failed")
-	ErrValidationJSON       = errors.New("json validation failed")
-	ErrValidationJWT        = errors.New("jwt validation failed")
-	ErrValidationLength     = errors.New("length validation failed")
-	ErrValidationLowercase  = errors.New("lowercase validation failed")
-	ErrValidationMaxLength  = errors.New("max length validation failed")
-	ErrValidationMinLength  = errors.New("min length validation failed")
-	ErrValidationNotRegex   = errors.New("not regex validation failed")
-	ErrValidationPhoneE164  = errors.New("phone e164 validation failed")
-	ErrValidationRegex      = errors.New("regex validation failed")
-	ErrValidationSemver     = errors.New("semver validation failed")
-	ErrValidationSlug       = errors.New("slug validation failed")
-	ErrValidationStartsWith = errors.New("starts with validation failed")
-	ErrValidationUppercase  = errors.New("uppercase validation failed")
-	ErrValidationUUID       = errors.New("uuid validation failed")
-)
+// ================================================================================================================== //
+//                                                     basicError                                                     //
+// ================================================================================================================== //
 
-// Numbers validation errors.
-var (
-	ErrValidationBetween     = errors.New("between validation failed")
-	ErrValidationGT          = errors.New("gt validation failed")
-	ErrValidationGTE         = errors.New("gte validation failed")
-	ErrValidationInteger     = errors.New("integer validation failed")
-	ErrValidationLatitude    = errors.New("latitude validation failed")
-	ErrValidationLongitude   = errors.New("longitude validation failed")
-	ErrValidationLT          = errors.New("lt validation failed")
-	ErrValidationLTE         = errors.New("lte validation failed")
-	ErrValidationMax         = errors.New("max validation failed")
-	ErrValidationMin         = errors.New("min validation failed")
-	ErrValidationMultipleOf  = errors.New("multiple of validation failed")
-	ErrValidationNegative    = errors.New("negative validation failed")
-	ErrValidationNonNegative = errors.New("non negative validation failed")
-	ErrValidationNumeric     = errors.New("numeric validation failed")
-	ErrValidationPort        = errors.New("port validation failed")
-	ErrValidationPositive    = errors.New("positive validation failed")
-)
+type basicError struct {
+	code    string
+	message string
+}
 
-// Digit validation errors.
-var (
-	ErrValidationDigits        = errors.New("digits validation failed")
-	ErrValidationDigitsBetween = errors.New("digits between validation failed")
-	ErrValidationMaxDigits     = errors.New("max digits validation failed")
-	ErrValidationMinDigits     = errors.New("min digits validation failed")
-)
+func (e basicError) Error() string        { return e.message }
+func (e basicError) Code() string         { return e.code }
+func (basicError) Params() map[string]any { return nil }
 
-// Date/Time validation errors.
-var (
-	ErrValidationAfter           = errors.New("after validation failed")
-	ErrValidationAfterField      = errors.New("after field validation failed")
-	ErrValidationAfterOrEqual    = errors.New("after or equal validation failed")
-	ErrValidationBefore          = errors.New("before validation failed")
-	ErrValidationBeforeField     = errors.New("before field validation failed")
-	ErrValidationBeforeOrEqual   = errors.New("before or equal validation failed")
-	ErrValidationDateTime        = errors.New("datetime validation failed")
-	ErrValidationDateTimeBetween = errors.New("datetime between validation failed")
-	ErrValidationDateTimeFormat  = errors.New("datetime format validation failed")
-	ErrValidationTimezone        = errors.New("timezone validation failed")
-)
+// ================================================================================================================== //
+//                                                   containsError                                                    //
+// ================================================================================================================== //
 
-// Network validation errors.
-var (
-	ErrValidationCIDR       = errors.New("cidr validation failed")
-	ErrValidationIP         = errors.New("ip validation failed")
-	ErrValidationIPv4       = errors.New("ipv4 validation failed")
-	ErrValidationIPv6       = errors.New("ipv6 validation failed")
-	ErrValidationMACAddress = errors.New("mac address validation failed")
-	ErrValidationURL        = errors.New("url validation failed")
-)
+type containsError struct{ Substring string }
 
-// Collection validation errors.
-var (
-	ErrValidationDistinct = errors.New("distinct validation failed")
-	ErrValidationEach     = errors.New("each validation failed")
-	ErrValidationMaxSize  = errors.New("max size validation failed")
-	ErrValidationMinSize  = errors.New("min size validation failed")
-	ErrValidationSize     = errors.New("size validation failed")
-)
+func (containsError) Error() string            { return "contains validation failed" }
+func (containsError) Code() string             { return "contains" }
+func (e containsError) Params() map[string]any { return map[string]any{"substring": e.Substring} }
 
-// Logical validation errors.
-var (
-	ErrValidationAny = errors.New("any validation failed")
-	ErrValidationNot = errors.New("not validation failed")
-)
+// ================================================================================================================== //
+//                                                   endsWithError                                                    //
+// ================================================================================================================== //
 
-// Generic validation errors.
-var (
-	ErrValidationIn    = errors.New("in validation failed")
-	ErrValidationNotIn = errors.New("not in validation failed")
-	ErrValidationNEQ   = errors.New("neq validation failed")
-)
+type endsWithError struct{ Suffix string }
 
-// Comparison validation errors.
-var (
-	ErrValidationSameAs    = errors.New("same as validation failed")
-	ErrValidationDifferent = errors.New("different validation failed")
-)
+func (endsWithError) Error() string            { return "ends with validation failed" }
+func (endsWithError) Code() string             { return "ends_with" }
+func (e endsWithError) Params() map[string]any { return map[string]any{"suffix": e.Suffix} }
+
+// ================================================================================================================== //
+//                                                    lengthError                                                     //
+// ================================================================================================================== //
+
+type lengthError struct{ Length int }
+
+func (lengthError) Error() string            { return "length validation failed" }
+func (lengthError) Code() string             { return "length" }
+func (e lengthError) Params() map[string]any { return map[string]any{"length": e.Length} }
+
+// ================================================================================================================== //
+//                                                   maxLengthError                                                   //
+// ================================================================================================================== //
+
+type maxLengthError struct{ Length int }
+
+func (maxLengthError) Error() string            { return "max length validation failed" }
+func (maxLengthError) Code() string             { return "max_length" }
+func (e maxLengthError) Params() map[string]any { return map[string]any{"length": e.Length} }
+
+// ================================================================================================================== //
+//                                                   minLengthError                                                   //
+// ================================================================================================================== //
+
+type minLengthError struct{ Length int }
+
+func (minLengthError) Error() string            { return "min length validation failed" }
+func (minLengthError) Code() string             { return "min_length" }
+func (e minLengthError) Params() map[string]any { return map[string]any{"length": e.Length} }
+
+// ================================================================================================================== //
+//                                                    notRegexError                                                   //
+// ================================================================================================================== //
+
+type notRegexError struct{ Pattern string }
+
+func (notRegexError) Error() string            { return "not regex validation failed" }
+func (notRegexError) Code() string             { return "not_regex" }
+func (e notRegexError) Params() map[string]any { return map[string]any{"pattern": e.Pattern} }
+
+// ================================================================================================================== //
+//                                                     regexError                                                     //
+// ================================================================================================================== //
+
+type regexError struct{ Pattern string }
+
+func (regexError) Error() string            { return "regex validation failed" }
+func (regexError) Code() string             { return "regex" }
+func (e regexError) Params() map[string]any { return map[string]any{"pattern": e.Pattern} }
+
+// ================================================================================================================== //
+//                                                  startsWithError                                                   //
+// ================================================================================================================== //
+
+type startsWithError struct{ Prefix string }
+
+func (startsWithError) Error() string            { return "starts with validation failed" }
+func (startsWithError) Code() string             { return "starts_with" }
+func (e startsWithError) Params() map[string]any { return map[string]any{"prefix": e.Prefix} }
+
+// ================================================================================================================== //
+//                                                    betweenError                                                    //
+// ================================================================================================================== //
+
+type betweenError struct{ Min, Max any }
+
+func (betweenError) Error() string            { return "between validation failed" }
+func (betweenError) Code() string             { return "between" }
+func (e betweenError) Params() map[string]any { return map[string]any{"min": e.Min, "max": e.Max} }
+
+// ================================================================================================================== //
+//                                                      gtError                                                       //
+// ================================================================================================================== //
+
+type gtError struct{ Value any }
+
+func (gtError) Error() string            { return "gt validation failed" }
+func (gtError) Code() string             { return "gt" }
+func (e gtError) Params() map[string]any { return map[string]any{"value": e.Value} }
+
+// ================================================================================================================== //
+//                                                      gteError                                                      //
+// ================================================================================================================== //
+
+type gteError struct{ Value any }
+
+func (gteError) Error() string            { return "gte validation failed" }
+func (gteError) Code() string             { return "gte" }
+func (e gteError) Params() map[string]any { return map[string]any{"value": e.Value} }
+
+// ================================================================================================================== //
+//                                                      ltError                                                       //
+// ================================================================================================================== //
+
+type ltError struct{ Value any }
+
+func (ltError) Error() string            { return "lt validation failed" }
+func (ltError) Code() string             { return "lt" }
+func (e ltError) Params() map[string]any { return map[string]any{"value": e.Value} }
+
+// ================================================================================================================== //
+//                                                      lteError                                                      //
+// ================================================================================================================== //
+
+type lteError struct{ Value any }
+
+func (lteError) Error() string            { return "lte validation failed" }
+func (lteError) Code() string             { return "lte" }
+func (e lteError) Params() map[string]any { return map[string]any{"value": e.Value} }
+
+// ================================================================================================================== //
+//                                                      maxError                                                      //
+// ================================================================================================================== //
+
+type maxError struct{ Value any }
+
+func (maxError) Error() string            { return "max validation failed" }
+func (maxError) Code() string             { return "max" }
+func (e maxError) Params() map[string]any { return map[string]any{"value": e.Value} }
+
+// ================================================================================================================== //
+//                                                      minError                                                      //
+// ================================================================================================================== //
+
+type minError struct{ Value any }
+
+func (minError) Error() string            { return "min validation failed" }
+func (minError) Code() string             { return "min" }
+func (e minError) Params() map[string]any { return map[string]any{"value": e.Value} }
+
+// ================================================================================================================== //
+//                                                  multipleOfError                                                   //
+// ================================================================================================================== //
+
+type multipleOfError struct{ Value any }
+
+func (multipleOfError) Error() string            { return "multiple of validation failed" }
+func (multipleOfError) Code() string             { return "multiple_of" }
+func (e multipleOfError) Params() map[string]any { return map[string]any{"value": e.Value} }
+
+// ================================================================================================================== //
+//                                                    digitsError                                                     //
+// ================================================================================================================== //
+
+type digitsError struct{ Digits int }
+
+func (digitsError) Error() string            { return "digits validation failed" }
+func (digitsError) Code() string             { return "digits" }
+func (e digitsError) Params() map[string]any { return map[string]any{"digits": e.Digits} }
+
+// ================================================================================================================== //
+//                                                 digitsBetweenError                                                 //
+// ================================================================================================================== //
+
+type digitsBetweenError struct{ Min, Max int }
+
+func (digitsBetweenError) Error() string { return "digits between validation failed" }
+func (digitsBetweenError) Code() string  { return "digits_between" }
+func (e digitsBetweenError) Params() map[string]any {
+	return map[string]any{"min": e.Min, "max": e.Max}
+}
+
+// ================================================================================================================== //
+//                                                   maxDigitsError                                                   //
+// ================================================================================================================== //
+
+type maxDigitsError struct{ Digits int }
+
+func (maxDigitsError) Error() string            { return "max digits validation failed" }
+func (maxDigitsError) Code() string             { return "max_digits" }
+func (e maxDigitsError) Params() map[string]any { return map[string]any{"digits": e.Digits} }
+
+// ================================================================================================================== //
+//                                                   minDigitsError                                                   //
+// ================================================================================================================== //
+
+type minDigitsError struct{ Digits int }
+
+func (minDigitsError) Error() string            { return "min digits validation failed" }
+func (minDigitsError) Code() string             { return "min_digits" }
+func (e minDigitsError) Params() map[string]any { return map[string]any{"digits": e.Digits} }
+
+// ================================================================================================================== //
+//                                                     afterError                                                     //
+// ================================================================================================================== //
+
+type afterError struct{ Time time.Time }
+
+func (afterError) Error() string            { return "after validation failed" }
+func (afterError) Code() string             { return "after" }
+func (e afterError) Params() map[string]any { return map[string]any{"time": e.Time} }
+
+// ================================================================================================================== //
+//                                                  afterFieldError                                                   //
+// ================================================================================================================== //
+
+type afterFieldError struct{ Field string }
+
+func (afterFieldError) Error() string            { return "after field validation failed" }
+func (afterFieldError) Code() string             { return "after_field" }
+func (e afterFieldError) Params() map[string]any { return map[string]any{"field": e.Field} }
+
+// ================================================================================================================== //
+//                                                 afterOrEqualError                                                  //
+// ================================================================================================================== //
+
+type afterOrEqualError struct{ Time time.Time }
+
+func (afterOrEqualError) Error() string            { return "after or equal validation failed" }
+func (afterOrEqualError) Code() string             { return "after_or_equal" }
+func (e afterOrEqualError) Params() map[string]any { return map[string]any{"time": e.Time} }
+
+// ================================================================================================================== //
+//                                                    beforeError                                                     //
+// ================================================================================================================== //
+
+type beforeError struct{ Time time.Time }
+
+func (beforeError) Error() string            { return "before validation failed" }
+func (beforeError) Code() string             { return "before" }
+func (e beforeError) Params() map[string]any { return map[string]any{"time": e.Time} }
+
+// ================================================================================================================== //
+//                                                 beforeFieldError                                                   //
+// ================================================================================================================== //
+
+type beforeFieldError struct{ Field string }
+
+func (beforeFieldError) Error() string            { return "before field validation failed" }
+func (beforeFieldError) Code() string             { return "before_field" }
+func (e beforeFieldError) Params() map[string]any { return map[string]any{"field": e.Field} }
+
+// ================================================================================================================== //
+//                                                beforeOrEqualError                                                  //
+// ================================================================================================================== //
+
+type beforeOrEqualError struct{ Time time.Time }
+
+func (beforeOrEqualError) Error() string            { return "before or equal validation failed" }
+func (beforeOrEqualError) Code() string             { return "before_or_equal" }
+func (e beforeOrEqualError) Params() map[string]any { return map[string]any{"time": e.Time} }
+
+// ================================================================================================================== //
+//                                               dateTimeBetweenError                                                 //
+// ================================================================================================================== //
+
+type dateTimeBetweenError struct{ Min, Max time.Time }
+
+func (dateTimeBetweenError) Error() string { return "datetime between validation failed" }
+func (dateTimeBetweenError) Code() string  { return "date_time_between" }
+func (e dateTimeBetweenError) Params() map[string]any {
+	return map[string]any{"min": e.Min, "max": e.Max}
+}
+
+// ================================================================================================================== //
+//                                               dateTimeFormatError                                                  //
+// ================================================================================================================== //
+
+type dateTimeFormatError struct{ Format string }
+
+func (dateTimeFormatError) Error() string            { return "datetime format validation failed" }
+func (dateTimeFormatError) Code() string             { return "date_time_format" }
+func (e dateTimeFormatError) Params() map[string]any { return map[string]any{"format": e.Format} }
+
+// ================================================================================================================== //
+//                                                    maxSizeError                                                    //
+// ================================================================================================================== //
+
+type maxSizeError struct{ Size int }
+
+func (maxSizeError) Error() string            { return "max size validation failed" }
+func (maxSizeError) Code() string             { return "max_size" }
+func (e maxSizeError) Params() map[string]any { return map[string]any{"size": e.Size} }
+
+// ================================================================================================================== //
+//                                                    minSizeError                                                    //
+// ================================================================================================================== //
+
+type minSizeError struct{ Size int }
+
+func (minSizeError) Error() string            { return "min size validation failed" }
+func (minSizeError) Code() string             { return "min_size" }
+func (e minSizeError) Params() map[string]any { return map[string]any{"size": e.Size} }
+
+// ================================================================================================================== //
+//                                                     sizeError                                                      //
+// ================================================================================================================== //
+
+type sizeError struct{ Size int }
+
+func (sizeError) Error() string            { return "size validation failed" }
+func (sizeError) Code() string             { return "size" }
+func (e sizeError) Params() map[string]any { return map[string]any{"size": e.Size} }
+
+// ================================================================================================================== //
+//                                                      inError                                                       //
+// ================================================================================================================== //
+
+type inError struct{ Values any }
+
+func (inError) Error() string            { return "in validation failed" }
+func (inError) Code() string             { return "in" }
+func (e inError) Params() map[string]any { return map[string]any{"values": e.Values} }
+
+// ================================================================================================================== //
+//                                                     notInError                                                     //
+// ================================================================================================================== //
+
+type notInError struct{ Values any }
+
+func (notInError) Error() string            { return "not in validation failed" }
+func (notInError) Code() string             { return "not_in" }
+func (e notInError) Params() map[string]any { return map[string]any{"values": e.Values} }
+
+// ================================================================================================================== //
+//                                                      neqError                                                      //
+// ================================================================================================================== //
+
+type neqError struct{ Value any }
+
+func (neqError) Error() string            { return "neq validation failed" }
+func (neqError) Code() string             { return "neq" }
+func (e neqError) Params() map[string]any { return map[string]any{"value": e.Value} }
+
+// ================================================================================================================== //
+//                                                    sameAsError                                                     //
+// ================================================================================================================== //
+
+type sameAsError struct{ Field string }
+
+func (sameAsError) Error() string            { return "same as validation failed" }
+func (sameAsError) Code() string             { return "same_as" }
+func (e sameAsError) Params() map[string]any { return map[string]any{"field": e.Field} }
+
+// ================================================================================================================== //
+//                                                   differentError                                                   //
+// ================================================================================================================== //
+
+type differentError struct{ Field string }
+
+func (differentError) Error() string            { return "different validation failed" }
+func (differentError) Code() string             { return "different" }
+func (e differentError) Params() map[string]any { return map[string]any{"field": e.Field} }
 
 // FieldError describes a single validation failure for a single field.
 //
 // Err holds the underlying error returned by the rule; Message is its pre-rendered string form, kept on the struct so
 // that callers do not need to invoke Err.Error() in hot paths or templates.
+// Code and Params are populated when the rule error implements ValidationError; they are empty/nil for custom rules
+// that do not implement that interface.
 type FieldError struct {
 	Path    string
 	Err     error
 	Message string
+	Code    string
+	Params  map[string]any
 }
 
 // Error implements the error interface.

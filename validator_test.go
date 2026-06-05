@@ -1,7 +1,6 @@
 package validation
 
 import (
-	"errors"
 	"sync"
 	"testing"
 )
@@ -205,7 +204,7 @@ func TestResult_For(t *testing.T) {
 	}
 }
 
-func TestFieldError_ErrorsIs(t *testing.T) {
+func TestFieldError_Code(t *testing.T) {
 	schema := New().Field("name", Required)
 	res, err := schema.Validate(map[string]any{})
 	if err != nil {
@@ -217,8 +216,8 @@ func TestFieldError_ErrorsIs(t *testing.T) {
 		t.Fatal("expected error")
 	}
 	fe := errs[0]
-	if !errors.Is(fe, ErrValidationRequired) {
-		t.Errorf("errors.Is(FieldError, ErrValidationRequired) = false, want true")
+	if fe.Code != "required" {
+		t.Errorf("FieldError.Code = %q, want \"required\"", fe.Code)
 	}
 }
 

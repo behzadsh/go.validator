@@ -37,7 +37,7 @@ func TestNumeric(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("Numeric.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationNumeric) {
+		if err != nil && errorCode(err) != "numeric" {
 			t.Errorf("Numeric.Validate(%v) wrong error: %v", tt.value, err)
 		}
 	}
@@ -64,7 +64,7 @@ func TestBetween(t *testing.T) {
 				if (err != nil) != tt.wantErr {
 					t.Errorf("Between[int](1,10).Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 				}
-				if err != nil && !errors.Is(err, ErrValidationBetween) {
+				if err != nil && errorCode(err) != "between" {
 					t.Errorf("wrong error type: %v", err)
 				}
 			}
@@ -115,7 +115,7 @@ func TestMin(t *testing.T) {
 				if (err != nil) != tt.wantErr {
 					t.Errorf("Min[int](18).Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 				}
-				if err != nil && !errors.Is(err, ErrValidationMin) {
+				if err != nil && errorCode(err) != "min" {
 					t.Errorf("wrong error type: %v", err)
 				}
 			}
@@ -142,7 +142,7 @@ func TestMax(t *testing.T) {
 				if (err != nil) != tt.wantErr {
 					t.Errorf("Max[int](100).Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 				}
-				if err != nil && !errors.Is(err, ErrValidationMax) {
+				if err != nil && errorCode(err) != "max" {
 					t.Errorf("wrong error type: %v", err)
 				}
 			}
@@ -168,7 +168,7 @@ func TestGT(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("GT[int](18).Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationGT) {
+		if err != nil && errorCode(err) != "gt" {
 			t.Errorf("wrong error type: %v", err)
 		}
 	}
@@ -191,7 +191,7 @@ func TestGTE(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("GTE[int](18).Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationGTE) {
+		if err != nil && errorCode(err) != "gte" {
 			t.Errorf("wrong error type: %v", err)
 		}
 	}
@@ -215,7 +215,7 @@ func TestLT(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("LT[int](100).Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationLT) {
+		if err != nil && errorCode(err) != "lt" {
 			t.Errorf("wrong error type: %v", err)
 		}
 	}
@@ -238,7 +238,7 @@ func TestLTE(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("LTE[int](100).Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationLTE) {
+		if err != nil && errorCode(err) != "lte" {
 			t.Errorf("wrong error type: %v", err)
 		}
 	}
@@ -270,7 +270,7 @@ func TestInteger(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("Integer.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationInteger) {
+		if err != nil && errorCode(err) != "integer" {
 			t.Errorf("wrong error type: %v", err)
 		}
 	}
@@ -297,7 +297,7 @@ func TestPositive(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("Positive.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationPositive) {
+		if err != nil && errorCode(err) != "positive" {
 			t.Errorf("wrong error type: %v", err)
 		}
 	}
@@ -322,7 +322,7 @@ func TestNegative(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("Negative.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationNegative) {
+		if err != nil && errorCode(err) != "negative" {
 			t.Errorf("wrong error type: %v", err)
 		}
 	}
@@ -348,7 +348,7 @@ func TestNonNegative(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("NonNegative.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationNonNegative) {
+		if err != nil && errorCode(err) != "non_negative" {
 			t.Errorf("wrong error type: %v", err)
 		}
 	}
@@ -416,7 +416,7 @@ func TestPort(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("Port.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationPort) {
+		if err != nil && errorCode(err) != "port" {
 			t.Errorf("wrong error type: %v", err)
 		}
 	}
@@ -442,7 +442,7 @@ func TestLatitude(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("Latitude.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationLatitude) {
+		if err != nil && errorCode(err) != "latitude" {
 			t.Errorf("wrong error type: %v", err)
 		}
 	}
@@ -468,7 +468,7 @@ func TestLongitude(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("Longitude.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationLongitude) {
+		if err != nil && errorCode(err) != "longitude" {
 			t.Errorf("wrong error type: %v", err)
 		}
 	}

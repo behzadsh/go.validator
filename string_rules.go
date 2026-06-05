@@ -47,7 +47,7 @@ var Alpha Rule = RuleFunc(
 	func(value any) error {
 		str, ok := value.(string)
 		if !ok || !regexAlpha.MatchString(str) {
-			return ErrValidationAlpha
+			return basicError{"alpha", "alpha validation failed"}
 		}
 
 		return nil
@@ -73,7 +73,7 @@ var AlphaDash Rule = RuleFunc(
 	func(value any) error {
 		str, ok := value.(string)
 		if !ok || !regexAlphaDash.MatchString(str) {
-			return ErrValidationAlphaDash
+			return basicError{"alpha_dash", "alpha dash validation failed"}
 		}
 
 		return nil
@@ -97,7 +97,7 @@ var AlphaNum Rule = RuleFunc(
 	func(value any) error {
 		str, ok := value.(string)
 		if !ok || !regexAlphaNum.MatchString(str) {
-			return ErrValidationAlphaNum
+			return basicError{"alpha_num", "alpha num validation failed"}
 		}
 
 		return nil
@@ -121,7 +121,7 @@ var AlphaSpace Rule = RuleFunc(
 	func(value any) error {
 		str, ok := value.(string)
 		if !ok || !regexAlphaSpace.MatchString(str) {
-			return ErrValidationAlphaSpace
+			return basicError{"alpha_space", "alpha space validation failed"}
 		}
 
 		return nil
@@ -143,12 +143,12 @@ var ASCII Rule = RuleFunc(
 	func(value any) error {
 		str, ok := value.(string)
 		if !ok {
-			return ErrValidationASCII
+			return basicError{"ascii", "ascii validation failed"}
 		}
 
 		for i := 0; i < len(str); i++ {
 			if str[i] > 127 {
-				return ErrValidationASCII
+				return basicError{"ascii", "ascii validation failed"}
 			}
 		}
 
@@ -174,11 +174,11 @@ var Base64 Rule = RuleFunc(
 	func(value any) error {
 		str, ok := value.(string)
 		if !ok {
-			return ErrValidationBase64
+			return basicError{"base64", "base64 validation failed"}
 		}
 
 		if _, err := base64.StdEncoding.DecodeString(str); err != nil {
-			return ErrValidationBase64
+			return basicError{"base64", "base64 validation failed"}
 		}
 
 		return nil
@@ -200,7 +200,7 @@ func Contains(sub string) Rule {
 		func(value any) error {
 			str, ok := value.(string)
 			if !ok || !strings.Contains(str, sub) {
-				return ErrValidationContains
+				return containsError{Substring: sub}
 			}
 
 			return nil
@@ -226,22 +226,22 @@ var CreditCard Rule = RuleFunc(
 	func(value any) error {
 		str, ok := value.(string)
 		if !ok {
-			return ErrValidationCreditCard
+			return basicError{"credit_card", "credit card validation failed"}
 		}
 
 		cleaned := strings.NewReplacer(" ", "", "-", "").Replace(str)
 		if len(cleaned) < 13 || len(cleaned) > 19 {
-			return ErrValidationCreditCard
+			return basicError{"credit_card", "credit card validation failed"}
 		}
 
 		for _, c := range cleaned {
 			if c < '0' || c > '9' {
-				return ErrValidationCreditCard
+				return basicError{"credit_card", "credit card validation failed"}
 			}
 		}
 
 		if !luhn(cleaned) {
-			return ErrValidationCreditCard
+			return basicError{"credit_card", "credit card validation failed"}
 		}
 
 		return nil
@@ -267,7 +267,7 @@ var Email Rule = RuleFunc(
 	func(value any) error {
 		str, ok := value.(string)
 		if !ok || !isEmail(str) {
-			return ErrValidationEmail
+			return basicError{"email", "email validation failed"}
 		}
 
 		return nil
@@ -277,8 +277,8 @@ var Email Rule = RuleFunc(
 // EmailMX is a Rule that validates the value is a well-formed email address whose domain has at least one MX record.
 //
 // Fails if:
-//   - value is not a string or is not a valid email format (returns ErrValidationEmail)
-//   - the domain has no MX records (returns ErrValidationEmailMX)
+//   - value is not a string or is not a valid email format (returns basicError{"email", "email validation failed"})
+//   - the domain has no MX records (returns basicError{"email_mx", "email mx validation failed"})
 //
 // Note: this rule performs a network call on every invocation. Avoid in hot paths; cache results externally if needed.
 //
@@ -291,12 +291,12 @@ var EmailMX Rule = RuleFunc(
 	func(value any) error {
 		str, ok := value.(string)
 		if !ok || !isEmail(str) {
-			return ErrValidationEmail
+			return basicError{"email", "email validation failed"}
 		}
 
 		domain := strings.SplitN(str, "@", 2)[1]
 		if _, err := net.LookupMX(domain); err != nil {
-			return ErrValidationEmailMX
+			return basicError{"email_mx", "email mx validation failed"}
 		}
 
 		return nil
@@ -318,7 +318,7 @@ func EndsWith(suffix string) Rule {
 		func(value any) error {
 			str, ok := value.(string)
 			if !ok || !strings.HasSuffix(str, suffix) {
-				return ErrValidationEndsWith
+				return endsWithError{Suffix: suffix}
 			}
 
 			return nil
@@ -344,7 +344,7 @@ var HexColor Rule = RuleFunc(
 	func(value any) error {
 		str, ok := value.(string)
 		if !ok || !regexHexColor.MatchString(str) {
-			return ErrValidationHexColor
+			return basicError{"hex_color", "hex color validation failed"}
 		}
 
 		return nil
@@ -372,7 +372,7 @@ var JSON Rule = RuleFunc(
 	func(value any) error {
 		str, ok := value.(string)
 		if !ok || !json.Valid([]byte(str)) {
-			return ErrValidationJSON
+			return basicError{"json", "json validation failed"}
 		}
 
 		return nil
@@ -398,7 +398,7 @@ var JWT Rule = RuleFunc(
 	func(value any) error {
 		str, ok := value.(string)
 		if !ok || !regexJWT.MatchString(str) {
-			return ErrValidationJWT
+			return basicError{"jwt", "jwt validation failed"}
 		}
 
 		return nil
@@ -424,7 +424,7 @@ func Length(l int) Rule {
 		func(value any) error {
 			str, ok := value.(string)
 			if !ok || utf8.RuneCountInString(str) != l {
-				return ErrValidationLength
+				return lengthError{Length: l}
 			}
 
 			return nil
@@ -448,7 +448,7 @@ var Lowercase Rule = RuleFunc(
 	func(value any) error {
 		str, ok := value.(string)
 		if !ok || str != strings.ToLower(str) {
-			return ErrValidationLowercase
+			return basicError{"lowercase", "lowercase validation failed"}
 		}
 
 		return nil
@@ -473,7 +473,7 @@ func MaxLength(l int) Rule {
 		func(value any) error {
 			str, ok := value.(string)
 			if !ok || utf8.RuneCountInString(str) > l {
-				return ErrValidationMaxLength
+				return maxLengthError{Length: l}
 			}
 
 			return nil
@@ -499,7 +499,7 @@ func MinLength(l int) Rule {
 		func(value any) error {
 			str, ok := value.(string)
 			if !ok || utf8.RuneCountInString(str) < l {
-				return ErrValidationMinLength
+				return minLengthError{Length: l}
 			}
 
 			return nil
@@ -531,7 +531,7 @@ func NotRegex(pattern string) Rule {
 
 			str, ok := value.(string)
 			if !ok || re.MatchString(str) {
-				return ErrValidationNotRegex
+				return notRegexError{Pattern: pattern}
 			}
 
 			return nil
@@ -558,7 +558,7 @@ var PhoneE164 Rule = RuleFunc(
 	func(value any) error {
 		str, ok := value.(string)
 		if !ok || !regexPhoneE164.MatchString(str) {
-			return ErrValidationPhoneE164
+			return basicError{"phone_e164", "phone e164 validation failed"}
 		}
 
 		return nil
@@ -590,7 +590,7 @@ func Regex(pattern string) Rule {
 
 			str, ok := value.(string)
 			if !ok || !re.MatchString(str) {
-				return ErrValidationRegex
+				return regexError{Pattern: pattern}
 			}
 
 			return nil
@@ -620,7 +620,7 @@ var Semver Rule = RuleFunc(
 	func(value any) error {
 		str, ok := value.(string)
 		if !ok || !regexSemver.MatchString(str) {
-			return ErrValidationSemver
+			return basicError{"semver", "semver validation failed"}
 		}
 
 		return nil
@@ -648,7 +648,7 @@ var Slug Rule = RuleFunc(
 	func(value any) error {
 		str, ok := value.(string)
 		if !ok || !regexSlug.MatchString(str) {
-			return ErrValidationSlug
+			return basicError{"slug", "slug validation failed"}
 		}
 
 		return nil
@@ -670,7 +670,7 @@ func StartsWith(prefix string) Rule {
 		func(value any) error {
 			str, ok := value.(string)
 			if !ok || !strings.HasPrefix(str, prefix) {
-				return ErrValidationStartsWith
+				return startsWithError{Prefix: prefix}
 			}
 
 			return nil
@@ -694,7 +694,7 @@ var Uppercase Rule = RuleFunc(
 	func(value any) error {
 		str, ok := value.(string)
 		if !ok || str != strings.ToUpper(str) {
-			return ErrValidationUppercase
+			return basicError{"uppercase", "uppercase validation failed"}
 		}
 
 		return nil
@@ -715,7 +715,7 @@ var UUID Rule = RuleFunc(
 	func(value any) error {
 		str, ok := value.(string)
 		if !ok || !regexUUID.MatchString(str) {
-			return ErrValidationUUID
+			return basicError{"uuid", "uuid validation failed"}
 		}
 
 		return nil

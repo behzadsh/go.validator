@@ -18,7 +18,7 @@ func SameAs(path string) InputRule {
 		func(value any, input *InputBag) error {
 			other, found := input.Lookup(path)
 			if !found || value != other {
-				return ErrValidationSameAs
+				return sameAsError{Field: path}
 			}
 
 			return nil
@@ -43,7 +43,7 @@ func Different(path string) InputRule {
 		func(value any, input *InputBag) error {
 			other, found := input.Lookup(path)
 			if found && value == other {
-				return ErrValidationDifferent
+				return differentError{Field: path}
 			}
 
 			return nil

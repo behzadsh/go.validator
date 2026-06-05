@@ -1,7 +1,6 @@
 package validation
 
 import (
-	"errors"
 	"testing"
 )
 
@@ -26,7 +25,7 @@ func TestIn(t *testing.T) {
 				if (err != nil) != tt.wantErr {
 					t.Errorf("In(strings).Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 				}
-				if err != nil && !errors.Is(err, ErrValidationIn) {
+				if err != nil && errorCode(err) != "in" {
 					t.Errorf("wrong error type: %v", err)
 				}
 			}
@@ -100,7 +99,7 @@ func TestNEQ(t *testing.T) {
 				if (err != nil) != tt.wantErr {
 					t.Errorf("NEQ[string](\"admin\").Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 				}
-				if err != nil && !errors.Is(err, ErrValidationNEQ) {
+				if err != nil && errorCode(err) != "neq" {
 					t.Errorf("wrong error type: %v", err)
 				}
 			}

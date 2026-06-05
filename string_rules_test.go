@@ -23,7 +23,7 @@ func TestAlpha(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("Alpha.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationAlpha) {
+		if err != nil && errorCode(err) != "alpha" {
 			t.Errorf("Alpha.Validate(%v) wrong error type: %v", tt.value, err)
 		}
 	}
@@ -227,7 +227,7 @@ func TestUUID(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("UUID.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationUUID) {
+		if err != nil && errorCode(err) != "uuid" {
 			t.Errorf("UUID.Validate(%v) wrong error: %v", tt.value, err)
 		}
 	}
@@ -253,7 +253,7 @@ func TestRegex(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("Regex(%q).Validate(%v) error = %v, wantErr %v", tt.pattern, tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationRegex) {
+		if err != nil && errorCode(err) != "regex" {
 			t.Errorf("Regex(%q).Validate(%v) wrong error: %v", tt.pattern, tt.value, err)
 		}
 	}
@@ -289,7 +289,7 @@ func TestNotRegex(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("NotRegex(%q).Validate(%v) error = %v, wantErr %v", tt.pattern, tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationNotRegex) {
+		if err != nil && errorCode(err) != "not_regex" {
 			t.Errorf("NotRegex(%q).Validate(%v) wrong error: %v", tt.pattern, tt.value, err)
 		}
 	}
@@ -314,7 +314,7 @@ func TestStartsWith(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("StartsWith(%q).Validate(%v) error = %v, wantErr %v", tt.prefix, tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationStartsWith) {
+		if err != nil && errorCode(err) != "starts_with" {
 			t.Errorf("StartsWith(%q).Validate(%v) wrong error: %v", tt.prefix, tt.value, err)
 		}
 	}
@@ -339,7 +339,7 @@ func TestEndsWith(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("EndsWith(%q).Validate(%v) error = %v, wantErr %v", tt.suffix, tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationEndsWith) {
+		if err != nil && errorCode(err) != "ends_with" {
 			t.Errorf("EndsWith(%q).Validate(%v) wrong error: %v", tt.suffix, tt.value, err)
 		}
 	}
@@ -365,7 +365,7 @@ func TestLowercase(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("Lowercase.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationLowercase) {
+		if err != nil && errorCode(err) != "lowercase" {
 			t.Errorf("Lowercase.Validate(%v) wrong error: %v", tt.value, err)
 		}
 	}
@@ -391,7 +391,7 @@ func TestUppercase(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("Uppercase.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationUppercase) {
+		if err != nil && errorCode(err) != "uppercase" {
 			t.Errorf("Uppercase.Validate(%v) wrong error: %v", tt.value, err)
 		}
 	}
@@ -417,7 +417,7 @@ func TestASCII(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("ASCII.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationASCII) {
+		if err != nil && errorCode(err) != "ascii" {
 			t.Errorf("ASCII.Validate(%v) wrong error: %v", tt.value, err)
 		}
 	}
@@ -442,7 +442,7 @@ func TestBase64(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("Base64.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationBase64) {
+		if err != nil && errorCode(err) != "base64" {
 			t.Errorf("Base64.Validate(%v) wrong error: %v", tt.value, err)
 		}
 	}
@@ -465,7 +465,7 @@ func TestContains(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("Contains(\"hello\").Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationContains) {
+		if err != nil && errorCode(err) != "contains" {
 			t.Errorf("Contains.Validate(%v) wrong error: %v", tt.value, err)
 		}
 	}
@@ -493,7 +493,7 @@ func TestCreditCard(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("CreditCard.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationCreditCard) {
+		if err != nil && errorCode(err) != "credit_card" {
 			t.Errorf("CreditCard.Validate(%v) wrong error: %v", tt.value, err)
 		}
 	}
@@ -521,7 +521,7 @@ func TestHexColor(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("HexColor.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationHexColor) {
+		if err != nil && errorCode(err) != "hex_color" {
 			t.Errorf("HexColor.Validate(%v) wrong error: %v", tt.value, err)
 		}
 	}
@@ -550,7 +550,7 @@ func TestJSON(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("JSON.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationJSON) {
+		if err != nil && errorCode(err) != "json" {
 			t.Errorf("JSON.Validate(%v) wrong error: %v", tt.value, err)
 		}
 	}
@@ -576,7 +576,7 @@ func TestJWT(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("JWT.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationJWT) {
+		if err != nil && errorCode(err) != "jwt" {
 			t.Errorf("JWT.Validate(%v) wrong error: %v", tt.value, err)
 		}
 	}
@@ -602,7 +602,7 @@ func TestPhoneE164(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("PhoneE164.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationPhoneE164) {
+		if err != nil && errorCode(err) != "phone_e164" {
 			t.Errorf("PhoneE164.Validate(%v) wrong error: %v", tt.value, err)
 		}
 	}
@@ -632,7 +632,7 @@ func TestSemver(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("Semver.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationSemver) {
+		if err != nil && errorCode(err) != "semver" {
 			t.Errorf("Semver.Validate(%v) wrong error: %v", tt.value, err)
 		}
 	}
@@ -661,7 +661,7 @@ func TestSlug(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("Slug.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationSlug) {
+		if err != nil && errorCode(err) != "slug" {
 			t.Errorf("Slug.Validate(%v) wrong error: %v", tt.value, err)
 		}
 	}

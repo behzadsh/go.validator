@@ -1,7 +1,6 @@
 package validation
 
 import (
-	"errors"
 	"testing"
 )
 
@@ -28,7 +27,7 @@ func TestDistinct(t *testing.T) {
 				if (err != nil) != tt.wantErr {
 					t.Errorf("Distinct.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 				}
-				if err != nil && !errors.Is(err, ErrValidationDistinct) {
+				if err != nil && errorCode(err) != "distinct" {
 					t.Errorf("wrong error type: %v", err)
 				}
 			},
@@ -54,7 +53,7 @@ func TestMinSize(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("MinSize(2).Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationMinSize) {
+		if err != nil && errorCode(err) != "min_size" {
 			t.Errorf("wrong error type: %v", err)
 		}
 	}
@@ -78,7 +77,7 @@ func TestMaxSize(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("MaxSize(3).Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationMaxSize) {
+		if err != nil && errorCode(err) != "max_size" {
 			t.Errorf("wrong error type: %v", err)
 		}
 	}
@@ -101,7 +100,7 @@ func TestSize(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("Size(3).Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationSize) {
+		if err != nil && errorCode(err) != "size" {
 			t.Errorf("wrong error type: %v", err)
 		}
 	}
@@ -123,7 +122,7 @@ func TestEach(t *testing.T) {
 			if err == nil {
 				t.Error("expected error, got nil")
 			}
-			if !errors.Is(err, ErrValidationEach) {
+			if errorCode(err) != "each" {
 				t.Errorf("wrong error type: %v", err)
 			}
 		},

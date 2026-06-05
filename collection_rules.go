@@ -36,7 +36,7 @@ var Distinct Rule = RuleFunc(
 
 			key := elem.Interface()
 			if _, exists := seen[key]; exists {
-				return ErrValidationDistinct
+				return basicError{"distinct", "distinct validation failed"}
 			}
 
 			seen[key] = struct{}{}
@@ -49,7 +49,7 @@ var Distinct Rule = RuleFunc(
 // Each returns a Rule that applies the given rules to every element of a slice or array.
 //
 // Non-slice/array values and nil pass (the rule is irrelevant for scalars). Validation stops at the first failing
-// element and returns ErrValidationEach; the index and inner error are not propagated.
+// element and returns basicError{"each", "each validation failed"}; the index and inner error are not propagated.
 //
 // Fails if:
 //   - any element fails any of the given rules
@@ -76,7 +76,7 @@ func Each(rules ...Rule) Rule {
 				elem := rv.Index(i).Interface()
 				for _, r := range rules {
 					if err := applyRule(r, elem, input); err != nil {
-						return ErrValidationEach
+						return basicError{"each", "each validation failed"}
 					}
 				}
 			}
@@ -111,7 +111,7 @@ func MaxSize(n int) Rule {
 			}
 
 			if rv.Len() > n {
-				return ErrValidationMaxSize
+				return maxSizeError{Size: n}
 			}
 
 			return nil
@@ -144,7 +144,7 @@ func MinSize(n int) Rule {
 			}
 
 			if rv.Len() < n {
-				return ErrValidationMinSize
+				return minSizeError{Size: n}
 			}
 
 			return nil
@@ -177,7 +177,7 @@ func Size(n int) Rule {
 			}
 
 			if rv.Len() != n {
-				return ErrValidationSize
+				return sizeError{Size: n}
 			}
 
 			return nil

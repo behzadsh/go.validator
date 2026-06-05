@@ -26,7 +26,7 @@ func Digits(n int) Rule {
 		func(value any) error {
 			str, ok := value.(string)
 			if !ok || !re.MatchString(str) {
-				return ErrValidationDigits
+				return digitsError{Digits: n}
 			}
 
 			return nil
@@ -54,7 +54,7 @@ func DigitsBetween(minV, maxV int) Rule {
 		func(value any) error {
 			str, ok := value.(string)
 			if !ok || !re.MatchString(str) {
-				return ErrValidationDigitsBetween
+				return digitsBetweenError{Min: minV, Max: maxV}
 			}
 
 			return nil
@@ -80,7 +80,7 @@ func MaxDigits(n int) Rule {
 		func(value any) error {
 			str, ok := value.(string)
 			if !ok || !re.MatchString(str) {
-				return ErrValidationMaxDigits
+				return maxDigitsError{Digits: n}
 			}
 
 			return nil
@@ -106,7 +106,7 @@ func MinDigits(n int) Rule {
 		func(value any) error {
 			str, ok := value.(string)
 			if !ok || !re.MatchString(str) {
-				return ErrValidationMinDigits
+				return minDigitsError{Digits: n}
 			}
 
 			return nil

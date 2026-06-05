@@ -33,7 +33,7 @@ func Between[T number](minV, maxV T) Rule {
 	fn := func(value any) error {
 		v, ok := value.(T)
 		if !ok || v < minV || v > maxV {
-			return ErrValidationBetween
+			return betweenError{Min: minV, Max: maxV}
 		}
 
 		return nil
@@ -60,7 +60,7 @@ func GT[T number](v T) Rule {
 		func(value any) error {
 			actual, ok := value.(T)
 			if !ok || actual <= v {
-				return ErrValidationGT
+				return gtError{Value: v}
 			}
 
 			return nil
@@ -86,7 +86,7 @@ func GTE[T number](v T) Rule {
 		func(value any) error {
 			actual, ok := value.(T)
 			if !ok || actual < v {
-				return ErrValidationGTE
+				return gteError{Value: v}
 			}
 
 			return nil
@@ -123,7 +123,7 @@ var Integer Rule = RuleFunc(
 			reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 			return nil
 		default:
-			return ErrValidationInteger
+			return basicError{"integer", "integer validation failed"}
 		}
 	},
 )
@@ -150,7 +150,7 @@ var Latitude Rule = RuleFunc(
 
 		fv, ok := condToFloat(value)
 		if !ok || fv < -90 || fv > 90 {
-			return ErrValidationLatitude
+			return basicError{"latitude", "latitude validation failed"}
 		}
 
 		return nil
@@ -179,7 +179,7 @@ var Longitude Rule = RuleFunc(
 
 		fv, ok := condToFloat(value)
 		if !ok || fv < -180 || fv > 180 {
-			return ErrValidationLongitude
+			return basicError{"longitude", "longitude validation failed"}
 		}
 
 		return nil
@@ -204,7 +204,7 @@ func LT[T number](v T) Rule {
 		func(value any) error {
 			actual, ok := value.(T)
 			if !ok || actual >= v {
-				return ErrValidationLT
+				return ltError{Value: v}
 			}
 
 			return nil
@@ -230,7 +230,7 @@ func LTE[T number](v T) Rule {
 		func(value any) error {
 			actual, ok := value.(T)
 			if !ok || actual > v {
-				return ErrValidationLTE
+				return lteError{Value: v}
 			}
 
 			return nil
@@ -256,7 +256,7 @@ func Max[T number](maxV T) Rule {
 	fn := func(value any) error {
 		v, ok := value.(T)
 		if !ok || v > maxV {
-			return ErrValidationMax
+			return maxError{Value: maxV}
 		}
 
 		return nil
@@ -283,7 +283,7 @@ func Min[T number](minV T) Rule {
 	fn := func(value any) error {
 		v, ok := value.(T)
 		if !ok || v < minV {
-			return ErrValidationMin
+			return minError{Value: minV}
 		}
 
 		return nil
@@ -315,16 +315,16 @@ func MultipleOf[T number](n T) Rule {
 			}
 
 			if value == nil {
-				return ErrValidationMultipleOf
+				return multipleOfError{Value: n}
 			}
 
 			fv, ok := condToFloat(value)
 			if !ok {
-				return ErrValidationMultipleOf
+				return multipleOfError{Value: n}
 			}
 
 			if math.Mod(fv, float64(n)) != 0 {
-				return ErrValidationMultipleOf
+				return multipleOfError{Value: n}
 			}
 
 			return nil
@@ -354,7 +354,7 @@ var Negative Rule = RuleFunc(
 
 		fv, ok := condToFloat(value)
 		if !ok || fv >= 0 {
-			return ErrValidationNegative
+			return basicError{"negative", "negative validation failed"}
 		}
 
 		return nil
@@ -383,7 +383,7 @@ var NonNegative Rule = RuleFunc(
 
 		fv, ok := condToFloat(value)
 		if !ok || fv < 0 {
-			return ErrValidationNonNegative
+			return basicError{"non_negative", "non negative validation failed"}
 		}
 
 		return nil
@@ -418,12 +418,12 @@ var Numeric Rule = RuleFunc(
 		case string:
 			_, err := strconv.ParseFloat(v, 64)
 			if err != nil {
-				return ErrValidationNumeric
+				return basicError{"numeric", "numeric validation failed"}
 			}
 
 			return nil
 		default:
-			return ErrValidationNumeric
+			return basicError{"numeric", "numeric validation failed"}
 		}
 	},
 )
@@ -452,7 +452,7 @@ var Port Rule = RuleFunc(
 
 		fv, ok := condToFloat(value)
 		if !ok || fv != math.Trunc(fv) || fv < 1 || fv > 65535 {
-			return ErrValidationPort
+			return basicError{"port", "port validation failed"}
 		}
 
 		return nil
@@ -481,7 +481,7 @@ var Positive Rule = RuleFunc(
 
 		fv, ok := condToFloat(value)
 		if !ok || fv <= 0 {
-			return ErrValidationPositive
+			return basicError{"positive", "positive validation failed"}
 		}
 
 		return nil

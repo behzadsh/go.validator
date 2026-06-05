@@ -7,9 +7,11 @@
 //		Field("name", validation.Required, validation.MinLength(2)).
 //		Field("email", validation.Required, validation.Email)
 //
-//	if res := schema.Validate(input); res.HasErrors() {
+//	if res, err := schema.Validate(input); err != nil {
+//		log.Fatal(err) // RuleSyntaxError: misconfigured rule, fix at startup
+//	} else if res.HasErrors() {
 //		for _, e := range res.Errors() {
-//			fmt.Println(e.Path, e.Message)
+//			fmt.Println(e.Path, e.Code, e.Params)
 //		}
 //	}
 //
@@ -17,6 +19,8 @@
 // Field names in the path follow this resolution order: the first comma-segment of the `json` tag (when present and
 // not "-"), then the exported field name.
 package validation
+
+import "errors"
 
 // Rule validates a single value and returns nil on success or an error describing the failure.
 type Rule interface {
@@ -92,10 +96,26 @@ func (s *Schema) Validate(input any) (*Result, error) {
 				err = r.Validate(value)
 			}
 			if err != nil {
-				errs = append(errs, FieldError{Path: f.path, Err: err, Message: err.Error()})
+				var rse RuleSyntaxError
+				if errors.As(err, &rse) {
+					return nil, rse
+				}
+				code, params := codeAndParams(err)
+				errs = append(
+					errs,
+					FieldError{Path: f.path, Err: err, Message: err.Error(), Code: code, Params: params},
+				)
 			}
 		}
 	}
 
 	return &Result{errors: errs}, nil
+}
+
+func codeAndParams(err error) (string, map[string]any) {
+	var ve Error
+	if errors.As(err, &ve) {
+		return ve.Code(), ve.Params()
+	}
+	return "", nil
 }

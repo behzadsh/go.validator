@@ -50,12 +50,12 @@ func After(ct time.Time) Rule {
 	fn := func(value any) error {
 		str, ok := value.(string)
 		if !ok {
-			return ErrValidationAfter
+			return afterError{Time: ct}
 		}
 
 		t, ok := parseTime(str)
 		if !ok || !t.After(ct) {
-			return ErrValidationAfter
+			return afterError{Time: ct}
 		}
 
 		return nil
@@ -84,27 +84,27 @@ func AfterField(path string) InputRule {
 		func(value any, input *InputBag) error {
 			str, ok := value.(string)
 			if !ok {
-				return ErrValidationAfterField
+				return afterFieldError{Field: path}
 			}
 
 			t, ok := parseTime(str)
 			if !ok {
-				return ErrValidationAfterField
+				return afterFieldError{Field: path}
 			}
 
 			otherRaw, found := input.Lookup(path)
 			if !found {
-				return ErrValidationAfterField
+				return afterFieldError{Field: path}
 			}
 
 			otherStr, ok := otherRaw.(string)
 			if !ok {
-				return ErrValidationAfterField
+				return afterFieldError{Field: path}
 			}
 
 			other, ok := parseTime(otherStr)
 			if !ok || !t.After(other) {
-				return ErrValidationAfterField
+				return afterFieldError{Field: path}
 			}
 
 			return nil
@@ -130,12 +130,12 @@ func AfterOrEqual(ct time.Time) Rule {
 		func(value any) error {
 			str, ok := value.(string)
 			if !ok {
-				return ErrValidationAfterOrEqual
+				return afterOrEqualError{Time: ct}
 			}
 
 			t, ok := parseTime(str)
 			if !ok || t.Before(ct) {
-				return ErrValidationAfterOrEqual
+				return afterOrEqualError{Time: ct}
 			}
 
 			return nil
@@ -164,12 +164,12 @@ func Before(ct time.Time) Rule {
 	fn := func(value any) error {
 		str, ok := value.(string)
 		if !ok {
-			return ErrValidationBefore
+			return beforeError{Time: ct}
 		}
 
 		t, ok := parseTime(str)
 		if !ok || !t.Before(ct) {
-			return ErrValidationBefore
+			return beforeError{Time: ct}
 		}
 
 		return nil
@@ -198,27 +198,27 @@ func BeforeField(path string) InputRule {
 		func(value any, input *InputBag) error {
 			str, ok := value.(string)
 			if !ok {
-				return ErrValidationBeforeField
+				return beforeFieldError{Field: path}
 			}
 
 			t, ok := parseTime(str)
 			if !ok {
-				return ErrValidationBeforeField
+				return beforeFieldError{Field: path}
 			}
 
 			otherRaw, found := input.Lookup(path)
 			if !found {
-				return ErrValidationBeforeField
+				return beforeFieldError{Field: path}
 			}
 
 			otherStr, ok := otherRaw.(string)
 			if !ok {
-				return ErrValidationBeforeField
+				return beforeFieldError{Field: path}
 			}
 
 			other, ok := parseTime(otherStr)
 			if !ok || !t.Before(other) {
-				return ErrValidationBeforeField
+				return beforeFieldError{Field: path}
 			}
 
 			return nil
@@ -244,12 +244,12 @@ func BeforeOrEqual(ct time.Time) Rule {
 		func(value any) error {
 			str, ok := value.(string)
 			if !ok {
-				return ErrValidationBeforeOrEqual
+				return beforeOrEqualError{Time: ct}
 			}
 
 			t, ok := parseTime(str)
 			if !ok || t.After(ct) {
-				return ErrValidationBeforeOrEqual
+				return beforeOrEqualError{Time: ct}
 			}
 
 			return nil
@@ -275,11 +275,11 @@ var DateTime Rule = RuleFunc(
 	func(value any) error {
 		str, ok := value.(string)
 		if !ok {
-			return ErrValidationDateTime
+			return basicError{"date_time", "datetime validation failed"}
 		}
 
 		if _, ok := parseTime(str); !ok {
-			return ErrValidationDateTime
+			return basicError{"date_time", "datetime validation failed"}
 		}
 
 		return nil
@@ -307,12 +307,12 @@ func DateTimeBetween(minV, maxV time.Time) Rule {
 		func(value any) error {
 			str, ok := value.(string)
 			if !ok {
-				return ErrValidationDateTimeBetween
+				return dateTimeBetweenError{Min: minV, Max: maxV}
 			}
 
 			t, ok := parseTime(str)
 			if !ok || t.Before(minV) || t.After(maxV) {
-				return ErrValidationDateTimeBetween
+				return dateTimeBetweenError{Min: minV, Max: maxV}
 			}
 
 			return nil
@@ -339,11 +339,11 @@ func DateTimeFormat(layout string) Rule {
 	fn := func(value any) error {
 		str, ok := value.(string)
 		if !ok {
-			return ErrValidationDateTimeFormat
+			return dateTimeFormatError{Format: layout}
 		}
 
 		if _, err := time.Parse(layout, str); err != nil {
-			return ErrValidationDateTimeFormat
+			return dateTimeFormatError{Format: layout}
 		}
 
 		return nil
@@ -371,11 +371,11 @@ var Timezone Rule = RuleFunc(
 	func(value any) error {
 		str, ok := value.(string)
 		if !ok || str == "" {
-			return ErrValidationTimezone
+			return basicError{"timezone", "timezone validation failed"}
 		}
 
 		if _, err := time.LoadLocation(str); err != nil {
-			return ErrValidationTimezone
+			return basicError{"timezone", "timezone validation failed"}
 		}
 
 		return nil

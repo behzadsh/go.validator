@@ -1,7 +1,6 @@
 package validation
 
 import (
-	"errors"
 	"testing"
 )
 
@@ -27,7 +26,7 @@ func TestDigits(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("Digits(%d).Validate(%v) error = %v, wantErr %v", tt.n, tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationDigits) {
+		if err != nil && errorCode(err) != "digits" {
 			t.Errorf("wrong error type: %v", err)
 		}
 	}
@@ -52,7 +51,7 @@ func TestMinDigits(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("MinDigits(%d).Validate(%v) error = %v, wantErr %v", tt.n, tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationMinDigits) {
+		if err != nil && errorCode(err) != "min_digits" {
 			t.Errorf("wrong error type: %v", err)
 		}
 	}
@@ -76,7 +75,7 @@ func TestMaxDigits(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("MaxDigits(%d).Validate(%v) error = %v, wantErr %v", tt.n, tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationMaxDigits) {
+		if err != nil && errorCode(err) != "max_digits" {
 			t.Errorf("wrong error type: %v", err)
 		}
 	}
@@ -111,7 +110,7 @@ func TestDigitsBetween(t *testing.T) {
 				tt.wantErr,
 			)
 		}
-		if err != nil && !errors.Is(err, ErrValidationDigitsBetween) {
+		if err != nil && errorCode(err) != "digits_between" {
 			t.Errorf("wrong error type: %v", err)
 		}
 	}

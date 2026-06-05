@@ -1,7 +1,6 @@
 package validation
 
 import (
-	"errors"
 	"testing"
 )
 
@@ -60,7 +59,7 @@ func TestSameAs(t *testing.T) {
 						tt.wantErr,
 					)
 				}
-				if err != nil && !errors.Is(err, ErrValidationSameAs) {
+				if err != nil && errorCode(err) != "same_as" {
 					t.Errorf("wrong error type: %v", err)
 				}
 			},
@@ -117,7 +116,7 @@ func TestDifferent(t *testing.T) {
 						tt.wantErr,
 					)
 				}
-				if err != nil && !errors.Is(err, ErrValidationDifferent) {
+				if err != nil && errorCode(err) != "different" {
 					t.Errorf("wrong error type: %v", err)
 				}
 			},

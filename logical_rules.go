@@ -2,7 +2,7 @@ package validation
 
 // Any returns a Rule that passes when at least one of the given rules passes.
 //
-// All rules are tried in order; the first pass short-circuits. If every rule fails, ErrValidationAny is returned.
+// All rules are tried in order; the first pass short-circuits. If every rule fails, basicError{"any", "any validation failed"} is returned.
 // The inner errors are not propagated.
 //
 // Fails if:
@@ -22,14 +22,14 @@ func Any(rules ...Rule) Rule {
 				}
 			}
 
-			return ErrValidationAny
+			return basicError{"any", "any validation failed"}
 		},
 	)
 }
 
 // Not returns a Rule that inverts the result of the given rule.
 //
-// Passes when the inner rule fails; fails (returning ErrValidationNot) when the inner rule passes.
+// Passes when the inner rule fails; fails (returning basicError{"not", "not validation failed"}) when the inner rule passes.
 //
 // Fails if:
 //   - the wrapped rule passes for the value
@@ -46,7 +46,7 @@ func Not(r Rule) Rule {
 				return nil
 			}
 
-			return ErrValidationNot
+			return basicError{"not", "not validation failed"}
 		},
 	)
 }

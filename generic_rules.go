@@ -21,7 +21,7 @@ func In[T comparable](slice []T) Rule {
 	fn := func(value any) error {
 		v, ok := value.(T)
 		if !ok || !slices.Contains(slice, v) {
-			return ErrValidationIn
+			return inError{Values: slice}
 		}
 
 		return nil
@@ -49,7 +49,7 @@ func NEQ[T comparable](v T) Rule {
 		func(value any) error {
 			actual, ok := value.(T)
 			if !ok || actual == v {
-				return ErrValidationNEQ
+				return neqError{Value: v}
 			}
 
 			return nil
@@ -75,7 +75,7 @@ func NotIn[T comparable](slice []T) Rule {
 	fn := func(value any) error {
 		v, ok := value.(T)
 		if !ok || slices.Contains(slice, v) {
-			return ErrValidationNotIn
+			return notInError{Values: slice}
 		}
 
 		return nil

@@ -1,7 +1,6 @@
 package validation
 
 import (
-	"errors"
 	"testing"
 )
 
@@ -31,7 +30,7 @@ func TestURL(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("URL.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationURL) {
+		if err != nil && errorCode(err) != "url" {
 			t.Errorf("URL.Validate(%v) wrong error: %v", tt.value, err)
 		}
 	}
@@ -59,7 +58,7 @@ func TestCIDR(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("CIDR.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationCIDR) {
+		if err != nil && errorCode(err) != "cidr" {
 			t.Errorf("CIDR.Validate(%v) wrong error: %v", tt.value, err)
 		}
 	}
@@ -85,7 +84,7 @@ func TestMACAddress(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("MACAddress.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationMACAddress) {
+		if err != nil && errorCode(err) != "mac_address" {
 			t.Errorf("MACAddress.Validate(%v) wrong error: %v", tt.value, err)
 		}
 	}
@@ -115,7 +114,7 @@ func TestIP(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("IP.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationIP) {
+		if err != nil && errorCode(err) != "ip" {
 			t.Errorf("wrong error type: %v", err)
 		}
 	}
@@ -142,7 +141,7 @@ func TestIPv4(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("IPv4.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationIPv4) {
+		if err != nil && errorCode(err) != "ipv4" {
 			t.Errorf("wrong error type: %v", err)
 		}
 	}
@@ -168,7 +167,7 @@ func TestIPv6(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("IPv6.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationIPv6) {
+		if err != nil && errorCode(err) != "ipv6" {
 			t.Errorf("wrong error type: %v", err)
 		}
 	}

@@ -1,7 +1,6 @@
 package validation
 
 import (
-	"errors"
 	"testing"
 	"time"
 )
@@ -27,7 +26,7 @@ func TestDateTimeFormat(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("DateTimeFormat(%q).Validate(%v) error = %v, wantErr %v", tt.layout, tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationDateTimeFormat) {
+		if err != nil && errorCode(err) != "date_time_format" {
 			t.Errorf("wrong error type: %v", err)
 		}
 	}
@@ -53,7 +52,7 @@ func TestAfter(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("After(tRef).Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationAfter) {
+		if err != nil && errorCode(err) != "after" {
 			t.Errorf("wrong error type: %v", err)
 		}
 	}
@@ -79,7 +78,7 @@ func TestBefore(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("Before(tRef).Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationBefore) {
+		if err != nil && errorCode(err) != "before" {
 			t.Errorf("wrong error type: %v", err)
 		}
 	}
@@ -123,7 +122,7 @@ func TestDateTime(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("DateTime.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationDateTime) {
+		if err != nil && errorCode(err) != "date_time" {
 			t.Errorf("wrong error type: %v", err)
 		}
 	}
@@ -148,7 +147,7 @@ func TestAfterOrEqual(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("AfterOrEqual(tRef).Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationAfterOrEqual) {
+		if err != nil && errorCode(err) != "after_or_equal" {
 			t.Errorf("wrong error type: %v", err)
 		}
 	}
@@ -172,7 +171,7 @@ func TestBeforeOrEqual(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("BeforeOrEqual(tRef).Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationBeforeOrEqual) {
+		if err != nil && errorCode(err) != "before_or_equal" {
 			t.Errorf("wrong error type: %v", err)
 		}
 	}
@@ -200,7 +199,7 @@ func TestDateTimeBetween(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("DateTimeBetween.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationDateTimeBetween) {
+		if err != nil && errorCode(err) != "date_time_between" {
 			t.Errorf("wrong error type: %v", err)
 		}
 	}
@@ -225,7 +224,7 @@ func TestAfterField(t *testing.T) {
 			if err == nil {
 				t.Error("expected error for equal times")
 			}
-			if !errors.Is(err, ErrValidationAfterField) {
+			if errorCode(err) != "after_field" {
 				t.Errorf("wrong error type: %v", err)
 			}
 		},
@@ -278,7 +277,7 @@ func TestBeforeField(t *testing.T) {
 			if err == nil {
 				t.Error("expected error for equal times")
 			}
-			if !errors.Is(err, ErrValidationBeforeField) {
+			if errorCode(err) != "before_field" {
 				t.Errorf("wrong error type: %v", err)
 			}
 		},
@@ -313,7 +312,7 @@ func TestTimezone(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("Timezone.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationTimezone) {
+		if err != nil && errorCode(err) != "timezone" {
 			t.Errorf("wrong error type: %v", err)
 		}
 	}

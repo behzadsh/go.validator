@@ -26,7 +26,7 @@ func TestNot(t *testing.T) {
 				if (err != nil) != tt.wantErr {
 					t.Errorf("Not.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 				}
-				if err != nil && !errors.Is(err, ErrValidationNot) {
+				if err != nil && errorCode(err) != "not" {
 					t.Errorf("Not.Validate(%v) wrong error: %v", tt.value, err)
 				}
 			},
@@ -88,7 +88,7 @@ func TestAny(t *testing.T) {
 				if (err != nil) != tt.wantErr {
 					t.Errorf("Any.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 				}
-				if err != nil && !errors.Is(err, ErrValidationAny) {
+				if err != nil && errorCode(err) != "any" {
 					t.Errorf("Any.Validate(%v) wrong error: %v", tt.value, err)
 				}
 			},
@@ -167,15 +167,13 @@ func TestWhen_InvalidCondition(t *testing.T) {
 	schema := New().
 		Field("x", When(`!!!invalid`, MinLength(3)))
 
-	res, _ := schema.Validate(map[string]any{"x": "hi"})
-	if !res.HasErrors() {
-		t.Error("expected syntax error")
+	_, err := schema.Validate(map[string]any{"x": "hi"})
+	if err == nil {
+		t.Fatal("expected RuleSyntaxError from Validate, got nil")
 	}
-	if len(res.Errors()) > 0 {
-		var rse RuleSyntaxError
-		if !errors.As(res.Errors()[0].Err, &rse) {
-			t.Errorf("expected RuleSyntaxError, got %T", res.Errors()[0].Err)
-		}
+	var rse RuleSyntaxError
+	if !errors.As(err, &rse) {
+		t.Errorf("expected RuleSyntaxError, got %T", err)
 	}
 }
 

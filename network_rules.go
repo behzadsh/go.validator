@@ -22,11 +22,11 @@ var CIDR Rule = RuleFunc(
 	func(value any) error {
 		str, ok := value.(string)
 		if !ok {
-			return ErrValidationCIDR
+			return basicError{"cidr", "cidr validation failed"}
 		}
 
 		if _, _, err := net.ParseCIDR(str); err != nil {
-			return ErrValidationCIDR
+			return basicError{"cidr", "cidr validation failed"}
 		}
 
 		return nil
@@ -49,7 +49,7 @@ var IP Rule = RuleFunc(
 	func(value any) error {
 		str, ok := value.(string)
 		if !ok || net.ParseIP(str) == nil {
-			return ErrValidationIP
+			return basicError{"ip", "ip validation failed"}
 		}
 
 		return nil
@@ -71,12 +71,12 @@ var IPv4 Rule = RuleFunc(
 	func(value any) error {
 		str, ok := value.(string)
 		if !ok {
-			return ErrValidationIPv4
+			return basicError{"ipv4", "ipv4 validation failed"}
 		}
 
 		ip := net.ParseIP(str)
 		if ip == nil || ip.To4() == nil {
-			return ErrValidationIPv4
+			return basicError{"ipv4", "ipv4 validation failed"}
 		}
 
 		return nil
@@ -99,12 +99,12 @@ var IPv6 Rule = RuleFunc(
 	func(value any) error {
 		str, ok := value.(string)
 		if !ok {
-			return ErrValidationIPv6
+			return basicError{"ipv6", "ipv6 validation failed"}
 		}
 
 		ip := net.ParseIP(str)
 		if ip == nil || ip.To4() != nil {
-			return ErrValidationIPv6
+			return basicError{"ipv6", "ipv6 validation failed"}
 		}
 
 		return nil
@@ -129,12 +129,12 @@ var MACAddress Rule = RuleFunc(
 	func(value any) error {
 		str, ok := value.(string)
 		if !ok {
-			return ErrValidationMACAddress
+			return basicError{"mac_address", "mac address validation failed"}
 		}
 
 		hw, err := net.ParseMAC(str)
 		if err != nil || len(hw) != 6 {
-			return ErrValidationMACAddress
+			return basicError{"mac_address", "mac address validation failed"}
 		}
 
 		return nil
@@ -164,7 +164,7 @@ var URL Rule = RuleFunc(
 	func(value any) error {
 		str, ok := value.(string)
 		if !ok {
-			return ErrValidationURL
+			return basicError{"url", "url validation failed"}
 		}
 
 		if u, err := url.ParseRequestURI(str); err == nil && isValidURLHost(u.Host) {
@@ -174,7 +174,7 @@ var URL Rule = RuleFunc(
 			return nil
 		}
 
-		return ErrValidationURL
+		return basicError{"url", "url validation failed"}
 	},
 )
 

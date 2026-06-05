@@ -18,12 +18,12 @@ import "reflect"
 var Required Rule = RuleFunc(
 	func(value any) error {
 		if value == nil {
-			return ErrValidationRequired
+			return basicError{"required", "required validation failed"}
 		}
 
 		s, ok := value.(string)
 		if ok && s == "" {
-			return ErrValidationRequired
+			return basicError{"required", "required validation failed"}
 		}
 
 		return nil
@@ -67,10 +67,10 @@ func RequiredIf(condition string) InputRule {
 
 		if ok {
 			if value == nil {
-				return ErrValidationRequiredIf
+				return basicError{"required_if", "required if validation failed"}
 			}
 			if s, isStr := value.(string); isStr && s == "" {
-				return ErrValidationRequiredIf
+				return basicError{"required_if", "required if validation failed"}
 			}
 		}
 
@@ -100,10 +100,10 @@ func RequiredUnless(condition string) InputRule {
 
 		if !ok {
 			if value == nil {
-				return ErrValidationRequiredUnless
+				return basicError{"required_unless", "required unless validation failed"}
 			}
 			if s, isStr := value.(string); isStr && s == "" {
-				return ErrValidationRequiredUnless
+				return basicError{"required_unless", "required unless validation failed"}
 			}
 		}
 
@@ -126,10 +126,10 @@ func RequiredWith(fields ...string) InputRule {
 			for _, f := range fields {
 				if _, found := input.Lookup(f); found {
 					if value == nil {
-						return ErrValidationRequiredWith
+						return basicError{"required_with", "required with validation failed"}
 					}
 					if s, ok := value.(string); ok && s == "" {
-						return ErrValidationRequiredWith
+						return basicError{"required_with", "required with validation failed"}
 					}
 
 					return nil
@@ -159,10 +159,10 @@ func RequiredWithAll(fields ...string) InputRule {
 			}
 
 			if value == nil {
-				return ErrValidationRequiredWithAll
+				return basicError{"required_with_all", "required with all validation failed"}
 			}
 			if s, ok := value.(string); ok && s == "" {
-				return ErrValidationRequiredWithAll
+				return basicError{"required_with_all", "required with all validation failed"}
 			}
 
 			return nil
@@ -184,10 +184,10 @@ func RequiredWithout(fields ...string) InputRule {
 			for _, f := range fields {
 				if _, found := input.Lookup(f); !found {
 					if value == nil {
-						return ErrValidationRequiredWithout
+						return basicError{"required_without", "required without validation failed"}
 					}
 					if s, ok := value.(string); ok && s == "" {
-						return ErrValidationRequiredWithout
+						return basicError{"required_without", "required without validation failed"}
 					}
 
 					return nil
@@ -217,10 +217,10 @@ func RequiredWithoutAll(fields ...string) InputRule {
 			}
 
 			if value == nil {
-				return ErrValidationRequiredWithoutAll
+				return basicError{"required_without_all", "required without all validation failed"}
 			}
 			if s, ok := value.(string); ok && s == "" {
-				return ErrValidationRequiredWithoutAll
+				return basicError{"required_without_all", "required without all validation failed"}
 			}
 
 			return nil
@@ -247,11 +247,11 @@ func RequiredWithoutAll(fields ...string) InputRule {
 var NotEmpty Rule = RuleFunc(
 	func(value any) error {
 		if value == nil {
-			return ErrValidationNotEmpty
+			return basicError{"not_empty", "not empty validation failed"}
 		}
 
 		if reflect.ValueOf(value).IsZero() {
-			return ErrValidationNotEmpty
+			return basicError{"not_empty", "not empty validation failed"}
 		}
 
 		return nil

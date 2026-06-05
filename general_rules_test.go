@@ -22,7 +22,7 @@ func TestRequired(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("Required.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationRequired) {
+		if err != nil && errorCode(err) != "required" {
 			t.Errorf("Required.Validate(%v) wrong error: %v", tt.value, err)
 		}
 	}
@@ -35,7 +35,7 @@ func TestRequiredIf(t *testing.T) {
 		value     any
 		input     map[string]any
 		wantErr   bool
-		wantIs    error
+		wantCode  string
 	}{
 		{
 			name:      "condition true, value present",
@@ -50,7 +50,7 @@ func TestRequiredIf(t *testing.T) {
 			value:     nil,
 			input:     map[string]any{"role": "admin"},
 			wantErr:   true,
-			wantIs:    ErrValidationRequiredIf,
+			wantCode:  "required_if",
 		},
 		{
 			name:      "condition true, value empty string",
@@ -58,7 +58,7 @@ func TestRequiredIf(t *testing.T) {
 			value:     "",
 			input:     map[string]any{"role": "admin"},
 			wantErr:   true,
-			wantIs:    ErrValidationRequiredIf,
+			wantCode:  "required_if",
 		},
 		{
 			name:      "condition false, value nil",
@@ -73,7 +73,7 @@ func TestRequiredIf(t *testing.T) {
 			value:     nil,
 			input:     map[string]any{"role": "admin", "plan": "pro"},
 			wantErr:   true,
-			wantIs:    ErrValidationRequiredIf,
+			wantCode:  "required_if",
 		},
 		{
 			name:      "syntax error returns RuleSyntaxError",
@@ -100,8 +100,8 @@ func TestRequiredIf(t *testing.T) {
 						tt.wantErr,
 					)
 				}
-				if tt.wantIs != nil && !errors.Is(err, tt.wantIs) {
-					t.Errorf("error = %v, want errors.Is %v", err, tt.wantIs)
+				if tt.wantCode != "" && errorCode(err) != tt.wantCode {
+					t.Errorf("error code = %q, want %q", errorCode(err), tt.wantCode)
 				}
 				if tt.condition == "unknown(field)" && err != nil {
 					var syntaxErr RuleSyntaxError
@@ -121,7 +121,7 @@ func TestRequiredUnless(t *testing.T) {
 		value     any
 		input     map[string]any
 		wantErr   bool
-		wantIs    error
+		wantCode  string
 	}{
 		{
 			name:      "condition true → field optional, nil passes",
@@ -136,7 +136,7 @@ func TestRequiredUnless(t *testing.T) {
 			value:     nil,
 			input:     map[string]any{"type": "member"},
 			wantErr:   true,
-			wantIs:    ErrValidationRequiredUnless,
+			wantCode:  "required_unless",
 		},
 		{
 			name:      "condition false → field required, present passes",
@@ -164,8 +164,8 @@ func TestRequiredUnless(t *testing.T) {
 				if (err != nil) != tt.wantErr {
 					t.Fatalf("error = %v, wantErr %v", err, tt.wantErr)
 				}
-				if tt.wantIs != nil && !errors.Is(err, tt.wantIs) {
-					t.Errorf("error = %v, want errors.Is %v", err, tt.wantIs)
+				if tt.wantCode != "" && errorCode(err) != tt.wantCode {
+					t.Errorf("error code = %q, want %q", errorCode(err), tt.wantCode)
 				}
 			},
 		)
@@ -193,7 +193,7 @@ func TestRequiredWith(t *testing.T) {
 				if (err != nil) != tt.wantErr {
 					t.Errorf("error = %v, wantErr %v", err, tt.wantErr)
 				}
-				if err != nil && !errors.Is(err, ErrValidationRequiredWith) {
+				if err != nil && errorCode(err) != "required_with" {
 					t.Errorf("wrong error type: %v", err)
 				}
 			},
@@ -222,7 +222,7 @@ func TestRequiredWithAll(t *testing.T) {
 				if (err != nil) != tt.wantErr {
 					t.Errorf("error = %v, wantErr %v", err, tt.wantErr)
 				}
-				if err != nil && !errors.Is(err, ErrValidationRequiredWithAll) {
+				if err != nil && errorCode(err) != "required_with_all" {
 					t.Errorf("wrong error type: %v", err)
 				}
 			},
@@ -263,7 +263,7 @@ func TestRequiredWithout(t *testing.T) {
 				if (err != nil) != tt.wantErr {
 					t.Errorf("error = %v, wantErr %v", err, tt.wantErr)
 				}
-				if err != nil && !errors.Is(err, ErrValidationRequiredWithout) {
+				if err != nil && errorCode(err) != "required_without" {
 					t.Errorf("wrong error type: %v", err)
 				}
 			},
@@ -298,7 +298,7 @@ func TestRequiredWithoutAll(t *testing.T) {
 				if (err != nil) != tt.wantErr {
 					t.Errorf("error = %v, wantErr %v", err, tt.wantErr)
 				}
-				if err != nil && !errors.Is(err, ErrValidationRequiredWithoutAll) {
+				if err != nil && errorCode(err) != "required_without_all" {
 					t.Errorf("wrong error type: %v", err)
 				}
 			},
@@ -326,7 +326,7 @@ func TestNotEmpty(t *testing.T) {
 		if (err != nil) != tt.wantErr {
 			t.Errorf("NotEmpty.Validate(%v) error = %v, wantErr %v", tt.value, err, tt.wantErr)
 		}
-		if err != nil && !errors.Is(err, ErrValidationNotEmpty) {
+		if err != nil && errorCode(err) != "not_empty" {
 			t.Errorf("NotEmpty.Validate(%v) wrong error: %v", tt.value, err)
 		}
 	}
