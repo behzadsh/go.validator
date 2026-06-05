@@ -7,7 +7,11 @@ schema := validation.New().
     Field("name", validation.Required, validation.MinLength(2)).
     Field("email", validation.Required, validation.Email)
 
-if res := schema.Validate(input); res.HasErrors() {
+res, err := schema.Validate(input)
+if err != nil {
+    log.Fatal(err) // RuleSyntaxError: misconfigured rule, fix at startup
+}
+if res.HasErrors() {
     for _, e := range res.Errors() {
         fmt.Println(e.Path, e.Message)
     }
@@ -28,7 +32,7 @@ Three types are all you need to know:
 
 - **`Rule`** — an interface with one method: `Validate(value any) error`. Rules are values you pass around. Built-in rules are exposed as variables (e.g. `Required`, `Email`) or constructors that return a `Rule` (e.g. `Min(18)`, `MinLength(3)`).
 - **`Schema`** — a sequence of (path, rules) pairs. Build it with `New()` and chain `Field` calls.
-- **`Result`** — the value returned by `Schema.Validate`. Inspect it via `HasErrors()`, `Errors()`, and `For(path)`. `Result` does **not** implement the `error` interface; iterate `res.Errors()` to handle individual failures. Each entry is a `FieldError{Path, Err, Message}` and *does* implement `error`.
+- **`Result`** — the value returned by `Schema.Validate`. Inspect it via `HasErrors()`, `Errors()`, and `For(path)`. `Result` does **not** implement the `error` interface; iterate `res.Errors()` to handle individual failures. Each entry is a `FieldError{Path, Err, Message, Code, Params}` and *does* implement `error`.
 
 ### Absence model
 
@@ -54,7 +58,7 @@ schema := validation.New().
     Field("email", validation.Required, validation.Email).
     Field("age", validation.Min[int](18), validation.Max[int](120))
 
-res := schema.Validate(input)
+res, _ := schema.Validate(input)
 ```
 
 Nested keys use dot-notation:
@@ -95,7 +99,7 @@ schema := validation.New().
     Field("age", validation.Min[int](18)).
     Field("profile.handle", validation.Required)
 
-res := schema.Validate(User{Name: "Alice", Email: "alice@example.com", Age: 29})
+res, _ := schema.Validate(User{Name: "Alice", Email: "alice@example.com", Age: 29})
 ```
 
 A field without a `json` tag is reachable by its Go name:
@@ -119,14 +123,15 @@ Quick overview by category:
 | Category | Rules |
 |---|---|
 | General | `Required`, `RequiredIf`, `RequiredUnless`, `RequiredWith`, `RequiredWithAll`, `RequiredWithout`, `RequiredWithoutAll`, `NotEmpty` |
-| String | `Alpha`, `AlphaDash`, `AlphaNum`, `AlphaSpace`, `Email`, `EmailMX`, `URL`, `UUID`, `Regex`, `NotRegex`, `StartsWith`, `EndsWith`, `Lowercase`, `Uppercase`, `Length`, `MinLength`, `MaxLength` |
-| Number | `Numeric`, `Integer`, `Min`, `Max`, `GT`, `GTE`, `LT`, `LTE`, `Between` |
+| String | `Alpha`, `AlphaDash`, `AlphaNum`, `AlphaSpace`, `ASCII`, `Base64`, `Contains`, `CreditCard`, `Email`, `EmailMX`, `EndsWith`, `HexColor`, `JSON`, `JWT`, `Length`, `Lowercase`, `MaxLength`, `MinLength`, `NotRegex`, `PhoneE164`, `Regex`, `Semver`, `Slug`, `StartsWith`, `Uppercase`, `URL`, `UUID` |
+| Number | `Numeric`, `Integer`, `Min`, `Max`, `GT`, `GTE`, `LT`, `LTE`, `Between`, `Positive`, `Negative`, `NonNegative`, `MultipleOf`, `Port`, `Latitude`, `Longitude` |
 | Digit | `Digits`, `MinDigits`, `MaxDigits`, `DigitsBetween` |
 | DateTime | `DateTime`, `DateTimeFormat`, `After`, `AfterOrEqual`, `AfterField`, `Before`, `BeforeOrEqual`, `BeforeField`, `DateTimeBetween`, `Timezone` |
-| Network | `IP`, `IPv4`, `IPv6`, `MACAddress` |
-| Collection | `Distinct` |
+| Network | `IP`, `IPv4`, `IPv6`, `CIDR`, `MACAddress` |
+| Collection | `Distinct`, `Each`, `Size`, `MinSize`, `MaxSize` |
 | Generic | `In`, `NotIn`, `NEQ` |
 | Comparison | `SameAs`, `Different` |
+| Logical | `Any`, `Not`, `When`, `Unless` |
 
 Every rule except `Required`, `RequiredIf`, `RequiredUnless`, `RequiredWith*`, and `NotEmpty` returns `nil` for a missing value.
 
@@ -192,7 +197,10 @@ Rules are values: build them once at startup and reuse across validations and go
 ## Error handling
 
 ```go
-res := schema.Validate(input)
+res, err := schema.Validate(input)
+if err != nil {
+    log.Fatal(err) // RuleSyntaxError: misconfigured rule, fix at startup
+}
 
 if res.HasErrors() {
     for _, e := range res.Errors() {
@@ -206,15 +214,20 @@ for _, e := range res.For("email") {
 }
 ```
 
-`FieldError` implements the `error` interface and exposes the underlying rule error via `Err`, so `errors.Is` and `errors.As` work:
+`FieldError` carries `Code` (a stable snake_case key for i18n) and `Params` (rule parameters). Use `Code` to branch on specific failures:
 
 ```go
 for _, e := range res.Errors() {
-    if errors.Is(e, validation.ErrValidationEmail) {
-        // handle email error
+    switch e.Code {
+    case "email":
+        // handle invalid email
+    case "min_length":
+        // e.Params["length"] holds the minimum
     }
 }
 ```
+
+`FieldError` also implements `error` and exposes the underlying rule error via `Err`, so `errors.As` works for custom rules that return structured errors.
 
 `Result` deliberately does **not** implement `error`. Decide at the API boundary how to surface the collection — most apps return the slice from `Errors()` as JSON to the client, or fail-fast on `HasErrors()`.
 
@@ -224,9 +237,9 @@ A `Schema` is meant to be built once and called many times. Once construction is
 
 ## What this version does not include
 
-- Composition helpers (`And`, `Or`, `Not`, `Each`).
+- An `And` combinator (unnecessary — multiple rules on a `Field` call are implicitly AND).
 - Slice or wildcard paths (`items.*.name`).
-- Internationalization. Error messages are plain English strings.
+- Internationalization. Error messages are plain English strings; use `Code` and `Params` on `FieldError` to build translated messages.
 
 ## License
 

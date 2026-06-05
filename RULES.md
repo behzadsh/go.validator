@@ -1312,7 +1312,7 @@ validation.New().Field("tags", validation.Distinct)
 func Each(rules ...Rule) Rule
 ```
 
-Applies the given rules to every element of a slice or array. Non-slice/array values and `nil` pass. Stops at the first failing element and returns `ErrValidationEach`.
+Applies the given rules to every element of a slice or array. Non-slice/array values and `nil` pass. Stops at the first failing element and returns an error with code `"each"`.
 
 ```go
 validation.New().Field("emails", validation.Each(validation.Email))
@@ -1462,7 +1462,7 @@ validation.New().
 func Any(rules ...Rule) Rule
 ```
 
-Passes when at least one of the given rules passes. All rules are tried in order; the first pass short-circuits. If every rule fails, returns `ErrValidationAny`. Inner errors are not propagated.
+Passes when at least one of the given rules passes. All rules are tried in order; the first pass short-circuits. If every rule fails, returns an error with code `"any"`. Inner errors are not propagated.
 
 ```go
 validation.New().Field("contact", validation.Required, validation.Any(validation.Email, validation.PhoneE164))
@@ -1478,7 +1478,7 @@ validation.New().Field("contact", validation.Required, validation.Any(validation
 func Not(r Rule) Rule
 ```
 
-Inverts the result of the given rule. Passes when the inner rule fails; fails (returning `ErrValidationNot`) when the inner rule passes.
+Inverts the result of the given rule. Passes when the inner rule fails; fails (returning an error with code `"not"`) when the inner rule passes.
 
 ```go
 validation.New().Field("contact", validation.Not(validation.Email))
