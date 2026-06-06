@@ -103,9 +103,6 @@ func GTE[T number](v T) Rule {
 // Fails if:
 //   - value is not one of the integer kinds above
 //
-// Passes if:
-//   - value is nil (absent field)
-//
 // Examples:
 //
 //	validation.Integer.Validate(42)          // pass
@@ -114,11 +111,7 @@ func GTE[T number](v T) Rule {
 //	validation.Integer.Validate("42")        // fail — string
 var Integer Rule = RuleFunc(
 	func(value any) error {
-		if value == nil {
-			return nil
-		}
-
-		switch reflect.TypeOf(value).Kind() {
+		switch reflect.ValueOf(value).Kind() {
 		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
 			reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 			return nil
@@ -130,7 +123,7 @@ var Integer Rule = RuleFunc(
 
 // Latitude is a Rule that validates the value is a valid latitude (−90 to 90 inclusive).
 //
-// Accepts any numeric type or float64 (the default JSON number type), nil passes.
+// Accepts any numeric type or float64 (the default JSON number type).
 //
 // Fails if:
 //   - value is not a numeric type
@@ -144,10 +137,6 @@ var Integer Rule = RuleFunc(
 //	validation.Latitude.Validate("45.0")  // fail — string not accepted
 var Latitude Rule = RuleFunc(
 	func(value any) error {
-		if value == nil {
-			return nil
-		}
-
 		fv, ok := condToFloat(value)
 		if !ok || fv < -90 || fv > 90 {
 			return basicError{"latitude", "latitude validation failed"}
@@ -159,7 +148,7 @@ var Latitude Rule = RuleFunc(
 
 // Longitude is a Rule that validates the value is a valid longitude (−180 to 180 inclusive).
 //
-// Accepts any numeric type or float64 (the default JSON number type), nil passes.
+// Accepts any numeric type or float64 (the default JSON number type).
 //
 // Fails if:
 //   - value is not a numeric type
@@ -173,10 +162,6 @@ var Latitude Rule = RuleFunc(
 //	validation.Longitude.Validate("120.5") // fail — string not accepted
 var Longitude Rule = RuleFunc(
 	func(value any) error {
-		if value == nil {
-			return nil
-		}
-
 		fv, ok := condToFloat(value)
 		if !ok || fv < -180 || fv > 180 {
 			return basicError{"longitude", "longitude validation failed"}
@@ -298,7 +283,6 @@ func Min[T number](minV T) Rule {
 // If n is zero, Schema.Validate returns a RuleSyntaxError.
 //
 // Fails if:
-//   - value is nil
 //   - value is not a numeric type
 //   - value is not evenly divisible by n
 //
@@ -312,10 +296,6 @@ func MultipleOf[T number](n T) Rule {
 		func(value any) error {
 			if float64(n) == 0 {
 				return RuleSyntaxError{Rule: "MultipleOf", Err: errors.New("divisor must not be zero")}
-			}
-
-			if value == nil {
-				return multipleOfError{Value: n}
 			}
 
 			fv, ok := condToFloat(value)
@@ -334,7 +314,7 @@ func MultipleOf[T number](n T) Rule {
 
 // Negative is a Rule that validates the value is strictly less than zero.
 //
-// Accepts any numeric type, nil passes.
+// Accepts any numeric type.
 //
 // Fails if:
 //   - value is not a numeric type
@@ -348,10 +328,6 @@ func MultipleOf[T number](n T) Rule {
 //	validation.Negative.Validate(1)    // fail
 var Negative Rule = RuleFunc(
 	func(value any) error {
-		if value == nil {
-			return nil
-		}
-
 		fv, ok := condToFloat(value)
 		if !ok || fv >= 0 {
 			return basicError{"negative", "negative validation failed"}
@@ -363,7 +339,7 @@ var Negative Rule = RuleFunc(
 
 // NonNegative is a Rule that validates the value is greater than or equal to zero.
 //
-// Accepts any numeric type, nil passes.
+// Accepts any numeric type.
 //
 // Fails if:
 //   - value is not a numeric type
@@ -377,10 +353,6 @@ var Negative Rule = RuleFunc(
 //	validation.NonNegative.Validate(-0.1) // fail
 var NonNegative Rule = RuleFunc(
 	func(value any) error {
-		if value == nil {
-			return nil
-		}
-
 		fv, ok := condToFloat(value)
 		if !ok || fv < 0 {
 			return basicError{"non_negative", "non negative validation failed"}
@@ -430,7 +402,7 @@ var Numeric Rule = RuleFunc(
 
 // Port is a Rule that validates the value is a valid TCP/UDP port number (1–65535).
 //
-// Accepts any numeric type. Fractional values (e.g. float64(80.5)) fail, nil passes.
+// Accepts any numeric type. Fractional values (e.g. float64(80.5)) fail.
 //
 // Fails if:
 //   - value is not a numeric type
@@ -446,10 +418,6 @@ var Numeric Rule = RuleFunc(
 //	validation.Port.Validate(80.5)           // fail — fractional
 var Port Rule = RuleFunc(
 	func(value any) error {
-		if value == nil {
-			return nil
-		}
-
 		fv, ok := condToFloat(value)
 		if !ok || fv != math.Trunc(fv) || fv < 1 || fv > 65535 {
 			return basicError{"port", "port validation failed"}
@@ -461,7 +429,7 @@ var Port Rule = RuleFunc(
 
 // Positive is a Rule that validates the value is strictly greater than zero.
 //
-// Accepts any numeric type, nil passes.
+// Accepts any numeric type.
 //
 // Fails if:
 //   - value is not a numeric type
@@ -475,10 +443,6 @@ var Port Rule = RuleFunc(
 //	validation.Positive.Validate(-1)   // fail
 var Positive Rule = RuleFunc(
 	func(value any) error {
-		if value == nil {
-			return nil
-		}
-
 		fv, ok := condToFloat(value)
 		if !ok || fv <= 0 {
 			return basicError{"positive", "positive validation failed"}

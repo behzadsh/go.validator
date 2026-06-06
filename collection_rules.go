@@ -18,10 +18,6 @@ import "reflect"
 //	validation.Distinct.Validate(nil)                     // pass — rule irrelevant
 var Distinct Rule = RuleFunc(
 	func(value any) error {
-		if value == nil {
-			return nil
-		}
-
 		rv := reflect.ValueOf(value)
 		if rv.Kind() != reflect.Slice && rv.Kind() != reflect.Array {
 			return nil
@@ -63,10 +59,6 @@ var Distinct Rule = RuleFunc(
 func Each(rules ...Rule) Rule {
 	return InputRuleFunc(
 		func(value any, input *InputBag) error {
-			if value == nil {
-				return nil
-			}
-
 			rv := reflect.ValueOf(value)
 			if rv.Kind() != reflect.Slice && rv.Kind() != reflect.Array {
 				return nil
@@ -101,10 +93,6 @@ func Each(rules ...Rule) Rule {
 func MaxSize(n int) Rule {
 	return RuleFunc(
 		func(value any) error {
-			if value == nil {
-				return nil
-			}
-
 			rv := reflect.ValueOf(value)
 			if rv.Kind() != reflect.Slice && rv.Kind() != reflect.Array {
 				return nil
@@ -121,7 +109,7 @@ func MaxSize(n int) Rule {
 
 // MinSize returns a Rule that validates a slice or array has at least n elements.
 //
-// Non-slice/array values and nil pass.
+// Non-slice/array values pass.
 //
 // Fails if:
 //   - value is a slice/array with fewer than n elements
@@ -130,14 +118,9 @@ func MaxSize(n int) Rule {
 //
 //	validation.MinSize(2).Validate([]int{1, 2})    // pass — exactly 2
 //	validation.MinSize(2).Validate([]int{1})        // fail — only 1 element
-//	validation.MinSize(2).Validate(nil)             // pass
 func MinSize(n int) Rule {
 	return RuleFunc(
 		func(value any) error {
-			if value == nil {
-				return nil
-			}
-
 			rv := reflect.ValueOf(value)
 			if rv.Kind() != reflect.Slice && rv.Kind() != reflect.Array {
 				return nil
@@ -154,7 +137,7 @@ func MinSize(n int) Rule {
 
 // Size returns a Rule that validates a slice or array has exactly n elements.
 //
-// Non-slice/array values and nil pass.
+// Non-slice/array values pass.
 //
 // Fails if:
 //   - value is a slice/array whose length is not exactly n
@@ -163,14 +146,9 @@ func MinSize(n int) Rule {
 //
 //	validation.Size(3).Validate([]int{1, 2, 3}) // pass
 //	validation.Size(3).Validate([]int{1, 2})    // fail — 2 elements
-//	validation.Size(3).Validate(nil)             // pass
 func Size(n int) Rule {
 	return RuleFunc(
 		func(value any) error {
-			if value == nil {
-				return nil
-			}
-
 			rv := reflect.ValueOf(value)
 			if rv.Kind() != reflect.Slice && rv.Kind() != reflect.Array {
 				return nil

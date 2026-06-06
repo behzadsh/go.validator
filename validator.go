@@ -50,6 +50,27 @@ func (f InputRuleFunc) Validate(value any) error { return f(value, nil) }
 // ValidateWithInput satisfies the InputRule interface.
 func (f InputRuleFunc) ValidateWithInput(value any, input *InputBag) error { return f(value, input) }
 
+// presenceRule marks a rule that must run even when the field value is absent (nil).
+// Schema.Validate skips all other rules when value is nil.
+type presenceRule interface {
+	isPresenceCheck()
+}
+
+// presenceRuleFunc is a RuleFunc that also satisfies presenceRule.
+type presenceRuleFunc func(value any) error
+
+func (f presenceRuleFunc) Validate(value any) error { return f(value) }
+func (presenceRuleFunc) isPresenceCheck()           {}
+
+// presenceInputRuleFunc is an InputRuleFunc that also satisfies presenceRule.
+type presenceInputRuleFunc func(value any, input *InputBag) error
+
+func (f presenceInputRuleFunc) Validate(value any) error { return f(value, nil) }
+func (f presenceInputRuleFunc) ValidateWithInput(value any, input *InputBag) error {
+	return f(value, input)
+}
+func (presenceInputRuleFunc) isPresenceCheck() {}
+
 // Schema describes a set of fields and the rules that apply to each.
 //
 // A Schema is intended to be fully built up before Validate is called. Once built, Validate is safe to call from
@@ -89,6 +110,12 @@ func (s *Schema) Validate(input any) (*Result, error) {
 	for _, f := range s.fields {
 		value, _ := inputBag.Lookup(f.path)
 		for _, r := range f.rules {
+			if value == nil {
+				if _, ok := r.(presenceRule); !ok {
+					continue
+				}
+			}
+
 			var err error
 			if ir, ok := r.(InputRule); ok {
 				err = ir.ValidateWithInput(value, inputBag)

@@ -15,7 +15,7 @@ import "reflect"
 //	schema := validation.New().
 //		Field("name", validation.Required).
 //		Field("email", validation.Required, validation.Email)
-var Required Rule = RuleFunc(
+var Required Rule = presenceRuleFunc(
 	func(value any) error {
 		if value == nil {
 			return basicError{"required", "required validation failed"}
@@ -77,7 +77,7 @@ func RequiredIf(condition string) InputRule {
 		return nil
 	}
 
-	return InputRuleFunc(fn)
+	return presenceInputRuleFunc(fn)
 }
 
 // RequiredUnless returns an InputRule that validates the value exists unless the given condition evaluates to true.
@@ -110,7 +110,7 @@ func RequiredUnless(condition string) InputRule {
 		return nil
 	}
 
-	return InputRuleFunc(fn)
+	return presenceInputRuleFunc(fn)
 }
 
 // RequiredWith returns an InputRule that validates the value exists if any of the given fields are present in the input.
@@ -121,7 +121,7 @@ func RequiredUnless(condition string) InputRule {
 //
 //	validation.RequiredWith("phone", "mobile")
 func RequiredWith(fields ...string) InputRule {
-	return InputRuleFunc(
+	return presenceInputRuleFunc(
 		func(value any, input *InputBag) error {
 			for _, f := range fields {
 				if _, found := input.Lookup(f); found {
@@ -150,7 +150,7 @@ func RequiredWith(fields ...string) InputRule {
 //
 //	validation.RequiredWithAll("first_name", "last_name")
 func RequiredWithAll(fields ...string) InputRule {
-	return InputRuleFunc(
+	return presenceInputRuleFunc(
 		func(value any, input *InputBag) error {
 			for _, f := range fields {
 				if _, found := input.Lookup(f); !found {
@@ -179,7 +179,7 @@ func RequiredWithAll(fields ...string) InputRule {
 //
 //	validation.RequiredWithout("email", "phone")
 func RequiredWithout(fields ...string) InputRule {
-	return InputRuleFunc(
+	return presenceInputRuleFunc(
 		func(value any, input *InputBag) error {
 			for _, f := range fields {
 				if _, found := input.Lookup(f); !found {
@@ -208,7 +208,7 @@ func RequiredWithout(fields ...string) InputRule {
 //
 //	validation.RequiredWithoutAll("email", "phone")
 func RequiredWithoutAll(fields ...string) InputRule {
-	return InputRuleFunc(
+	return presenceInputRuleFunc(
 		func(value any, input *InputBag) error {
 			for _, f := range fields {
 				if _, found := input.Lookup(f); found {
@@ -244,7 +244,7 @@ func RequiredWithoutAll(fields ...string) InputRule {
 //	schema := validation.New().
 //		Field("count", validation.NotEmpty). // rejects 0
 //		Field("active", validation.NotEmpty) // rejects false
-var NotEmpty Rule = RuleFunc(
+var NotEmpty Rule = presenceRuleFunc(
 	func(value any) error {
 		if value == nil {
 			return basicError{"not_empty", "not empty validation failed"}

@@ -259,7 +259,7 @@ func TestInteger(t *testing.T) {
 		{uint16(7), false},
 		{uint32(8), false},
 		{uint64(9), false},
-		{nil, false}, // absent field passes
+		{nil, true},
 		{3.14, true}, // float64
 		{"42", true}, // string
 		{true, true}, // bool
@@ -288,7 +288,7 @@ func TestPositive(t *testing.T) {
 		{0, true},
 		{-1, true},
 		{-0.1, true},
-		{nil, false},
+		{nil, true},
 		{"5", true},
 		{true, true},
 	}
@@ -314,7 +314,7 @@ func TestNegative(t *testing.T) {
 		{0, true},
 		{1, true},
 		{uint(0), true},
-		{nil, false},
+		{nil, true},
 		{"5", true},
 	}
 	for _, tt := range tests {
@@ -340,7 +340,7 @@ func TestNonNegative(t *testing.T) {
 		{uint(0), false},
 		{-1, true},
 		{-0.1, true},
-		{nil, false},
+		{nil, true},
 		{"0", true},
 	}
 	for _, tt := range tests {
@@ -408,7 +408,7 @@ func TestPort(t *testing.T) {
 		{65536, true},
 		{-1, true},
 		{80.5, true}, // fractional
-		{nil, false},
+		{nil, true},
 		{"80", true},
 	}
 	for _, tt := range tests {
@@ -434,7 +434,7 @@ func TestLatitude(t *testing.T) {
 		{float64(45), false},
 		{90.1, true},
 		{-90.1, true},
-		{nil, false},
+		{nil, true},
 		{"45", true},
 	}
 	for _, tt := range tests {
@@ -460,7 +460,7 @@ func TestLongitude(t *testing.T) {
 		{float64(120), false},
 		{180.1, true},
 		{-180.1, true},
-		{nil, false},
+		{nil, true},
 		{"120", true},
 	}
 	for _, tt := range tests {
