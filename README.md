@@ -1,5 +1,5 @@
 # go.validator
-![Coverage](https://img.shields.io/badge/Coverage-84.6%25-brightgreen)
+![Coverage](https://img.shields.io/badge/Coverage-84.7%25-brightgreen)
 
 A small, schema-based validator for Go. No globals, no struct tags, no reflection magic in your business code — just a `Schema` you build with chained `Field` calls and validate against any map or struct.
 
