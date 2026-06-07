@@ -152,6 +152,46 @@ func TestInputBagLookup_EmbeddedStruct(t *testing.T) {
 	}
 }
 
+func TestInputBagLookup_ScalarPointerField(t *testing.T) {
+	type Form struct {
+		Count *int64   `json:"count"`
+		Score *float64 `json:"score"`
+	}
+
+	count := int64(42)
+	score := 3.14
+
+	t.Run("non-nil pointer returns dereferenced value", func(t *testing.T) {
+		bag := NewInputBag(Form{Count: &count, Score: &score})
+		val, found := bag.Lookup("count")
+		if !found {
+			t.Fatal("Lookup(count) should be found")
+		}
+		if v, ok := val.(int64); !ok || v != 42 {
+			t.Errorf("Lookup(count) = %v (%T); want int64(42)", val, val)
+		}
+		val, found = bag.Lookup("score")
+		if !found {
+			t.Fatal("Lookup(score) should be found")
+		}
+		if v, ok := val.(float64); !ok || v != 3.14 {
+			t.Errorf("Lookup(score) = %v (%T); want float64(3.14)", val, val)
+		}
+	})
+
+	t.Run("nil pointer returns not found", func(t *testing.T) {
+		bag := NewInputBag(Form{Count: nil, Score: nil})
+		_, found := bag.Lookup("count")
+		if found {
+			t.Error("Lookup(count) on nil *int64 should return false")
+		}
+		_, found = bag.Lookup("score")
+		if found {
+			t.Error("Lookup(score) on nil *float64 should return false")
+		}
+	})
+}
+
 func TestInputBagLookup_NonStringKeyedMap(t *testing.T) {
 	input := map[int]string{1: "one", 2: "two"}
 	bag := NewInputBag(input)

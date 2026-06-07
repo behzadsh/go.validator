@@ -130,13 +130,23 @@ func structField(rv reflect.Value, name string) (any, bool) {
 				continue
 			}
 			if tagName != "" && tagName == name {
-				return rv.Field(i).Interface(), true
+				return derefField(rv.Field(i))
 			}
 		}
 		if field.Name == name {
-			return rv.Field(i).Interface(), true
+			return derefField(rv.Field(i))
 		}
 	}
 
 	return nil, false
+}
+
+func derefField(fv reflect.Value) (any, bool) {
+	for fv.Kind() == reflect.Pointer {
+		if fv.IsNil() {
+			return nil, false
+		}
+		fv = fv.Elem()
+	}
+	return fv.Interface(), true
 }
